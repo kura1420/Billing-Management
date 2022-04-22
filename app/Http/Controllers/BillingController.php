@@ -7,10 +7,11 @@ use Illuminate\Http\Request;
 class BillingController extends Controller
 {
     //
+    const FOLDER = 'billing.';
     
     public function type()
     {
-        # code...
+        return view(self::FOLDER . 'type.main');
     }
     
     public function setting()
@@ -20,7 +21,7 @@ class BillingController extends Controller
 
     public function template()
     {
-        # code...
+        return view(self::FOLDER . 'template.main');
     }
 
     public function invoice()

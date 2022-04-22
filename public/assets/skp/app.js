@@ -69,7 +69,7 @@ $(document).ready(function () {
         });
     }
 
-    LoadPage('product/promo', 'Product Promo');
+    LoadPage('billing/template', 'Billing Template');
 });
 
 function Alert (type, objs, title=null) {

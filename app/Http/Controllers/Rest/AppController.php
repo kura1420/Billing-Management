@@ -21,7 +21,7 @@ class AppController extends Controller
                         'id' => rand(1, 999), 
                         'text' => 'Area',
                         'children' => [
-                            [ 'id' => rand(1, 999), 'text' => 'Data' ],
+                            [ 'id' => rand(1, 999), 'text' => 'Data', 'url' => 'area' ],
                             [ 'id' => rand(1, 999), 'text' => 'Product' ],
                             [ 'id' => rand(1, 999), 'text' => 'Customer' ],
                         ], 
@@ -32,9 +32,8 @@ class AppController extends Controller
                 'id' => rand(1, 999),
                 'text' => 'Billing',
                 'children' => [
-                    [ 'id' => rand(1, 999), 'text' => 'Tipe' ],
-                    [ 'id' => rand(1, 999), 'text' => 'Setting' ],
-                    [ 'id' => rand(1, 999), 'text' => 'Template' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Tipe', 'url' => 'billing/type' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Template', 'url' => 'billing/template' ],
                     [ 'id' => rand(1, 999), 'text' => 'Invoice' ],
                 ],
             ],

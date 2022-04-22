@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 22, 2022 at 11:24 AM
+-- Generation Time: Apr 23, 2022 at 02:58 AM
 -- Server version: 10.3.34-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.28
 
@@ -129,10 +129,17 @@ CREATE TABLE `areas` (
   `desc` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 0,
   `ppn_tax_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `pph_tax_id` char(36) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `areas`
+--
+
+INSERT INTO `areas` (`id`, `code`, `name`, `desc`, `active`, `ppn_tax_id`, `created_at`, `updated_at`) VALUES
+('1581e1d8-7b13-4eb0-83d5-807ac5e59f22', 'AR2', 'area 2', NULL, 1, '31420733-0d15-47ac-8b55-cf10ad91ea67', '2022-04-22 12:57:36', '2022-04-22 12:57:36'),
+('e869a4b7-4ce5-4612-a5c9-440d2bd17000', 'AR1', 'Area 1', NULL, 1, '31420733-0d15-47ac-8b55-cf10ad91ea67', '2022-04-22 12:55:52', '2022-04-22 12:55:52');
 
 -- --------------------------------------------------------
 
@@ -145,9 +152,9 @@ CREATE TABLE `area_products` (
   `area_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `provinsi_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `city_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `product_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_service_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 0,
-  `with_promo` tinyint(1) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -166,11 +173,12 @@ CREATE TABLE `area_product_customers` (
   `area_product_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `customer_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `customer_segment_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_service_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 0,
+  `price_sub` decimal(12,2) NOT NULL,
   `price_ppn` decimal(10,2) NOT NULL,
-  `price_pph` decimal(10,2) NOT NULL,
   `price_total` decimal(12,2) NOT NULL,
-  `price_discount` decimal(12,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -202,8 +210,8 @@ CREATE TABLE `area_product_promos` (
 CREATE TABLE `billing_invoices` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `billing_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `billing_profile_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `customer_data_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `start_notif` date DEFAULT NULL,
   `notif_at` datetime NOT NULL,
   `suspend_at` datetime NOT NULL,
   `terminate_at` datetime NOT NULL,
@@ -211,32 +219,13 @@ CREATE TABLE `billing_invoices` (
   `verif_payment_at` datetime DEFAULT NULL,
   `verif_by_user_id` bigint(20) UNSIGNED DEFAULT NULL,
   `file` char(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `type_payment` char(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type_payment` char(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `price_ppn` decimal(12,2) NOT NULL,
-  `price_pph` decimal(12,2) NOT NULL,
   `price_sub` decimal(12,2) NOT NULL,
   `price_total` decimal(12,2) NOT NULL,
   `price_discount` decimal(12,2) NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL,
-  `updated_at` timestamp NULL DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `billing_profiles`
---
-
-CREATE TABLE `billing_profiles` (
-  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `code` char(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `active` tinyint(1) NOT NULL DEFAULT 0,
-  `desc` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `billing_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `customer_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `customer_segment_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `billing_template_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_service_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -249,13 +238,22 @@ CREATE TABLE `billing_profiles` (
 
 CREATE TABLE `billing_templates` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `sender` enum('email','sms','msgr') COLLATE utf8mb4_unicode_ci NOT NULL,
   `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `type` enum('notif','suspend','terminated','closed') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `billing_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `billing_templates`
+--
+
+INSERT INTO `billing_templates` (`id`, `name`, `sender`, `content`, `type`, `created_at`, `updated_at`) VALUES
+('0226a5ed-8da2-43d1-9f37-2a7382b25530', 'notif email', 'email', 'Dear _name_, notif<br>', 'notif', '2022-04-22 11:58:12', '2022-04-22 12:04:39'),
+('33e0fcbf-783b-4f93-8480-4697184ab299', 'terminate email', 'email', 'Dear _name_, notif terminate<br>', 'notif', '2022-04-22 12:06:20', '2022-04-22 12:06:20'),
+('624a9e1b-4cb3-4ca2-806d-80aab7089c5e', 'suspend email', 'email', '<div>Dear _name_, <b><br></b></div><div><b><br></b></div><div><b>u di suspend</b></div>', 'suspend', '2022-04-22 12:04:24', '2022-04-22 12:22:25');
 
 -- --------------------------------------------------------
 
@@ -269,13 +267,21 @@ CREATE TABLE `billing_types` (
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `desc` text COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 0,
-  `start` int(11) NOT NULL DEFAULT 23,
   `notif` int(11) NOT NULL DEFAULT 7,
   `suspend` int(11) NOT NULL DEFAULT 3,
   `terminated` int(11) NOT NULL DEFAULT 1,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `billing_types`
+--
+
+INSERT INTO `billing_types` (`id`, `code`, `name`, `desc`, `active`, `notif`, `suspend`, `terminated`, `created_at`, `updated_at`) VALUES
+('72ed143a-5f7c-4e25-9dde-c4fa4439ae73', 'BILMAIN1', 'billing maintenance 1', NULL, 1, 5, 0, 0, '2022-04-22 00:44:19', '2022-04-22 00:44:19'),
+('a16d7605-a88d-469d-8999-bef45dd68bf7', 'BILBLN', 'billing bulanan', NULL, 1, 7, 3, 1, '2022-04-22 00:41:58', '2022-04-22 00:42:38'),
+('dc0f7987-2528-4a89-86be-106bb6aaa4d1', 'BILMAIN', 'billing maintenance', NULL, 1, 10, 0, 0, '2022-04-22 00:43:19', '2022-04-22 00:43:19');
 
 -- --------------------------------------------------------
 
@@ -342,6 +348,11 @@ CREATE TABLE `customer_data` (
   `city_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `area_product_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `area_product_customer_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_service_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `price_sub` decimal(12,2) NOT NULL,
+  `price_ppn` decimal(8,2) NOT NULL,
+  `price_total` decimal(12,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -734,7 +745,9 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('t3oCoDXeVHfLf1VJcj2UYf7Lg9gyCXcNgE1Va53E', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiaWYxdFVLTld4ejBKNTdTdGtLU0pUZmFNeU5Kc2NEZ1pBd2tJZXdNTyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1649737644);
+('336NzxQj8fvXS0mpFVB2qkROnUaZKRAMUvjmvcA5', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYkVwOFZrZExLd3c3YzVsdXlXMHh6bklkN3U1M1h2RkRYd1ZLdE1ZcyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650657460),
+('EWafJiF8y1whOgYX6BdxXHP2Cn7c6CHy4815zNnq', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVWl6aEdTajQzUEsxc0hzbjJxYXBsM3hMbnVvY0FFNDFxYzdBdVFteSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650653789),
+('LxnewRMbfFEq86kQPNOoiA8P83M4jVUMC0HTf4Q1', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOTZCZ01qNlBlYlRQVHg1c25kd3JKNEFwMlpSMjR3TlBRYm84akl0TiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650652489);
 
 -- --------------------------------------------------------
 
@@ -920,13 +933,6 @@ ALTER TABLE `area_product_promos`
 --
 ALTER TABLE `billing_invoices`
   ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `billing_profiles`
---
-ALTER TABLE `billing_profiles`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `billing_profiles_code_unique` (`code`);
 
 --
 -- Indexes for table `billing_templates`

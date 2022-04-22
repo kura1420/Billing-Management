@@ -5,6 +5,9 @@ use App\Http\Controllers\Rest\AppMenuController;
 use App\Http\Controllers\Rest\AppProfileController;
 use App\Http\Controllers\Rest\AppRoleController;
 use App\Http\Controllers\Rest\AppUserController;
+use App\Http\Controllers\Rest\AreaController;
+use App\Http\Controllers\Rest\BillingTemplateController;
+use App\Http\Controllers\Rest\BillingTypeController;
 use App\Http\Controllers\Rest\CityController;
 use App\Http\Controllers\Rest\CustomerSegmentController;
 use App\Http\Controllers\Rest\CustomerTypeController;
@@ -167,6 +170,43 @@ Route::prefix('app-user')->group(function() {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
 
+        Route::post('/', 'store');
+        
+        Route::delete('/{id}', 'destroy'); 
+    });
+});
+
+Route::prefix('billing-type')->group(function() {
+    Route::controller(BillingTypeController::class)->group(function() {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+
+        Route::post('/lists', 'lists');
+        Route::post('/', 'store');
+        
+        Route::delete('/{id}', 'destroy'); 
+    });
+});
+
+Route::prefix('billing-template')->group(function() {
+    Route::controller(BillingTemplateController::class)->group(function() {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+
+        Route::post('/lists', 'lists');
+        Route::post('/', 'store');
+        Route::post('/preview', 'preview');
+        
+        Route::delete('/{id}', 'destroy'); 
+    });
+});
+
+Route::prefix('area')->group(function() {
+    Route::controller(AreaController::class)->group(function() {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+
+        Route::post('/lists', 'lists');
         Route::post('/', 'store');
         
         Route::delete('/{id}', 'destroy'); 
