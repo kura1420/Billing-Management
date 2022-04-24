@@ -78,7 +78,7 @@ class AppMenuController extends Controller
 
     public function lists()
     {
-        $rows = AppMenu::whereNull('parent')->orderBy('name')->get();
+        $rows = AppMenu::where('active', 1)->whereNull('parent')->orderBy('name')->get();
 
         return response()->json($rows);
     }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 23, 2022 at 02:58 AM
+-- Generation Time: Apr 25, 2022 at 02:06 AM
 -- Server version: 10.3.34-MariaDB-0ubuntu0.20.04.1
 -- PHP Version: 7.4.28
 
@@ -155,9 +155,20 @@ CREATE TABLE `area_products` (
   `product_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `product_service_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 0,
+  `price_sub` decimal(12,2) NOT NULL,
+  `price_ppn` decimal(10,2) NOT NULL,
+  `price_total` decimal(12,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `area_products`
+--
+
+INSERT INTO `area_products` (`id`, `area_id`, `provinsi_id`, `city_id`, `product_type_id`, `product_service_id`, `active`, `price_sub`, `price_ppn`, `price_total`, `created_at`, `updated_at`) VALUES
+('3fba6c5d-13d0-4ede-8752-51e48d21ff99', '1581e1d8-7b13-4eb0-83d5-807ac5e59f22', '440e52e0-c5fc-4ac8-8b5b-82a9012498c0', 'd3175c7d-e95c-4722-bc41-dfafb3a3213e', '48cae2cf-1c1c-469f-8fcf-ab93532e45f0', '25de3779-0ac9-40a8-9ca0-706e3b831f63', 1, '300000.00', '33000.00', '333000.00', '2022-04-24 11:36:34', '2022-04-24 11:36:45'),
+('6c1553c1-d46a-4881-9674-ce2aea74a6ed', '1581e1d8-7b13-4eb0-83d5-807ac5e59f22', '38bc73b9-90e7-4194-b4d2-ca55bbc7d11e', 'e3e790f3-4dc6-426d-bf86-57f47c4c6994', 'ad68d5a5-d6cb-48f6-b50e-1b95b660ee84', '74625a22-c148-4a0a-9f89-331916c6abc1', 1, '300000.00', '33000.00', '333000.00', '2022-04-24 11:36:18', '2022-04-24 11:36:18');
 
 -- --------------------------------------------------------
 
@@ -167,21 +178,25 @@ CREATE TABLE `area_products` (
 
 CREATE TABLE `area_product_customers` (
   `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `area_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `provinsi_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `city_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `area_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `area_product_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `customer_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `customer_segment_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `product_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `product_service_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `customer_segment_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
   `active` tinyint(1) NOT NULL DEFAULT 0,
-  `price_sub` decimal(12,2) NOT NULL,
-  `price_ppn` decimal(10,2) NOT NULL,
-  `price_total` decimal(12,2) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `area_product_customers`
+--
+
+INSERT INTO `area_product_customers` (`id`, `area_id`, `provinsi_id`, `city_id`, `product_type_id`, `product_service_id`, `customer_type_id`, `customer_segment_id`, `active`, `created_at`, `updated_at`) VALUES
+('0a9ea8e6-1e39-4400-80f2-3806678cc18c', '1581e1d8-7b13-4eb0-83d5-807ac5e59f22', '38bc73b9-90e7-4194-b4d2-ca55bbc7d11e', 'e3e790f3-4dc6-426d-bf86-57f47c4c6994', 'ad68d5a5-d6cb-48f6-b50e-1b95b660ee84', '74625a22-c148-4a0a-9f89-331916c6abc1', '1ade04da-822f-4048-99b0-ecf35a62db29', 'ef5eb52e-94c2-467b-afd8-7cd40e470a0e', 1, '2022-04-24 12:04:35', '2022-04-24 12:04:35'),
+('6051e7ed-5e20-4533-a9d8-493d30d214f7', '1581e1d8-7b13-4eb0-83d5-807ac5e59f22', '440e52e0-c5fc-4ac8-8b5b-82a9012498c0', 'd3175c7d-e95c-4722-bc41-dfafb3a3213e', '48cae2cf-1c1c-469f-8fcf-ab93532e45f0', '25de3779-0ac9-40a8-9ca0-706e3b831f63', '71ac449b-62ee-43a6-8458-e5d638d15f1c', 'b13ffc45-83fb-45af-9d68-b2c8f7bf0856', 0, '2022-04-24 12:04:35', '2022-04-24 12:04:35');
 
 -- --------------------------------------------------------
 
@@ -233,6 +248,31 @@ CREATE TABLE `billing_invoices` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `billing_products`
+--
+
+CREATE TABLE `billing_products` (
+  `id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `billing_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_type_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `product_service_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `billing_products`
+--
+
+INSERT INTO `billing_products` (`id`, `billing_type_id`, `product_type_id`, `product_service_id`, `created_at`, `updated_at`) VALUES
+('44793f3c-d8d7-43b5-9b63-efa26f85c4d3', '72ed143a-5f7c-4e25-9dde-c4fa4439ae73', '48cae2cf-1c1c-469f-8fcf-ab93532e45f0', '5c230164-e19f-425e-a38a-94c17e1a721b', '2022-04-23 21:52:58', '2022-04-23 21:53:11'),
+('4b627aba-8160-4ac5-9525-702383c65775', '72ed143a-5f7c-4e25-9dde-c4fa4439ae73', '48cae2cf-1c1c-469f-8fcf-ab93532e45f0', '25de3779-0ac9-40a8-9ca0-706e3b831f63', '2022-04-23 21:59:51', '2022-04-23 21:59:51'),
+('6bea8fd5-50c6-4027-a8ab-969a58f669ee', '72ed143a-5f7c-4e25-9dde-c4fa4439ae73', 'ad68d5a5-d6cb-48f6-b50e-1b95b660ee84', '74625a22-c148-4a0a-9f89-331916c6abc1', '2022-04-23 21:52:58', '2022-04-23 21:52:58'),
+('830c2ad3-1186-4cb6-b009-1e7ae94d3d5d', 'a16d7605-a88d-469d-8999-bef45dd68bf7', 'ad68d5a5-d6cb-48f6-b50e-1b95b660ee84', '74625a22-c148-4a0a-9f89-331916c6abc1', '2022-04-23 22:04:19', '2022-04-23 22:04:19');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `billing_templates`
 --
 
@@ -279,7 +319,7 @@ CREATE TABLE `billing_types` (
 --
 
 INSERT INTO `billing_types` (`id`, `code`, `name`, `desc`, `active`, `notif`, `suspend`, `terminated`, `created_at`, `updated_at`) VALUES
-('72ed143a-5f7c-4e25-9dde-c4fa4439ae73', 'BILMAIN1', 'billing maintenance 1', NULL, 1, 5, 0, 0, '2022-04-22 00:44:19', '2022-04-22 00:44:19'),
+('72ed143a-5f7c-4e25-9dde-c4fa4439ae73', 'BILMAIN1', 'billing maintenance 1', NULL, 1, 5, 0, 0, '2022-04-22 00:44:19', '2022-04-23 21:06:46'),
 ('a16d7605-a88d-469d-8999-bef45dd68bf7', 'BILBLN', 'billing bulanan', NULL, 1, 7, 3, 1, '2022-04-22 00:41:58', '2022-04-22 00:42:38'),
 ('dc0f7987-2528-4a89-86be-106bb6aaa4d1', 'BILMAIN', 'billing maintenance', NULL, 1, 10, 0, 0, '2022-04-22 00:43:19', '2022-04-22 00:43:19');
 
@@ -571,7 +611,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (33, '2022_03_28_224019_create_billing_templates_table', 3),
 (34, '2022_03_28_224033_create_vouchers_table', 3),
 (35, '2022_03_28_224048_create_skp_billings_table', 3),
-(36, '2022_03_29_105051_create_billing_invoices_table', 3);
+(36, '2022_03_29_105051_create_billing_invoices_table', 3),
+(37, '2022_04_23_172738_create_billing_products_table', 4);
 
 -- --------------------------------------------------------
 
@@ -745,9 +786,10 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('336NzxQj8fvXS0mpFVB2qkROnUaZKRAMUvjmvcA5', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiYkVwOFZrZExLd3c3YzVsdXlXMHh6bklkN3U1M1h2RkRYd1ZLdE1ZcyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650657460),
-('EWafJiF8y1whOgYX6BdxXHP2Cn7c6CHy4815zNnq', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiVWl6aEdTajQzUEsxc0hzbjJxYXBsM3hMbnVvY0FFNDFxYzdBdVFteSI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650653789),
-('LxnewRMbfFEq86kQPNOoiA8P83M4jVUMC0HTf4Q1', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiOTZCZ01qNlBlYlRQVHg1c25kd3JKNEFwMlpSMjR3TlBRYm84akl0TiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650652489);
+('b566v4cNb9fGW4Bw9HJVbqZO56kQYvF70Qnr0RnJ', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSE5ZUk41eHVKWlE4MmJGZUIybndja2RodHJKYlVFMEhtNnJlZXE0NyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650825110),
+('LE2S0cfmoNuYXdA6tHDw7V0wb5wfvo94Rjuxn21L', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiMzN5UzhiblhLYkhtOXl5TTZVamRET0NCR2JBM3lsMFJVb2l3V2RBdCI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6ODA6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwvcmVzdC9hcmVhL3Byb2R1Y3QvMTU4MWUxZDgtN2IxMy00ZWIwLTgzZDUtODA3YWM1ZTU5ZjIyIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319fQ==', 1650824681),
+('nyy9ZEdviayUCN2JAmblWMfb5rBHhoUaPxrVOxIK', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiSHhhZFVocjUxMXhEdWdZeFpEU1A4bWh4UndBVVJLa0lpenRINEVwbyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650823829),
+('oSkOsVXGRDDtHHOTrTAHD3GfzC8eafy5BIDnRTZf', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:99.0) Gecko/20100101 Firefox/99.0', 'YTozOntzOjY6Il90b2tlbiI7czo0MDoiU0tnZHBmWnlZMUFzYnJBeGRmSTRUbUg2TXQ4RXptUFdtam5tb1BGRiI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6MjU6Imh0dHA6Ly9pbmV0LWJpbGxpbmcubG9jYWwiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX19', 1650827175);
 
 -- --------------------------------------------------------
 
@@ -932,6 +974,12 @@ ALTER TABLE `area_product_promos`
 -- Indexes for table `billing_invoices`
 --
 ALTER TABLE `billing_invoices`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `billing_products`
+--
+ALTER TABLE `billing_products`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -1130,7 +1178,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`

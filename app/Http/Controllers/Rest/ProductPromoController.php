@@ -116,7 +116,7 @@ class ProductPromoController extends Controller
 
     public function lists()
     {
-        $rows = ProductPromo::with('product_promo_services')->orderBy('name')->get();
+        $rows = ProductPromo::with('product_promo_services')->where('active', 1)->orderBy('name')->get();
 
         return response()->json($rows);
     }

@@ -69,7 +69,7 @@ class CustomerTypeController extends Controller
 
     public function lists()
     {
-        $rows = CustomerType::orderBy('name')->get();
+        $rows = CustomerType::where('active', 1)->orderBy('name')->get();
 
         return response()->json($rows);
     }

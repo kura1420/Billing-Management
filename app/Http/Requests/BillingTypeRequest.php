@@ -45,11 +45,11 @@ class BillingTypeRequest extends FormRequest
         ];
     }
 
-    protected function failedValidation(Validator $validator)
-    {
-        throw new HttpResponseException(response()->json([
-            'data' => $validator->errors(),
-            'status' => 'NOT'
-        ], 422));
-    }
+    // protected function failedValidation(Validator $validator)
+    // {
+    //     throw new HttpResponseException(response()->json([
+    //         'data' => $validator->errors(),
+    //         'status' => 'NOT'
+    //     ], 422));
+    // }
 }

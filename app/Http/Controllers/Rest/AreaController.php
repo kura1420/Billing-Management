@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Rest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AreaRequest;
 use App\Models\Area;
+use App\Models\AreaProduct;
+use App\Models\AreaProductCustomer;
 use Illuminate\Http\Request;
 
 class AreaController extends Controller
@@ -42,7 +44,10 @@ class AreaController extends Controller
     
     public function store(AreaRequest $request)
     {
-        Area::updateOrCreate(
+        $products = $request->products;
+        $customers = $request->customers;
+
+        $area = Area::updateOrCreate(
             [
                 'id' => $request->id,
             ],
@@ -55,9 +60,97 @@ class AreaController extends Controller
             ]
         );
 
+        if (!empty($products)) {
+            foreach ($products as $key => $value) {
+                $checkProduct = AreaProduct::where([
+                    ['area_id', '=', $area->id],
+                    ['provinsi_id', '=', $value['provinsi_id']],
+                    ['city_id', '=', $value['city_id']],
+                    ['product_type_id', '=', $value['product_type_id']],
+                    ['product_service_id', '=', $value['product_service_id']],
+                ])->count();
+
+                if ($checkProduct == 0) {
+                    $ppn_tax = \App\Models\Tax::find($request->ppn_tax_id)->first();
+                    $productService = \App\Models\ProductService::find($value['product_service_id'])->first();
+
+                    $sub = $productService->price;
+                    $ppn = ($ppn_tax->value / 100) * $productService->price;
+                    $total = $sub + $ppn;
+
+                    if (empty($value['id'])) {
+                        AreaProduct::create([
+                            'area_id' => $area->id,
+                            'provinsi_id' => $value['provinsi_id'],
+                            'city_id' => $value['city_id'],
+                            'product_type_id' => $value['product_type_id'],
+                            'product_service_id' => $value['product_service_id'],
+                            'active' => $value['active'] == 'true' ? 1 : 0,
+                            'price_sub' => $sub,
+                            'price_ppn' => $ppn,
+                            'price_total' => $total,
+                        ]);
+                    } else {
+                        AreaProduct::find($value['id'])
+                            ->update([
+                                'provinsi_id' => $value['provinsi_id'],
+                                'city_id' => $value['city_id'],
+                                'product_type_id' => $value['product_type_id'],
+                                'product_service_id' => $value['product_service_id'],
+                                'active' => $value['active'] == 'true' ? 1 : 0,
+                                'price_sub' => $sub,
+                                'price_ppn' => $ppn,
+                                'price_total' => $total,
+                            ]);
+                    }
+                    
+                }
+            }
+        }
+
+        if (!empty($customers)) {
+            foreach ($customers as $key => $value) {
+                $checkCustomer = AreaProductCustomer::where([
+                    ['area_id', '=', $area->id],
+                    ['provinsi_id', '=', $value['provinsi_id']],
+                    ['city_id', '=', $value['city_id']],
+                    ['product_type_id', '=', $value['product_type_id']],
+                    ['product_service_id', '=', $value['product_service_id']],
+                    ['customer_type_id', '=', $value['customer_type_id']],
+                    ['customer_segment_id', '=', $value['customer_segment_id']],
+                ])->count();
+
+                if ($checkCustomer == 0) {
+                    if (empty($value['id'])) {
+                        AreaProductCustomer::create([
+                            'area_id' => $area->id,
+                            'provinsi_id' => $value['provinsi_id'],
+                            'city_id' => $value['city_id'],
+                            'product_type_id' => $value['product_type_id'],
+                            'product_service_id' => $value['product_service_id'],
+                            'customer_type_id' => $value['customer_type_id'],
+                            'customer_segment_id' => $value['customer_segment_id'],
+                            'active' => $value['active'] == 'true' ? 1 : 0,
+                        ]);
+                    } else {
+                        AreaProductCustomer::find($value['id'])
+                            ->update([
+                                'provinsi_id' => $value['provinsi_id'],
+                                'city_id' => $value['city_id'],
+                                'product_type_id' => $value['product_type_id'],
+                                'product_service_id' => $value['product_service_id'],
+                                'customer_type_id' => $value['customer_type_id'],
+                                'customer_segment_id' => $value['customer_segment_id'],
+                                'active' => $value['active'] == 'true' ? 1 : 0,
+                            ]);
+                    }                    
+                }
+            }
+        }
+
         $status = $request->id ? 200 : 201;
 
-        return response()->json('OK', $status);
+        return response()->json($area, $status);
     }
 
     public function show($id)
@@ -76,8 +169,80 @@ class AreaController extends Controller
 
     public function lists()
     {
-        $rows = Area::orderBy('name')->get();
+        $rows = Area::where('active', 1)->orderBy('name')->get();
 
         return response()->json($rows);
+    }
+
+    public function productLists($id)
+    {
+        $rows = AreaProduct::join('provinsis', 'area_products.provinsi_id', '=', 'provinsis.id')
+            ->join('cities', 'area_products.city_id', '=', 'cities.id')
+            ->join('product_types', 'area_products.product_type_id', '=', 'product_types.id')
+            ->join('product_services', 'area_products.product_service_id', '=', 'product_services.id')
+            ->where('area_products.area_id', $id)
+            ->select([
+                'area_products.id',
+                'area_products.area_id',
+                'area_products.provinsi_id',
+                'area_products.city_id',
+                'area_products.product_type_id',
+                'area_products.product_service_id',
+                'area_products.active',
+                'area_products.price_sub',
+                'area_products.price_ppn',
+                'area_products.price_total',
+                    'provinsis.name as provinsi_name',
+                        'cities.name as city_name',
+                            'product_types.name as product_type_name',
+                                'product_services.name as product_service_name'
+            ])
+            ->get();
+
+        return response()->json($rows);
+    }
+
+    public function productDestroy($id)
+    {
+        AreaProduct::find($id)->delete();
+
+        return response()->json('OK', 200);
+    }
+    
+    public function customerLists($id)
+    {
+        $rows = AreaProductCustomer::join('provinsis', 'area_product_customers.provinsi_id', '=', 'provinsis.id')
+            ->join('cities', 'area_product_customers.city_id', '=', 'cities.id')
+            ->join('product_types', 'area_product_customers.product_type_id', '=', 'product_types.id')
+            ->join('product_services', 'area_product_customers.product_service_id', '=', 'product_services.id')
+            ->join('customer_types', 'area_product_customers.customer_type_id', '=', 'customer_types.id')
+            ->join('customer_segments', 'area_product_customers.customer_segment_id', '=', 'customer_segments.id')
+            ->where('area_product_customers.area_id', $id)
+            ->select([
+                'area_product_customers.id',
+                'area_product_customers.provinsi_id',
+                'area_product_customers.city_id',
+                'area_product_customers.product_type_id',
+                'area_product_customers.product_service_id',
+                'area_product_customers.customer_type_id',
+                'area_product_customers.customer_segment_id',
+                'area_product_customers.active',
+                    'provinsis.name as provinsi_name',
+                        'cities.name as city_name',
+                            'product_types.name as product_type_name',
+                                'product_services.name as product_service_name',
+                                    'customer_types.name as customer_type_name',
+                                        'customer_segments.name as customer_segment_name',
+            ])
+            ->get();
+
+        return response()->json($rows);
+    }
+
+    public function customerDestroy($id)
+    {
+        AreaProductCustomer::find($id)->delete();
+
+        return response()->json('OK', 200);
     }
 }

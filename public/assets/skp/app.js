@@ -69,7 +69,7 @@ $(document).ready(function () {
         });
     }
 
-    LoadPage('billing/template', 'Billing Template');
+    LoadPage('area', 'Area');
 });
 
 function Alert (type, objs, title=null) {

@@ -13,4 +13,9 @@ class BillingType extends Model
     public $incrementing = false;
 
     protected $guarded = [];
+
+    public function billing_products()
+    {
+        return $this->hasMany(BillingProduct::class);
+    }
 }

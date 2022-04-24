@@ -69,7 +69,7 @@ class ProductTypeController extends Controller
 
     public function lists()
     {
-        $rows = ProductType::orderBy('name')->get();
+        $rows = ProductType::where('active', 1)->orderBy('name')->get();
 
         return response()->json($rows);
     }

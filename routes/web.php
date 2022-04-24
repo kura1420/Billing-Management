@@ -46,7 +46,6 @@ Route::prefix('area')->group(function() {
 Route::prefix('billing')->group(function() {
     Route::controller(BillingController::class)->group(function() {
         Route::get('/type', 'type');
-        Route::get('/setting', 'setting');
         Route::get('/template', 'template');
         Route::get('/invoice', 'invoice');
     });

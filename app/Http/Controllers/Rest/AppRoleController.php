@@ -66,7 +66,7 @@ class AppRoleController extends Controller
 
     public function lists()
     {
-        $rows = AppRole::orderBy('name')->get();
+        $rows = AppRole::where('active', 1)->orderBy('name')->get();
 
         return response()->json($rows);
     }

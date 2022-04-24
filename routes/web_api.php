@@ -180,11 +180,13 @@ Route::prefix('billing-type')->group(function() {
     Route::controller(BillingTypeController::class)->group(function() {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
+        Route::get('/product/{id}', 'productLists');
 
         Route::post('/lists', 'lists');
         Route::post('/', 'store');
         
         Route::delete('/{id}', 'destroy'); 
+        Route::delete('/product/{id}', 'productDestroy');
     });
 });
 
@@ -205,10 +207,14 @@ Route::prefix('area')->group(function() {
     Route::controller(AreaController::class)->group(function() {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
+        Route::get('/product/{id}', 'productLists');
+        Route::get('/customer/{id}', 'customerLists');
 
         Route::post('/lists', 'lists');
         Route::post('/', 'store');
         
-        Route::delete('/{id}', 'destroy'); 
+        Route::delete('/{id}', 'destroy');
+        Route::delete('/product/{id}', 'productDestroy');
+        Route::delete('/customer/{id}', 'customerDestroy');
     });
 });

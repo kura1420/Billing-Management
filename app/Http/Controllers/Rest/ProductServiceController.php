@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductServiceRequest;
 use App\Models\ProductService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ProductServiceController extends Controller
 {
@@ -78,10 +79,20 @@ class ProductServiceController extends Controller
         return response()->json('OK', 200);
     }
 
-    public function lists()
+    public function lists(Request $request)
     {
-        $rows = ProductService::orderBy('name')->get();
+        $val = Validator::make($request->all(), [
+            'product_type_id' => 'required|string',
+        ]);
 
-        return response()->json($rows);
+        if ($val->fails()) {
+            return response()->json($val->errors());
+        } else {
+            $rows = ProductService::where('product_type_id', $request->product_type_id)
+                ->where('active', 1)
+                ->orderBy('name')->get();
+
+            return response()->json($rows);
+        }        
     }
 }

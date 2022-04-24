@@ -69,7 +69,7 @@ class CustomerSegmentController extends Controller
 
     public function lists()
     {
-        $rows = CustomerSegment::orderBy('name')->get();
+        $rows = CustomerSegment::where('active', 1)->orderBy('name')->get();
 
         return response()->json($rows);
     }
