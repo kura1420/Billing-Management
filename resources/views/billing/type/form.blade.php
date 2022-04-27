@@ -32,7 +32,6 @@
             <tr>
                 <th data-options="field:'product_type_name'," sortable="true">Type</th>
                 <th data-options="field:'product_service_name'," sortable="true">Service</th>
-                <th data-options="field:'active'," sortable="true">Service</th>
             </tr>
         </thead>
     </table>

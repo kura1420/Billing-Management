@@ -17,15 +17,7 @@ class AppController extends Controller
                 'children' => [
                     [ 'id' => rand(1, 999), 'text' => 'Provinsi', 'url' => 'region/provinsi' ],
                     [ 'id' => rand(1, 999), 'text' => 'Kota', 'url' => 'region/city' ],
-                    [ 
-                        'id' => rand(1, 999), 
-                        'text' => 'Area',
-                        'children' => [
-                            [ 'id' => rand(1, 999), 'text' => 'Data', 'url' => 'area' ],
-                            [ 'id' => rand(1, 999), 'text' => 'Product' ],
-                            [ 'id' => rand(1, 999), 'text' => 'Customer' ],
-                        ], 
-                    ],
+                    [ 'id' => rand(1, 999), 'text' => 'Area', 'url' => 'area' ],
                 ],
             ],
             [
@@ -43,7 +35,7 @@ class AppController extends Controller
                 'children' => [
                     [ 'id' => rand(1, 999), 'text' => 'Tipe', 'url' => 'customer/type' ],
                     [ 'id' => rand(1, 999), 'text' => 'Segment', 'url' => 'customer/segment' ],
-                    [ 'id' => rand(1, 999), 'text' => 'Data' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Data', 'url' => 'customer' ],
                 ],
             ],
             [

@@ -11,7 +11,7 @@ class CustomerController extends Controller
 
     public function index()
     {
-        # code...
+        return view(self::FOLDER . 'data.main');
     }
 
     public function type()

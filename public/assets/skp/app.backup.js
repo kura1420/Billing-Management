@@ -1,11 +1,11 @@
-$(function () {
+$(document).ready(function () {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content'),
         }
     });
 
-    var _rest = URL_REST + '/app'
+    const _rest = URL_REST + '/app'
 
     $('#tt').tree({
         url: _rest + '/menu',
@@ -40,41 +40,42 @@ $(function () {
         }
     });
 
-    LoadPage('customer', 'Customer');
+    var LoadPage = (url, text) => {
+        $('#_content').panel('refresh', URL_ROOT + '/' + url);
+
+        // $('#p').panel({
+        //     href: URL_ROOT + '/' + url,
+        //     title: text,
+        //     cache: false,
+        //     loader: function (param, success, error) {
+        //         let {method, href} = $(this).panel('options');
+
+        //         if (method==null || href==null) return false
+
+        //         $.ajax({
+        //             type: method,
+        //             url: href,
+        //             dataType: "html",
+        //             success: function (response) {
+        //                 success(response);
+        //             },
+        //             error: function (xhr, status) {  
+        //                 error(xhr);
+        //             }
+        //         });
+        //     },
+        //     onLoadError: function (xhr) {
+        //         let {statusText, responseText} = xhr
+
+        //         Alert('error', responseText, statusText)
+        //     }
+        // });
+    }
+
+    // LoadPage('billing/type', 'Billing Type');
 });
 
-function LoadPage(page, title) {
-    $("#p").panel({
-        href: URL_ROOT + '/' + page,
-        title: title,
-        border: false,
-        fit: true,
-        loader: function (param, success, error) {
-            let { method, href } = $(this).panel('options');
-            
-            if (method==null || href==null)  return false
-
-            $.ajax({
-                type: method,
-                url: href,
-                dataType: 'html',
-                success: function(data) {
-                    success(data);
-                },
-                error: function(xhr, status) {
-                    error(xhr)
-                }
-            });
-        },
-        onLoadError: function (xhr) {
-            let {statusText, responseText} = xhr
-
-            Alert('error', responseText, statusText)
-        }
-    })
-}
-
-function Alert(type, objs, title=null) {
+function Alert (type, objs, title=null) {
     switch (type) {
         case 'info':
             $.messager.alert(title, objs, type)

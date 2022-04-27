@@ -62,89 +62,68 @@ class AreaController extends Controller
 
         if (!empty($products)) {
             foreach ($products as $key => $value) {
-                $checkProduct = AreaProduct::where([
-                    ['area_id', '=', $area->id],
-                    ['provinsi_id', '=', $value['provinsi_id']],
-                    ['city_id', '=', $value['city_id']],
-                    ['product_type_id', '=', $value['product_type_id']],
-                    ['product_service_id', '=', $value['product_service_id']],
-                ])->count();
+                $ppn_tax = \App\Models\Tax::find($request->ppn_tax_id)->first();
+                $productService = \App\Models\ProductService::find($value['product_service_id'])->first();
 
-                if ($checkProduct == 0) {
-                    $ppn_tax = \App\Models\Tax::find($request->ppn_tax_id)->first();
-                    $productService = \App\Models\ProductService::find($value['product_service_id'])->first();
+                $sub = $productService->price;
+                $ppn = ($ppn_tax->value / 100) * $productService->price;
+                $total = $sub + $ppn;
 
-                    $sub = $productService->price;
-                    $ppn = ($ppn_tax->value / 100) * $productService->price;
-                    $total = $sub + $ppn;
-
-                    if (empty($value['id'])) {
-                        AreaProduct::create([
-                            'area_id' => $area->id,
+                if (empty($value['id'])) {
+                    AreaProduct::create([
+                        'area_id' => $area->id,
+                        'provinsi_id' => $value['provinsi_id'],
+                        'city_id' => $value['city_id'],
+                        'product_type_id' => $value['product_type_id'],
+                        'product_service_id' => $value['product_service_id'],
+                        'active' => $value['active'] == 'true' || $value['active'] == 1 ? 1 : 0,
+                        'price_sub' => $sub,
+                        'price_ppn' => $ppn,
+                        'price_total' => $total,
+                    ]);
+                } else {
+                    AreaProduct::find($value['id'])
+                        ->update([
                             'provinsi_id' => $value['provinsi_id'],
                             'city_id' => $value['city_id'],
                             'product_type_id' => $value['product_type_id'],
                             'product_service_id' => $value['product_service_id'],
-                            'active' => $value['active'] == 'true' ? 1 : 0,
+                            'active' => $value['active'] == 'true' || $value['active'] == 1 ? 1 : 0,
                             'price_sub' => $sub,
                             'price_ppn' => $ppn,
                             'price_total' => $total,
                         ]);
-                    } else {
-                        AreaProduct::find($value['id'])
-                            ->update([
-                                'provinsi_id' => $value['provinsi_id'],
-                                'city_id' => $value['city_id'],
-                                'product_type_id' => $value['product_type_id'],
-                                'product_service_id' => $value['product_service_id'],
-                                'active' => $value['active'] == 'true' ? 1 : 0,
-                                'price_sub' => $sub,
-                                'price_ppn' => $ppn,
-                                'price_total' => $total,
-                            ]);
-                    }
-                    
-                }
+                }      
             }
         }
 
         if (!empty($customers)) {
             foreach ($customers as $key => $value) {
-                $checkCustomer = AreaProductCustomer::where([
-                    ['area_id', '=', $area->id],
-                    ['provinsi_id', '=', $value['provinsi_id']],
-                    ['city_id', '=', $value['city_id']],
-                    ['product_type_id', '=', $value['product_type_id']],
-                    ['product_service_id', '=', $value['product_service_id']],
-                    ['customer_type_id', '=', $value['customer_type_id']],
-                    ['customer_segment_id', '=', $value['customer_segment_id']],
-                ])->count();
-
-                if ($checkCustomer == 0) {
-                    if (empty($value['id'])) {
-                        AreaProductCustomer::create([
-                            'area_id' => $area->id,
+                if (empty($value['id'])) {
+                    AreaProductCustomer::create([
+                        'area_id' => $area->id,
+                        'provinsi_id' => $value['provinsi_id'],
+                        'city_id' => $value['city_id'],
+                        'product_type_id' => $value['product_type_id'],
+                        'product_service_id' => $value['product_service_id'],
+                        'customer_type_id' => $value['customer_type_id'],
+                        'customer_segment_id' => $value['customer_segment_id'],
+                        'area_product_id' => $value['area_product_id'],
+                        'active' => $value['active'] == 'true' || $value['active'] == 1 ? 1 : 0,
+                    ]);
+                } else {
+                    AreaProductCustomer::find($value['id'])
+                        ->update([
                             'provinsi_id' => $value['provinsi_id'],
                             'city_id' => $value['city_id'],
                             'product_type_id' => $value['product_type_id'],
                             'product_service_id' => $value['product_service_id'],
                             'customer_type_id' => $value['customer_type_id'],
                             'customer_segment_id' => $value['customer_segment_id'],
-                            'active' => $value['active'] == 'true' ? 1 : 0,
+                            'area_product_id' => $value['area_product_id'],
+                            'active' => $value['active'] == 'true' || $value['active'] == 1 ? 1 : 0,
                         ]);
-                    } else {
-                        AreaProductCustomer::find($value['id'])
-                            ->update([
-                                'provinsi_id' => $value['provinsi_id'],
-                                'city_id' => $value['city_id'],
-                                'product_type_id' => $value['product_type_id'],
-                                'product_service_id' => $value['product_service_id'],
-                                'customer_type_id' => $value['customer_type_id'],
-                                'customer_segment_id' => $value['customer_segment_id'],
-                                'active' => $value['active'] == 'true' ? 1 : 0,
-                            ]);
-                    }                    
-                }
+                }  
             }
         }
 
@@ -156,6 +135,7 @@ class AreaController extends Controller
     public function show($id)
     {
         $row = Area::find($id);
+        $row->active = $row->active == 1 ? 'on' : 'off';
 
         return $row;
     }
@@ -226,6 +206,7 @@ class AreaController extends Controller
                 'area_product_customers.product_service_id',
                 'area_product_customers.customer_type_id',
                 'area_product_customers.customer_segment_id',
+                'area_product_customers.area_product_id',
                 'area_product_customers.active',
                     'provinsis.name as provinsi_name',
                         'cities.name as city_name',

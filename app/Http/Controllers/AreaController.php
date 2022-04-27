@@ -13,14 +13,4 @@ class AreaController extends Controller
     {
         return view(self::FOLDER . 'data.main');
     }
-
-    public function product()
-    {
-        # code...
-    }
-
-    public function product_customer()
-    {
-        # code...
-    }
 }

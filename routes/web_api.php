@@ -9,6 +9,7 @@ use App\Http\Controllers\Rest\AreaController;
 use App\Http\Controllers\Rest\BillingTemplateController;
 use App\Http\Controllers\Rest\BillingTypeController;
 use App\Http\Controllers\Rest\CityController;
+use App\Http\Controllers\Rest\CustomerController;
 use App\Http\Controllers\Rest\CustomerSegmentController;
 use App\Http\Controllers\Rest\CustomerTypeController;
 use App\Http\Controllers\Rest\DepartementController;
@@ -216,5 +217,17 @@ Route::prefix('area')->group(function() {
         Route::delete('/{id}', 'destroy');
         Route::delete('/product/{id}', 'productDestroy');
         Route::delete('/customer/{id}', 'customerDestroy');
+    });
+});
+
+Route::prefix('customer')->group(function() {
+    Route::controller(CustomerController::class)->group(function() {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+
+        Route::post('/lists', 'lists');
+        Route::post('/', 'store');
+        
+        Route::delete('/{id}', 'destroy');
     });
 });

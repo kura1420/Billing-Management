@@ -27,6 +27,10 @@ Route::get('/', function () {
     return view('layouts.base');
 });
 
+Route::get('/blank', function () {
+    return view('blank');
+});
+
 Route::prefix('auth')->group(function() {
     Route::controller(AuthController::class)->group(function() {
         Route::get('/login', 'login');
@@ -38,8 +42,6 @@ Route::prefix('auth')->group(function() {
 Route::prefix('area')->group(function() {
     Route::controller(AreaController::class)->group(function() {
         Route::get('/', 'index');
-        Route::get('/product', 'product');
-        Route::get('/product-customer', 'product_customer');
     });
 });
 
@@ -68,7 +70,7 @@ Route::prefix('core')->group(function() {
 
 Route::prefix('customer')->group(function() {
     Route::controller(CustomerController::class)->group(function() {
-        Route::get('/index', 'index');
+        Route::get('/', 'index');
         Route::get('/type', 'type');
         Route::get('/segment', 'segment');
     });
