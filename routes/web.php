@@ -27,10 +27,6 @@ Route::get('/', function () {
     return view('layouts.base');
 });
 
-Route::get('/blank', function () {
-    return view('blank');
-});
-
 Route::prefix('auth')->group(function() {
     Route::controller(AuthController::class)->group(function() {
         Route::get('/login', 'login');

@@ -53,7 +53,6 @@
             </tr>
         </table>
     </p>
-    <p style="margin: 20px;">
-        <div id="content" style="padding:20px"></div>
-    </p>
+
+    <div id="content" style="padding:20px;"></div>
 </form>

@@ -224,10 +224,18 @@ Route::prefix('customer')->group(function() {
     Route::controller(CustomerController::class)->group(function() {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
+        Route::get('/contact/{id}', 'contactLists');
+        Route::get('/document/{id}', 'documentLists');
+        Route::get('/document-show/{id}', 'documentShow');
+        Route::get('/document-file/{file}', 'documentFile');
 
         Route::post('/lists', 'lists');
+        Route::post('/contact-merge/{id}', 'contactMerge');
         Route::post('/', 'store');
+        Route::post('/document', 'documentStore');
         
-        Route::delete('/{id}', 'destroy');
+        // Route::delete('/{id}', 'destroy');
+        Route::delete('/contact/{id}', 'contactDestroy');
+        Route::delete('/document/{id}', 'documentDestroy');
     });
 });

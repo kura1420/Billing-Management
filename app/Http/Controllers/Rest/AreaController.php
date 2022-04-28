@@ -63,10 +63,10 @@ class AreaController extends Controller
         if (!empty($products)) {
             foreach ($products as $key => $value) {
                 $ppn_tax = \App\Models\Tax::find($request->ppn_tax_id)->first();
-                $productService = \App\Models\ProductService::find($value['product_service_id'])->first();
+                $productService = \App\Models\ProductService::where('id', $value['product_service_id'])->first();
 
                 $sub = $productService->price;
-                $ppn = ($ppn_tax->value / 100) * $productService->price;
+                $ppn = ($ppn_tax->value / 100) * $sub;
                 $total = $sub + $ppn;
 
                 if (empty($value['id'])) {
@@ -135,7 +135,6 @@ class AreaController extends Controller
     public function show($id)
     {
         $row = Area::find($id);
-        $row->active = $row->active == 1 ? 'on' : 'off';
 
         return $row;
     }

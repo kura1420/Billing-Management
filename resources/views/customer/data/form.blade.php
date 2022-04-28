@@ -55,7 +55,8 @@
                     <input name="address" id="address" class="easyui-textbox" data-options="label:'Address',labelAlign:'right',disabled:true,labelWidth:120,width:800,required:true,">
                 </p>
                 <p>
-                    <input name="picture" id="picture" class="easyui-filebox" data-options="label:'Foto',labelAlign:'right',disabled:true,labelWidth:120,width:800,required:false,accept: 'image/*',">
+                    <input name="picture" id="picture" class="easyui-filebox" data-options="label:'Foto',labelAlign:'right',disabled:true,labelWidth:120,width:700,required:false,accept: 'image/*',">
+                    <a id="btnPreview" class="easyui-linkbutton" href="javascript:void(0)">Preview</a>
                 </p>
                 <p>
                     <input name="birthdate" id="birthdate" class="easyui-datebox" data-options="label:'Birthdate',labelAlign:'right',disabled:true,labelWidth:120,width:800,required:false,">

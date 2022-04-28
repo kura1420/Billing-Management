@@ -87,7 +87,6 @@ class BillingTypeController extends Controller
     public function show($id)
     {
         $row = BillingType::find($id);
-        $row->active = $row->active == 1 ? 'on' : 'off';
 
         return $row;
     }

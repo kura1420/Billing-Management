@@ -5,7 +5,7 @@ $(function () {
         }
     });
 
-    var _rest = URL_REST + '/app'
+    const _rest = URL_REST + '/app'
 
     $('#tt').tree({
         url: _rest + '/menu',
@@ -40,67 +40,21 @@ $(function () {
         }
     });
 
-    LoadPage('customer', 'Customer');
-});
-
-function LoadPage(page, title) {
-    $("#p").panel({
-        href: URL_ROOT + '/' + page,
-        title: title,
-        border: false,
-        fit: true,
-        loader: function (param, success, error) {
-            let { method, href } = $(this).panel('options');
-            
-            if (method==null || href==null)  return false
-
-            $.ajax({
-                type: method,
-                url: href,
-                dataType: 'html',
-                success: function(data) {
-                    success(data);
-                },
-                error: function(xhr, status) {
-                    error(xhr)
-                }
-            });
-        },
-        onLoadError: function (xhr) {
-            let {statusText, responseText} = xhr
-
-            Alert('error', responseText, statusText)
-        }
-    })
-}
-
-function Alert(type, objs, title=null) {
-    switch (type) {
-        case 'info':
-            $.messager.alert(title, objs, type)
-            break;
-
-        case 'warning':
-            $.messager.alert('Warning', objs, type)
-            break;
-
-        case 'error':
-            let text = null
-
-            if (typeof objs == 'string') {
-                text = objs
-            } else {
-                let {file, message, line} = objs
-
-                text = `<b>File:</b> ${file} <br />
-                    <b>Message:</b> ${message} <br />
-                    <b>Line:</b> ${line}`
-            }
-
-            $.messager.alert(title, text, type)
-            break;
+    const LoadPage = (page, title) => {
+        let URL_PAGE = URL_ROOT + '/' + page;
     
-        default:
-            break;
+        let iframe = `<iframe src="${URL_PAGE}" frameborder="0" style="width:100%;height:99%;"></iframe>`;
+
+        $('#p').panel({
+            title: title,
+            content: iframe,
+            border: false,
+            fit: true,
+            onLoadError: function (xhr) {
+                let {statusText, responseText} = xhr
+            
+                Alert('error', responseText, statusText)
+            }
+        });
     }
-}
+});

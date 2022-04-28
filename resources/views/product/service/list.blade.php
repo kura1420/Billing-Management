@@ -8,9 +8,7 @@
                 field:'price',
                 align:'right',
                 formatter: function(value, row) {
-                    var number = parseInt(value)
-                    
-                    return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', }).format(number)
+                    return IDRFormatter(value)
                 }" sortable="true">Price</th>
             <th data-options="
                 field:'active',

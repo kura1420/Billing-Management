@@ -34,33 +34,21 @@
                         field:'price_sub',
                         align:'right',
                         formatter: function(value, row) {
-                            if (!isNaN(value)) {
-                                var number = parseInt(value)
-                            
-                                return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', }).format(number)
-                            }
+                            return IDRFormatter(value)
                         }
                     " sortable="true">Price Sub.</th>
                     <th data-options="
                         field:'price_ppn',
                         align:'right',
                         formatter: function(value, row) {
-                            if (!isNaN(value)) {
-                                var number = parseInt(value)
-                            
-                                return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', }).format(number)
-                            }
+                            return IDRFormatter(value)
                         }
                     " sortable="true">Price PPN</th>
                     <th data-options="
                         field:'price_total',
                         align:'right',
                         formatter: function(value, row) {
-                            if (!isNaN(value)) {
-                                var number = parseInt(value)
-                            
-                                return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', }).format(number)
-                            }
+                            return IDRFormatter(value)
                         }
                     " sortable="true">Price Total</th>
                     <th data-options="

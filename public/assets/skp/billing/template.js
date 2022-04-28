@@ -31,7 +31,8 @@ $(document).ready(function () {
         title: 'Content',
         name: 'content',
         width: '100%',
-        height: '500px',
+        height: '60%',
+        // fit: true,
         border: true,
     })
     _content.texteditor('disable')
