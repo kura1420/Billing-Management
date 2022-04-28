@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AreaRequest extends FormRequest
 {
@@ -39,6 +41,14 @@ class AreaRequest extends FormRequest
             'ppn_tax_id' => 'required|string',
             'active' => 'required',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'data' => $validator->errors(),
+            'status' => 'NOT'
+        ], 422));
     }
 
     public function attributes()

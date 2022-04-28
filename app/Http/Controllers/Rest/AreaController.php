@@ -44,8 +44,8 @@ class AreaController extends Controller
     
     public function store(AreaRequest $request)
     {
-        $products = $request->products;
-        $customers = $request->customers;
+        $products = json_decode($request->products, TRUE);
+        $customers = json_decode($request->customers, TRUE);
 
         $area = Area::updateOrCreate(
             [

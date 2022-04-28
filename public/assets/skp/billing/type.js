@@ -148,55 +148,52 @@ $(document).ready(function () {
 
     _btnSave.linkbutton({
         onClick: function() {
-            if (_ff.form('validate')) {
-                $.messager.progress();
-
-                $.ajax({
-                    type: "POST",
-                    url: _rest,
-                    data: {
-                        id: _id.textbox('getValue'),
-                        code: _code.textbox('getValue'),
-                        name: _name.textbox('getValue'),
-                        desc: _desc.textbox('getValue'),
-                        active: _active.switchbutton('options').checked,
-                        notif: _notif.numberbox('getValue'),
-                        suspend: _suspend.numberbox('getValue'),
-                        terminated: _terminated.numberbox('getValue'),
-                        products: _dgProduct.datagrid('getRows'),
-                    },
-                    dataType: "json",
-                    success: function (response) {
+            $.messager.progress();
+    
+            _ff.form('submit', {
+                url: _rest,
+                onSubmit: function(param) {
+                    var isValid = $(this).form('validate');
+                    if (!isValid){
                         $.messager.progress('close');
+                    } 
+    
+                    param.id = _id.textbox('getValue')
+                    param.active = _active.switchbutton('options').checked                    
+
+                    param.products = JSON.stringify(_dgProduct.datagrid('getRows'))
+                    
+                    param._token = $('meta[name="csrf-token"]').attr('content')
+    
+                    return isValid;
+                },
+                success: function(res) {
+                    $.messager.progress('close');
+    
+                    let {status, data} = JSON.parse(res)
+    
+                    if (status == 'NOT') {
+                        let msg = []
+                        for (var d in data) {
+                            msg.push(data[d].toString())
+                        }
+    
+                        Alert('warning', msg.join('<br />'))
+                    } else {
+                        let parse = JSON.parse(res)
 
                         loadData()
-                        loadDataProduct(response.id)
-
+                        loadDataProduct(parse.id)
+    
                         $.messager.show({
                             title:'Info',
                             msg:'Data saved.',
                             timeout:5000,
                             showType:'slide'
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        $.messager.progress('close');
-
-                        if (xhr.status == 422) {
-                            let { responseJSON } = xhr
-
-                            let msg = []
-                            $.each(responseJSON.errors, function (key, value) {
-                                msg.push(value[0])
-                            });
-
-                            Alert('warning', msg.join('<br />'))
-                        } else {
-                            Alert('error', 'Internal server error');
-                        }
-                    },
-                });
-            }
+                        })
+                    }
+                },
+            });
         }
     });
 

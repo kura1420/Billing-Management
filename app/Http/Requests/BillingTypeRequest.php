@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class BillingTypeRequest extends FormRequest
 {
@@ -41,5 +43,13 @@ class BillingTypeRequest extends FormRequest
             'terminated' => 'required|numeric',
             'active' => 'required',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'data' => $validator->errors(),
+            'status' => 'NOT'
+        ], 422));
     }
 }

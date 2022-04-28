@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class CustomerRequest extends FormRequest
 {
@@ -51,7 +53,7 @@ class CustomerRequest extends FormRequest
 
             'name' => 'nullable|string|max:255',
             'gender' => 'nullable|string',
-            'email' => 'required|string|email|max:100|unique:customer_profiles,email,' . $id,
+            'email' => 'required|string|email|max:100',
             'telp' => 'nullable|numeric',
             'handphone' => 'required|numeric',
             'fax' => 'nullable|string|max:50',
@@ -62,6 +64,14 @@ class CustomerRequest extends FormRequest
             'work_type' => 'nullable|string',
             'child' => 'nullable|numeric',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        throw new HttpResponseException(response()->json([
+            'data' => $validator->errors(),
+            'status' => 'NOT'
+        ], 422));
     }
 
     public function attributes()

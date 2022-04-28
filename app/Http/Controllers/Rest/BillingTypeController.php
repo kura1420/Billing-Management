@@ -36,7 +36,7 @@ class BillingTypeController extends Controller
     
     public function store(BillingTypeRequest $request)
     {
-        $products = $request->products;
+        $products = json_decode($request->products, TRUE);
 
         $billingType = BillingType::updateOrCreate(
             [

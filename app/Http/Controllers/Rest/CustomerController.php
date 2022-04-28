@@ -40,7 +40,7 @@ class CustomerController extends Controller
         return response()->json($result, 200);
     }
 
-    public function store(Request $request)
+    public function store(CustomerRequest $request)
     {
         $contacts = json_decode($request->contacts, TRUE);
 
@@ -133,6 +133,7 @@ class CustomerController extends Controller
         $row = CustomerData::find($id);
         $customerProfile = $row->customer_profiles()->first();
 
+        $row->active = $row->active == 1 ? 'on' : 'off';
         $row->member_at = date('m/d/Y', strtotime($row->member_at));
         $row->suspend_at = $row->suspend_at ? date('m/d/Y', strtotime($row->suspend_at)) : '';
         $row->terminate_at = $row->terminate_at ? date('m/d/Y', strtotime($row->terminate_at)) : '';

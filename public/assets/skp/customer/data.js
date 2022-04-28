@@ -295,93 +295,75 @@ $(document).ready(function () {
             formEdit()
 
             _ff.form('clear')
+
+            loadDataContact('loadData', [])
+            loadDataDocument('loadData', [])
+
+            _picture_url = null
         }
     });
 
     _btnSave.linkbutton({
         onClick: function() {
-            if (_ff.form('validate')) {
-                $.messager.progress();
-
-                let g = _area_product_customer.combogrid('grid');
-                let r = g.datagrid('getSelected');
-
-                let formData = new FormData();
-
-                formData.append('_token', $('meta[name="csrf-token"]').attr('content'))
-                formData.append('id', _id.textbox('getValue'))
-                formData.append('active', _active.switchbutton('options').checked)
-                formData.append('member_at', _member_at.datebox('getValue'))
-                formData.append('area_id', _area_id.combobox('getValue'))
-                
-                formData.append('customer_type_id', r.customer_type_id)
-                formData.append('customer_segment_id', r.customer_segment_id)
-                formData.append('product_id', r.product_id)
-                formData.append('provinsi_id', r.provinsi_id)
-                formData.append('city_id', r.city_id)
-                formData.append('area_product_id', r.area_product_id)
-                formData.append('area_product_customer_id', r.id)
-                formData.append('product_type_id', r.product_type_id)
-                formData.append('product_service_id', r.product_service_id)
-                
-                formData.append('name', _name.textbox('getValue'))
-                formData.append('gender', _gender.textbox('getValue'))
-                formData.append('email', _email.textbox('getValue'))
-                formData.append('telp', _telp.numberbox('getValue'))
-                formData.append('handphone', _handphone.numberbox('getValue'))
-                formData.append('fax', _fax.textbox('getValue'))
-                formData.append('address', _address.textbox('getValue'))
-                formData.append('birthdate', _birthdate.datebox('getValue'))
-                formData.append('marital_status', _marital_status.combobox('getValue'))
-                formData.append('work_type', _work_type.textbox('getValue'))
-                formData.append('child', _child.numberbox('getValue'))
-
-                formData.append('contacts', JSON.stringify(_dgContact.datagrid('getRows')))
-
-                if (_picture.filebox('files')[0]) {
-                    formData.append('picture', _picture.filebox('files')[0])                
-                }
-                
-                $.ajax({
-                    type: "POST",
-                    url: _rest,
-                    contentType: false,
-                    cache: false,
-                    processData: false,
-                    data: formData,
-                    success: function (response) {
+            $.messager.progress();
+    
+            _ff.form('submit', {
+                url: _rest,
+                onSubmit: function(param) {
+                    var isValid = $(this).form('validate');
+                    if (!isValid){
                         $.messager.progress('close');
-        
-                        loadData()
-                        loadDataContact(response.id)
+                    } 
+                    
+                    let g = _area_product_customer.combogrid('grid');
+                    let r = g.datagrid('getSelected');
+    
+                    param.id = _id.textbox('getValue')
+                    param.active = _active.switchbutton('options').checked
 
-                        _picture_url = null;
-        
+                    if (r) {
+                        param.customer_type_id = r.customer_type_id
+                        param.customer_segment_id = r.customer_segment_id
+                        param.product_id = r.product_id
+                        param.provinsi_id = r.provinsi_id
+                        param.city_id = r.city_id
+                        param.area_product_id = r.area_product_id
+                        param.area_product_customer_id = r.id
+                        param.product_type_id = r.product_type_id
+                        param.product_service_id = r.product_service_id
+                    }
+
+                    param.contacts = JSON.stringify(_dgContact.datagrid('getRows'))
+                    
+                    param._token = $('meta[name="csrf-token"]').attr('content')
+    
+                    return isValid;
+                },
+                success: function(res) {
+                    $.messager.progress('close');
+    
+                    let {status, data} = JSON.parse(res)
+    
+                    if (status == 'NOT') {
+                        let msg = []
+                        for (var d in data) {
+                            msg.push(data[d].toString())
+                        }
+    
+                        Alert('warning', msg.join('<br />'))
+                    } else {
+                        loadData()
+                        loadDataContact(res.id)
+    
                         $.messager.show({
                             title:'Info',
                             msg:'Data saved.',
                             timeout:5000,
                             showType:'slide'
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        $.messager.progress('close');
-        
-                        if (xhr.status == 422) {
-                            let { responseJSON } = xhr
-        
-                            let msg = []
-                            $.each(responseJSON.errors, function (key, value) {
-                                msg.push(value[0])
-                            });
-        
-                            Alert('warning', msg.join('<br />'))
-                        } else {
-                            Alert('error', 'Internal server error');
-                        }
-                    },
-                });
-            }
+                        })
+                    }
+                },
+            });
         }
     });
 
