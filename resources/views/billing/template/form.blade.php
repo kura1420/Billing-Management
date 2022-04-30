@@ -22,32 +22,23 @@
             <tr>
                 <td>
                     <ul>
-                        <li> _code_ </li>
-                        <li> _product_type_id_ </li>
+                        <li> _invoice_code_ </li>
+                        <li> _invoice_date_ </li>
+                        <li> _invoice_due_ </li>
                     </ul>
                 </td>
                 <td>
                     <ul>
-                        <li> _product_service_id_ </li>
+                        <li> _product_service_ </li>
+                        <li> _customer_code_ </li>
+                        <li> _customer_name_ </li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
                         <li> _price_sub_ </li>
-                    </ul>
-                </td>
-                <td>
-                    <ul>
                         <li> _price_ppn_ </li>
                         <li> _price_total_ </li>
-                    </ul>
-                </td>
-                <td>
-                    <ul>
-                        <li> _name_ </li>
-                        <!-- <li> _gender_ </li> -->
-                    </ul>
-                </td>
-                <td>
-                    <ul>
-                        <li> _invoice_date_ </li>
-                        <li> _due_date_ </li>
                     </ul>
                 </td>
             </tr>

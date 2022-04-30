@@ -13,11 +13,6 @@ class BillingController extends Controller
     {
         return view(self::FOLDER . 'type.main');
     }
-    
-    public function setting()
-    {
-        # code...
-    }
 
     public function template()
     {
@@ -26,6 +21,6 @@ class BillingController extends Controller
 
     public function invoice()
     {
-        # code...
+        return view(self::FOLDER . 'invoice.main');
     }
 }

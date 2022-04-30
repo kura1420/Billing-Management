@@ -34,8 +34,8 @@ class AppUserController extends Controller
         if ($sortName) {
             $result = $table->orderBy($sortName, $sortOrder)->paginate($rows);
         } elseif ($search) {
-            $result = $table->where('name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%")
+            $result = $table->where('users.name', 'like', "%{$search}%")
+                ->orWhere('users.email', 'like', "%{$search}%")
                 ->paginate($rows);
         } else {
             $result = $table->paginate($rows);

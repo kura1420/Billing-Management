@@ -6,6 +6,7 @@ use App\Http\Controllers\Rest\AppProfileController;
 use App\Http\Controllers\Rest\AppRoleController;
 use App\Http\Controllers\Rest\AppUserController;
 use App\Http\Controllers\Rest\AreaController;
+use App\Http\Controllers\Rest\BillingInvoiceController;
 use App\Http\Controllers\Rest\BillingTemplateController;
 use App\Http\Controllers\Rest\BillingTypeController;
 use App\Http\Controllers\Rest\CityController;
@@ -102,11 +103,13 @@ Route::prefix('product-promo')->group(function() {
     Route::controller(ProductPromoController::class)->group(function() {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
+        Route::get('/area/{id}', 'areaLists');
 
         Route::post('/lists', 'lists');
         Route::post('/', 'store');
         
-        Route::delete('/{id}', 'destroy');           
+        Route::delete('/{id}', 'destroy');
+        Route::delete('/area/{id}', 'areaDestroy');
     });
 });
 
@@ -237,5 +240,17 @@ Route::prefix('customer')->group(function() {
         // Route::delete('/{id}', 'destroy');
         Route::delete('/contact/{id}', 'contactDestroy');
         Route::delete('/document/{id}', 'documentDestroy');
+    });
+});
+
+Route::prefix('billing-invoice')->group(function() {
+    Route::controller(BillingInvoiceController::class)->group(function() {
+        Route::get('/', 'index');
+        Route::get('/{id}', 'show');
+
+        // Route::post('/lists', 'lists');
+        Route::post('/', 'store');
+        
+        // Route::delete('/{id}', 'destroy'); 
     });
 });

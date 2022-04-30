@@ -32,8 +32,8 @@ class AreaController extends Controller
         if ($sortName) {
             $result = $table->orderBy($sortName, $sortOrder)->paginate($rows);
         } elseif ($search) {
-            $result = $table->where('name', 'like', "%{$search}%")
-                ->orWhere('code', 'like', "%{$search}%")
+            $result = $table->where('areas.name', 'like', "%{$search}%")
+                ->orWhere('areas.code', 'like', "%{$search}%")
                 ->paginate($rows);
         } else {
             $result = $table->paginate($rows);
@@ -171,6 +171,8 @@ class AreaController extends Controller
                 'area_products.price_sub',
                 'area_products.price_ppn',
                 'area_products.price_total',
+                'area_products.created_at',
+                'area_products.updated_at',
                     'provinsis.name as provinsi_name',
                         'cities.name as city_name',
                             'product_types.name as product_type_name',
@@ -207,6 +209,8 @@ class AreaController extends Controller
                 'area_product_customers.customer_segment_id',
                 'area_product_customers.area_product_id',
                 'area_product_customers.active',
+                'area_product_customers.created_at',
+                'area_product_customers.updated_at',
                     'provinsis.name as provinsi_name',
                         'cities.name as city_name',
                             'product_types.name as product_type_name',

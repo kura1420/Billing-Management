@@ -27,6 +27,8 @@ class ProductServiceController extends Controller
                 'product_services.desc',
                 'product_services.active',
                 'product_services.price',
+                'product_services.created_at',
+                'product_services.updated_at',
                     'product_types.name as product_type_id',
             ]);
 

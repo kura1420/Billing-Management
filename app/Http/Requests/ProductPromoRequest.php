@@ -49,6 +49,7 @@ class ProductPromoRequest extends FormRequest
             'discount' => 'required|numeric',
             'until_payment' => 'required|numeric',
             // 'product_promo_id' => 'required|string',
+            'product_type_id' => 'nullable|string',
             'product_service_id' => 'nullable|string',
         ];
     }
@@ -64,6 +65,7 @@ class ProductPromoRequest extends FormRequest
     public function attributes()
     {
         return [
+            'product_type_id' => 'product type',
             'product_service_id' => 'product service'
         ];
     }

@@ -38,13 +38,12 @@ class BillingTemplateController extends Controller
     {
         BillingTemplate::updateOrCreate(
             [
-                'id' => $request->id,
+                'sender' => $request->sender,
+                'type' => $request->type,
             ],
             [
-                'name' => $request->name,
-                'sender' => $request->sender,
-                'content' => $request->content,
-                'type' => $request->type,
+                'name' => $request->name,                
+                'content' => $request->content,                
             ]
         );
 
@@ -94,38 +93,36 @@ class BillingTemplateController extends Controller
             $today = date('d-m-Y');
 
             $search = [
-                '_code_',
-                '_product_type_id_',
-                '_product_service_id_',
+                '_invoice_code_',
+                '_invoice_date_',
+                '_invoice_due_',
+                
                 '_price_sub_',
                 '_price_ppn_',
                 '_price_total_',
 
-                '_name_',
-                '_gender_',
-
-                '_invoice_date_',
-                '_due_date_',
+                '_product_service_',
+                '_customer_code_',
+                '_customer_name_',
             ];
 
             $replace = [
                 'INV/' . date('Ymd') . '/' . str_pad(rand(1111, 9999), 4, '0', STR_PAD_LEFT),
-                $productType->name,
-                \App\Models\ProductService::where('product_type_id', $productType->id)->inRandomOrder()->first()->name,
+                $today,
+                date('d-m-Y', strtotime(str_replace('-', '/', $today) . "+7 days")),
+
                 $price_sub,
                 $price_ppn,
                 $price_total,
-
+                
+                \App\Models\ProductService::where('product_type_id', $productType->id)->inRandomOrder()->first()->name,
+                uniqid(),
                 'Robert',
-                'l',
-
-                $today,
-                date('d-m-Y', strtotime(str_replace('-', '/', $today) . "+7 days")),
             ];
 
             $template = str_replace($search, $replace, $content);
 
-            return view('layouts.billing', compact('template'));
+            return view('billing.template.preview', compact('template'));
         }        
     }
 }

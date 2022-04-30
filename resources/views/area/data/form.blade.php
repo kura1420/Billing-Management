@@ -58,6 +58,18 @@
                             return value == true ? 'Active' : 'No Active'
                         },
                     " sortable="true">Active</th>
+                    <th data-options="
+                        field:'created_at',
+                        formatter: function(value, row) {
+                            return TimestampString2Datetime(value)
+                        },
+                    " sortable="true">Created At</th>
+                    <th data-options="
+                        field:'updated_at',
+                        formatter: function(value, row) {
+                            return TimestampString2Datetime(value)
+                        },
+                    " sortable="true">Updated At</th>
                 </tr>
             </thead>
         </table>
@@ -122,6 +134,18 @@
                             return value == true ? 'Active' : 'No Active'
                         },
                     " sortable="true">Active</th>
+                    <th data-options="
+                        field:'created_at',
+                        formatter: function(value, row) {
+                            return TimestampString2Datetime(value)
+                        },
+                    " sortable="true">Created At</th>
+                    <th data-options="
+                        field:'updated_at',
+                        formatter: function(value, row) {
+                            return TimestampString2Datetime(value)
+                        },
+                    " sortable="true">Updated At</th>
                 </tr>
             </thead>
         </table>

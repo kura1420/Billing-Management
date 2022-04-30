@@ -26,12 +26,38 @@ class CustomerController extends Controller
         $sortName = $request->sortName ?? NULL;
         $search = $request->search ?? NULL;
 
-        $table = CustomerData::select('*');
+        $table = CustomerData::join('customer_profiles', 'customer_data.id', '=', 'customer_profiles.customer_data_id')
+            ->join('areas', '.area_id', '=', 'areas.id')
+            ->join('product_types', '.product_type_id', '=', 'product_types.id')
+            ->join('product_services', '.product_service_id', '=', 'product_services.id')
+            ->select([
+                'customer_data.id',
+                'customer_data.code',
+                'customer_data.active',
+                'customer_data.member_at',
+                'customer_data.suspend_at',
+                'customer_data.terminate_at',
+                'customer_data.dismantle_at',
+                'customer_data.created_at',
+                'customer_data.updated_at',
+                    'customer_profiles.name',
+                    'customer_profiles.email',
+                    'customer_profiles.handphone',
+                        'areas.name as area_id',
+                            'product_types.name as product_type_id',
+                                'product_services.name as product_service_id',
+            ]);
 
         if ($sortName) {
             $result = $table->orderBy($sortName, $sortOrder)->paginate($rows);
         } elseif ($search) {
-            $result = $table->where('code', 'like', "%{$search}%")
+            $result = $table->where('customer_data.code', 'like', "%{$search}%")
+                ->orWhere('customer_profiles.name', 'like', "%{$search}%")
+                ->orWhere('customer_profiles.email', 'like', "%{$search}%")
+                ->orWhere('customer_profiles.handphone', 'like', "%{$search}%")
+                ->orWhere('areas.name as area_id', 'like', "%{$search}%")
+                ->orWhere('product_types.name as product_type_id', 'like', "%{$search}%")
+                ->orWhere('product_services.name as product_service_id', 'like', "%{$search}%")
                 ->paginate($rows);
         } else {
             $result = $table->paginate($rows);
@@ -133,7 +159,6 @@ class CustomerController extends Controller
         $row = CustomerData::find($id);
         $customerProfile = $row->customer_profiles()->first();
 
-        $row->active = $row->active == 1 ? 'on' : 'off';
         $row->member_at = date('m/d/Y', strtotime($row->member_at));
         $row->suspend_at = $row->suspend_at ? date('m/d/Y', strtotime($row->suspend_at)) : '';
         $row->terminate_at = $row->terminate_at ? date('m/d/Y', strtotime($row->terminate_at)) : '';

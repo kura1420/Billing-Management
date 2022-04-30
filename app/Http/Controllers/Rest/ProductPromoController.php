@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Rest;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductPromoRequest;
+use App\Models\AreaProductPromo;
 use App\Models\ProductPromo;
 use App\Models\ProductPromoService;
 use Illuminate\Http\Request;
@@ -39,6 +40,8 @@ class ProductPromoController extends Controller
     
     public function store(ProductPromoRequest $request)
     {
+        $areas = json_decode($request->areas, TRUE);
+
         $row = ProductPromo::find($request->id);
 
         $image = $row->image ?? NULL;
@@ -75,14 +78,33 @@ class ProductPromoController extends Controller
                 'type' => $request->type,
                 'discount' => $request->discount,
                 'until_payment' => $request->until_payment,
-                // 'product_promo_id' => $request->product_promo_id,
+                'product_type_id' => $request->product_type_id,
                 'product_service_id' => $request->product_service_id,
             ]
         );
 
+        if (!empty($areas)>0) {
+            foreach ($areas as $key => $value) {
+                AreaProductPromo::updateOrCreate(
+                    [
+                        'area_product_id' => $value['area_product_id'],
+                    ],
+                    [
+                        'area_id' => $value['area_id'],
+                        'provinsi_id' => $value['provinsi_id'],
+                        'city_id' => $value['city_id'],
+                        'product_promo_id' => $productPromo->id,
+                        'active' => $value['active'] == 'true' || $value['active'] == 1 ? 1 : 0,
+                        'product_type_id' => $value['product_type_id'],
+                        'product_service_id' => $value['product_service_id'],
+                    ]
+                );
+            }
+        }
+
         $status = $request->id ? 200 : 201;
 
-        return response()->json('OK', $status);
+        return response()->json($productPromo, $status);
     }
 
     public function show($id)
@@ -90,12 +112,14 @@ class ProductPromoController extends Controller
         $row = ProductPromo::find($id);
         $row->start = date('m/d/Y', strtotime($row->start));
         $row->end = date('m/d/Y', strtotime($row->end));
+        $row->active = $row->active == 1 ? "on" : "off";
         
         $product_service = $row->product_promo_services()->first();
 
         $row->type = $product_service->type;
         $row->discount = $product_service->discount;
         $row->until_payment = $product_service->until_payment;
+        $row->product_type_id = $product_service->product_type_id;
         $row->product_service_id = $product_service->product_service_id;
 
         if ($row->image) {
@@ -119,5 +143,36 @@ class ProductPromoController extends Controller
         $rows = ProductPromo::with('product_promo_services')->where('active', 1)->orderBy('name')->get();
 
         return response()->json($rows);
+    }
+
+    public function areaLists($id)
+    {
+        $rows = AreaProductPromo::where('product_promo_id', $id)
+            ->get()
+            ->map(function ($row) {
+                return [
+                    'id' => $row->id,
+                    'area_id' => $row->area_id,
+                    'area_name' => \App\Models\Area::where('id', $row->area_id)->first()->name,
+                    'provinsi_id' => $row->provinsi_id,
+                    'city_id' => $row->city_id,
+                    'area_product_id' => $row->area_product_id,
+                    'product_promo_id' => $row->product_promo_id,
+                    'active' => $row->active,
+                    'product_type_id' => $row->product_type_id,
+                    'product_type_name' => \App\Models\ProductType::where('id', $row->product_type_id)->first()->name,
+                    'product_service_id' => $row->product_service_id,
+                    'product_service_name' => \App\Models\ProductService::where('id', $row->product_service_id)->first()->name,
+                ];
+            });
+
+        return response()->json($rows);
+    }
+
+    public function areaDestroy($id)
+    {
+        AreaProductPromo::find($id)->delete();
+
+        return response()->json('OK', 200);
     }
 }

@@ -36,3 +36,11 @@ function IDRFormatter (value) {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', }).format(number)
     }
 }
+
+function TimestampString2Datetime (value) {
+    let datetime = new Date(value);
+    let date = datetime.toLocaleDateString();
+    let time = datetime.toLocaleTimeString();
+
+    return `${date} ${time}`;
+}

@@ -13,4 +13,9 @@ class ProductType extends Model
     public $incrementing = false;
 
     protected $guarded = [];
+
+    public function product_services()
+    {
+        return $this->hasMany(ProductService::class);
+    }
 }

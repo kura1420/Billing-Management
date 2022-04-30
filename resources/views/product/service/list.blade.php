@@ -17,10 +17,22 @@
                     return value == 1 ? 'Active' : 'No Active'
                 },
                 styler: function(value,row,index) {
-                    return value == 1 ? 'background-color:white;' : 'background-color:red;color:white'
+                    return value !== 1 ? 'background-color:red;color:white;' : ''
                 },
             "
             sortable="true">Active</th>
+            <th data-options="
+                field:'created_at',
+                formatter: function(value, row) {
+                    return TimestampString2Datetime(value)
+                },
+            " sortable="true">Created At</th>
+            <th data-options="
+                field:'updated_at',
+                formatter: function(value, row) {
+                    return TimestampString2Datetime(value)
+                },
+            " sortable="true">Updated At</th>
         </tr>
     </thead>
 </table>

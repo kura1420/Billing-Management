@@ -2,23 +2,32 @@
 
 namespace App\Notifications;
 
+use App\Models\AppProfile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class Invoice extends Notification
 {
     use Queueable;
+
+    private $params;
+    private $filepath;
+    private $customBody;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($params, $filepath, $customBody = NULL)
     {
         //
+        $this->params = $params;
+        $this->filepath = $filepath;
+        $this->customBody = $customBody;
     }
 
     /**
@@ -40,10 +49,21 @@ class Invoice extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        $appProfile = AppProfile::first();
+
+        if ($this->customBody) {
+            return (new MailMessage)
+                ->view('billing.invoice.notif', [
+                    'content' => $this->customBody,
+                ])
+                ->attach(Storage::path($this->filepath));
+        } else {
+            return (new MailMessage)
+                ->greeting('Kepada Yth. ' . $this->params[8])
+                ->line('Berikut kami informasikan tagihan ' . $appProfile->name . ' Bulan ' . date('F Y') . ' sebesar ' . $this->params[5])
+                ->line('Silahkan melakukan pembayaran sebelum tanggal ' . $this->params[2]. '.')
+                ->attach(Storage::path($this->filepath));
+        }       
     }
 
     /**

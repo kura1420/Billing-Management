@@ -12,7 +12,7 @@
                     return value == 1 ? 'Active' : 'No Active'
                 },
                 styler: function(value,row,index) {
-                    return value == 1 ? 'background-color:white;' : 'background-color:red;color:white'
+                    return value !== 1 ? 'background-color:red;color:white;' : ''
                 },
             "
             sortable="true">Active</th>

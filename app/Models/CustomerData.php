@@ -18,4 +18,14 @@ class CustomerData extends Model
     {
         return $this->hasOne(CustomerProfile::class);
     }
+
+    public function product_services()
+    {
+        return $this->belongsTo(ProductService::class, 'product_service_id');
+    }
+
+    public function area_products()
+    {
+        return $this->belongsTo(AreaProduct::class, 'area_product_id');
+    }
 }

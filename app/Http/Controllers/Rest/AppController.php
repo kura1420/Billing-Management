@@ -26,7 +26,7 @@ class AppController extends Controller
                 'children' => [
                     [ 'id' => rand(1, 999), 'text' => 'Tipe', 'url' => 'billing/type' ],
                     [ 'id' => rand(1, 999), 'text' => 'Template', 'url' => 'billing/template' ],
-                    [ 'id' => rand(1, 999), 'text' => 'Invoice' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Invoice', 'url' => 'billing/invoice' ],
                 ],
             ],
             [
