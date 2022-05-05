@@ -2,21 +2,27 @@
 
 namespace App\Notifications;
 
+use App\Models\AppProfile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Storage;
 
 class Suspend extends Notification
 {
     use Queueable;
+
+    private $params;
+    private $filepath;
+    private $customBody;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($params, $filepath, $customBody = NULL)
     {
         //
     }
@@ -40,10 +46,22 @@ class Suspend extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        $appProfile = AppProfile::first();
+
+        if ($this->customBody) {
+            return (new MailMessage)
+                ->view('billing.invoice.email.notif', [
+                    'content' => $this->customBody,
+                ])
+                ->attach(Storage::path($this->filepath));
+        } else {
+            return (new MailMessage)
+                ->greeting('Kepada Yth. ' . $this->params[8])
+                ->line('Berikut kami informasikan kembali tagihan ' . $appProfile->name . ' Bulan ' . date('F Y') . ' sebesar ' . $this->params[5])
+                ->line('Silahkan melakukan pembayaran tanggal ' . $this->params[1]. ', bilamana belum melakukan pembayaran maka dengan berat hati kami akan mensuspend jaringan internet Anda.')
+                ->line('Jika masih belum dilakukan juga dan melewati tanggal ' . $this->params[2] . ', melalui informasi ini kami akan melakukan pemutusan secara keseluruhan.')
+                ->attach(Storage::path($this->filepath));
+        }
     }
 
     /**

@@ -53,7 +53,7 @@ class Invoice extends Notification
 
         if ($this->customBody) {
             return (new MailMessage)
-                ->view('billing.invoice.notif', [
+                ->view('billing.invoice.email.notif', [
                     'content' => $this->customBody,
                 ])
                 ->attach(Storage::path($this->filepath));

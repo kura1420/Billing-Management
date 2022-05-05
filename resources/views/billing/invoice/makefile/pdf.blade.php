@@ -152,6 +152,14 @@
 					<td> {{$price_sub}} </td>
 				</tr>
 
+				@if ($price_active_after_cutoff > 0)
+				<tr class="item">
+					<td> Harga setelah aktivasi, diluar cutoff </td>
+
+					<td> {{$price_after_cutoff_format}} </td>
+				</tr>
+				@endif
+
 				<tr class="item">
 					<td></td>
 

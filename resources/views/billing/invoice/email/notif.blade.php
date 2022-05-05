@@ -194,8 +194,9 @@
                                                 <br />
                                                 <br />
 
-                                                Regards,<br />
-                                                IndonesiNet
+                                                Hormat Kami,<br />
+                                                
+                                                {{ config('app.name', 'Laravel') }}
                                             </p>
                                         </td>
                                     </tr>
@@ -248,7 +249,7 @@
                                                     text-align: center;
                                                 "
                                             >
-                                                © 2022 IndonesiNet. All rights reserved.
+                                                © 2022 {{ config('app.name', 'Laravel') }}. All rights reserved.
                                             </p>
                                         </td>
                                     </tr>

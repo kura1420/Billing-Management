@@ -32,7 +32,7 @@ class BillingInvoiceController extends Controller
                 'billing_invoices.created_at',
                 'billing_invoices.updated_at',
                     'billing_types.name as billing_type_id',
-                        'customer_data.name as customer_data_id',
+                        'customer_data.code as customer_data_id',
                             'product_types.name as product_type_id',
                                 'product_services.name as product_service_id',
             ]);

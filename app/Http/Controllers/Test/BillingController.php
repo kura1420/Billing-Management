@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Test;
 use App\Helpers\Formatter;
 use App\Http\Controllers\Controller;
 use App\Models\AppProfile;
+use App\Models\BillingInvoice;
 use App\Models\BillingTemplate;
 use App\Models\BillingType;
 use App\Models\CustomerData;
@@ -12,50 +13,12 @@ use App\Notifications\Invoice;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
 use Illuminate\Support\Facades\Storage;
 
 class BillingController extends Controller
 {
     //
-    public function invoice2()
-    {
-        $billingTemplate = BillingTemplate::where('sender', 'email')->where('type', 'notif')->first();
-
-        $search = [
-            '_invoice_code_',
-            '_invoice_date_',
-            '_invoice_due_',
-
-            '_price_sub_',
-            '_price_ppn_',
-            '_price_total_',
-
-            '_product_service_',
-            '_customer_code_',
-            '_customer_name_',
-        ];
-
-        $replace = [
-            uniqid(),
-            date('d M Y'),
-            date('d M Y'),
-
-            100,
-            10,
-            110,
-
-            '1 Mbps',
-            uniqid(),
-            'Dafi',
-        ];
-
-        $emailBody = str_replace($search, $replace, $billingTemplate->content);
-
-        $filepath = '/home/kura/SKPRB/inet-billing/storage/app/billing/invoice/2022-05/626aed6a68f15.pdf';
-
-        return (new Invoice($replace, $filepath, $emailBody));
-    }
-
     public function invoice()
     {
         $appProfile = AppProfile::first();
@@ -212,5 +175,39 @@ class BillingController extends Controller
 
         return (new Invoice($replace, $filepath, $emailBody))
             ->toMail($customerProfile);
+    }
+
+    public function suspend()
+    {
+        // $x = (5 / 30)  * 100;
+
+        // // echo round($x, 2);
+
+        // $harga = 100000;
+        // $percent = round($x, 2);
+        // echo ($percent/100)*$harga;
+        
+        $today = Carbon::now();
+        $end = $today->endOfMonth()->format('m-d');
+        $now = $today->endOfMonth()->format('d');
+
+        dd($end, $now);
+
+        // $c = CarbonPeriod::create($now, $end);
+
+        // $period = CarbonPeriod::create($now, $end);
+
+        // // Iterate over the period
+        // $loop = 0;
+        // foreach ($period as $date) {
+        //     // echo '<pre>' . $loop++;
+        //     // echo $date->format('Y-m-d');
+        //     // $loop++;
+        // }
+        
+        // // echo $loop;
+
+        // // Convert the period to an array of dates
+        // $dates = $period->toArray();
     }
 }

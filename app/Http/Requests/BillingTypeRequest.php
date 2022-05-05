@@ -41,6 +41,8 @@ class BillingTypeRequest extends FormRequest
             'notif' => 'required|numeric',
             'suspend' => 'required|numeric',
             'terminated' => 'required|numeric',
+            'member_end_active' => 'required|numeric',
+            'repeat' => 'required',
             'active' => 'required',
         ];
     }

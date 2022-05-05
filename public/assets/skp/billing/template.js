@@ -72,6 +72,14 @@ $(document).ready(function () {
                 id: 'terminated',
                 text: 'Terminated'
             },
+            {
+                id: 'paid',
+                text: 'Paid',
+            },
+            {
+                id: 'wtverif',
+                text: 'Waiting Verif Paid',
+            },
         ],
     })
 

@@ -22,7 +22,13 @@
         <input name="terminated" id="terminated" class="easyui-numberbox" data-options="label:'Terminated',width:800,required:true,labelAlign:'right',max:30,disabled:true,">
     </p>
     <p>
+        <input name="repeat" id="repeat" class="easyui-switchbutton" data-options="label:'Repeat',labelAlign:'right',disabled:true" value="1">
+    </p>
+    <p>
         <input name="active" id="active" class="easyui-switchbutton" data-options="label:'Active',labelAlign:'right',disabled:true" value="1">
+    </p>
+    <p>
+        <input name="member_end_active" id="member_end_active" class="easyui-numberbox" data-options="label:'Member End Active',width:800,required:true,labelAlign:'right',max:30,disabled:true,labelWidth:150,">
     </p>
 </form>
 

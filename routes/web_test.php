@@ -6,5 +6,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('billing')->group(function() {
     Route::controller(BillingController::class)->group(function () {
         Route::get('/invoice', 'invoice');
+        Route::get('/suspend', 'suspend');
     });
 });

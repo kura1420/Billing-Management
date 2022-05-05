@@ -37,6 +37,8 @@ $(document).ready(function () {
     let _notif = $('#notif');
     let _suspend = $('#suspend');
     let _terminated = $('#terminated');
+    let _member_end_active = $('#member_end_active');
+    let _repeat = $('#repeat');
     let _active = $('#active');
 
     let _product_type_id = $('#product_type_id');
@@ -159,6 +161,7 @@ $(document).ready(function () {
                     } 
     
                     param.id = _id.textbox('getValue')
+                    param.repeat = _repeat.switchbutton('options').checked
                     param.active = _active.switchbutton('options').checked                    
 
                     param.products = JSON.stringify(_dgProduct.datagrid('getRows'))
@@ -498,6 +501,8 @@ $(document).ready(function () {
         _notif.numberbox({disabled:true})
         _suspend.numberbox({disabled:true})
         _terminated.numberbox({disabled:true})
+        _member_end_active.numberbox({disabled:true})
+        _repeat.switchbutton({disabled:true})
         _active.switchbutton({disabled:true})
     }
 
@@ -515,6 +520,8 @@ $(document).ready(function () {
         _notif.numberbox({disabled:false})
         _suspend.numberbox({disabled:false})
         _terminated.numberbox({disabled:false})
+        _member_end_active.numberbox({disabled:false})
+        _repeat.switchbutton({disabled:false})
         _active.switchbutton({disabled:false})
     }
 

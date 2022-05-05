@@ -49,6 +49,8 @@ class BillingTypeController extends Controller
                 'notif' => $request->notif,
                 'suspend' => $request->suspend,
                 'terminated' => $request->terminated,
+                'member_end_active' => $request->member_end_active,
+                'repeat' => $request->repeat == 'true' ? 1 : 0,
                 'active' => $request->active == 'true' ? 1 : 0,
             ]
         );
