@@ -31,7 +31,7 @@
             </td>
             <td style="vertical-align: top;">
                 <p>
-                    <input name="type" id="type" class="easyui-combobox" data-options="label:'Type',width:800,required:true,labelAlign:'right',disabled:true,">
+                    <input name="type" id="type" class="easyui-combobox" data-options="label:'Type',width:800,required:true,labelAlign:'right',disabled:true,labelWidth:120,">
                 </p>
                 <p>
                     <input name="product_type_id" id="product_type_id" class="easyui-combobox" data-options="label:'Product Type',width:800,required:false,labelAlign:'right',labelWidth:120,disabled:true,">
@@ -40,7 +40,7 @@
                     <input name="product_service_id" id="product_service_id" class="easyui-combobox" data-options="label:'Product Service',width:800,required:false,labelAlign:'right',labelWidth:120,disabled:true,valueField:'id',textField:'name',">
                 </p>
                 <p>
-                    <input name="discount" id="discount" class="easyui-numberbox" data-options="label:'Discount %',width:800,required:true,labelAlign:'right',disabled:true,min:0,max:100,">
+                    <input name="discount" id="discount" class="easyui-numberbox" data-options="label:'Discount %',width:800,required:true,labelAlign:'right',disabled:true,min:0,max:100,labelWidth:120,">
                 </p>
                 <p>
                     <input name="until_payment" id="until_payment" class="easyui-numberbox" data-options="label:'Unti Payment',width:800,required:true,labelAlign:'right',disabled:true,min:1,max:12,labelWidth:120">
@@ -52,21 +52,7 @@
 
 <div class="easyui-tabs" data-options="fit:true">
     <div title="Area">
-        <table id="dgArea" class="easyui-datagrid" style="height: 55%;">
-            <thead>
-                <tr>
-                    <th data-options="field:'area_name'" sortable="true">Area</th>
-                    <th data-options="field:'product_type_name'" sortable="true">Product Type</th>
-                    <th data-options="field:'product_service_name'" sortable="true">Product Service</th>
-                    <th data-options="
-                        field:'active',
-                        align:'center',
-                        formatter: function(value, row, index) {
-                            return value == 1 ? 'Active' : 'No Active'
-                        },
-                    " sortable="true">Active</th>
-                </tr>
-            </thead>
+        <table id="dgArea" class="easyui-datagrid" style="height: 76%;">
         </table>
 
         <div id="tbArea" style="padding:2px 5px;">
@@ -74,35 +60,21 @@
                 <a id="btnAddArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add',">Create</a>
             </span>
             
+            <span class="easyui-tooltip" title="Accept">
+                <a id="btnOkArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok',">Accept</a>
+            </span>
+            
             <span class="easyui-tooltip" title="Edit">
                 <a id="btnEditArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit',">Edit</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Cancel">
+                <a id="btnCancelArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-cancel',">Cancel</a>
             </span>
             
             <span class="easyui-tooltip" title="Remove">
                 <a id="btnRemoveArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',">Remove</a>
             </span>
-        </div>
-
-        <div id="wArea" class="easyui-window" title="Form Area" data-options="modal:true,closed:true," style="width:800px;height:400px;padding:10px;">
-            <div class="easyui-layout" data-options="fit:true,border:false,">
-                <form id="ffArea" method="post" enctype="multipart/form-data">
-                    <div data-options="region:'center'" style="padding:10px;">
-                        <p>
-                            <input name="a_area_id" id="a_area_id" class="easyui-combobox" data-options="label:'Area',width:600,required:true,labelAlign:'right',labelWidth:100,">
-                        </p>
-                        <p>
-                            <input name="a_area_product" id="a_area_product" class="easyui-combogrid" data-options="label:'Area Product',width:600,required:true,labelAlign:'right',labelWidth:100,">
-                        </p>
-                        <p>
-                            <input name="a_active" id="a_active" class="easyui-switchbutton" data-options="label:'Active',labelAlign:'right',labelWidth:100," value="1">
-                        </p>
-                    </div>
-                    <div data-options="region:'south',border:false" style="text-align:right;padding:5px 0 0;">
-                        <a id="btnOkArea" class="easyui-linkbutton" data-options="iconCls:'icon-ok'" href="javascript:void(0)">Ok</a>
-                        <a id="btnCancelArea" class="easyui-linkbutton" data-options="iconCls:'icon-cancel'" href="javascript:void(0)">Cancel</a>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
 </div>

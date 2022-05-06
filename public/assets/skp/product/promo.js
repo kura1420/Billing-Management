@@ -8,7 +8,7 @@ $(document).ready(function () {
 
     const _rest = URL_REST + '/product-promo'
 
-    var rowIndexArea = undefined;
+    var editIndex = undefined;
 
     let _tbs = $('#tbs');
     let _dg = $('#dg');
@@ -16,8 +16,6 @@ $(document).ready(function () {
     let _ss = $('#ss');
 
     let _dgArea = $('#dgArea');
-    let _ffArea = $('#ffArea');
-    let _wArea = $('#wArea');
     
     let _btnAdd = $('#btnAdd');
     let _btnSave = $('#btnSave');
@@ -28,10 +26,10 @@ $(document).ready(function () {
     var _image_url = null;
 
     let _btnAddArea = $('#btnAddArea');
-    let _btnEditArea = $('#btnEditArea');
-    let _btnRemoveArea = $('#btnRemoveArea');
     let _btnOkArea = $('#btnOkArea');
+    let _btnEditArea = $('#btnEditArea');
     let _btnCancelArea = $('#btnCancelArea');
+    let _btnRemoveArea = $('#btnRemoveArea');
     
     let _id = $('#id');
     let _code = $('#code');
@@ -47,10 +45,6 @@ $(document).ready(function () {
     let _until_payment = $('#until_payment');
     let _product_type_id = $('#product_type_id');
     let _product_service_id = $('#product_service_id');
-
-    let _a_area_id = $('#a_area_id');
-    let _a_area_product = $('#a_area_product');
-    let _a_active = $('#a_active');
 
     _type.combobox({
         valueField:'id',
@@ -91,36 +85,6 @@ $(document).ready(function () {
         }
     });
 
-    _a_area_id.combobox({
-        valueField:'id',
-        textField:'name',
-        url: URL_REST + '/area/lists',
-        onSelect: function (record) {
-            let url = URL_REST + '/area/product/' + record.id
-
-            _a_area_product.combogrid({
-                panelWidth:600,
-                fitColumns:true,
-                idField:'id',
-                textField:'product_service_name',
-                method:'get',
-                url: url,
-                columns:[[
-                    {field:'provinsi_name',title:'Provinsi'},
-                    {field:'city_name',title:'City'},
-                    {field:'product_type_name',title:'Type'},
-                    {field:'product_service_name',title:'Service'},
-                    {
-                        field:'active',title:'Active',
-                        formatter: function (value, row) {
-                            return value == 1 ? 'Active' : 'No Active'
-                        }
-                    },
-                ]],
-            });
-        }
-    });
-
     _dg.datagrid({
         singleSelect:true,
         collapsible:true,
@@ -139,19 +103,41 @@ $(document).ready(function () {
         fitColumns:true,
         pagination:true,
         rownumbers:true,
+        remoteSort:true,
         toolbar:'#tbArea',
-        onDblClickRow: function () {
-            let row = _dgArea.datagrid('getSelected');
-            rowIndexArea = _dgArea.datagrid('getRowIndex', row);
-
-            _wArea.window('open');
-
-            _ffArea.form('load', {
-                a_area_id: row.area_id,
-                a_area_product: row.area_product_id,
-                a_active: row.active == 1 ? "on" : "off",
-            });
-        }
+        onDblClickRow: function (index, row) {
+            onClickCell()
+        },
+        onEndEdit: function (index,row,changes) {
+            onEndEdit()
+        },
+        columns: [[
+            {
+                field:'area_id', title: 'Area', width: 300,
+                formatter: function (value, row){
+                    return row.name;
+                },
+                editor: {
+                    type: 'combobox',
+                    options: {
+                        valueField:'id',
+                        textField:'name',
+                        url: URL_REST + '/area/lists',
+                        required: true,
+                    }
+                },
+            },
+            {
+                field:'active', title: 'Active', width: 300,
+                editor: {
+                    type: 'checkbox',
+                    options: {
+                        on: 'Yes',
+                        off: 'No'
+                    }
+                },
+            },
+        ]]
     });
 
     _ss.searchbox({
@@ -338,107 +324,47 @@ $(document).ready(function () {
 
     _btnAddArea.linkbutton({
         onClick: function () {
-            _wArea.window('open');
+            if (endEditing()) {
+                _dgArea.datagrid('appendRow', {
+                    active: 'Yes',
+                });
+
+                editIndex = _dgArea.datagrid('getRows').length - 1;
+
+                _dgArea.datagrid('selectRow', editIndex)
+                    .datagrid('beginEdit', editIndex);
+            }
         }
     });
 
     _btnOkArea.linkbutton({
         onClick: function () {
-            if (_ffArea.form('validate')) {
-                let g = _a_area_product.combogrid('grid');
-                let r = g.datagrid('getSelected');
-
-                let a_add_area_id = _a_area_id.combobox('getValue');
-                let a_add_area_name = _a_area_id.combobox('getText');            
-
-                if (rowIndexArea !== undefined) {
-                    _dgArea.datagrid('updateRow', {
-                        index: rowIndexArea,
-                        row: {
-                            area_id: a_add_area_id,
-                            area_name: a_add_area_name,
-
-                            provinsi_id: r.provinsi_id,
-                            city_id: r.city_id,
-                            area_product_id: r.id,
-
-                            product_type_id: r.product_type_id,
-                            product_type_name: r.product_type_name,
-
-                            product_service_id: r.product_service_id,
-                            product_service_name: r.product_service_name,
-
-                            active: _a_active.switchbutton('options').checked,
-                        }
-                    });
-                } else {
-                    _dgArea.datagrid('appendRow', {
-                        id: null,
-
-                        area_id: a_add_area_id,
-                        area_name: a_add_area_name,
-
-                        provinsi_id: r.provinsi_id,
-                        city_id: r.city_id,
-                        area_product_id: r.id,
-
-                        product_type_id: r.product_type_id,
-                        product_type_name: r.product_type_name,
-
-                        product_service_id: r.product_service_id,
-                        product_service_name: r.product_service_name,
-
-                        active: _a_active.switchbutton('options').checked,
-                    });                    
-                }
-
-                rowIndexArea = undefined
-
-                _dgArea.datagrid('fixColumnSize');
-                _dgArea.datagrid('fixRowHeight');
-
-                _wArea.window('close');
-                _ffArea.form('clear');
+            if (endEditing()) {
+                _dgArea.datagrid('acceptChanges');
             }
         }
     });
 
     _btnEditArea.linkbutton({
         onClick: function () {
-            let row = _dgArea.datagrid('getSelected')
-
-            if (row) {
-                rowIndexArea = _dgArea.datagrid('getRowIndex', row)
-
-                _wArea.window('open');
-
-                _ffArea.form('load', {
-                    a_area_id: row.area_id,
-                    a_area_product: row.area_product_id,
-                    a_active: row.active == 1 ? "on" : "off",
-                });
-            } else {
-                Alert('warning', 'No Data selected');
-            }
+            onClickCell()
         }
     });
 
     _btnCancelArea.linkbutton({
         onClick: function () {
-            _wArea.window('close');
+            _dgArea.datagrid('rejectChanges');
 
-            _ffArea.form('clear');
-
-            rowIndexArea = undefined;
+            editIndex = undefined;
         }
     });
 
     _btnRemoveArea.linkbutton({
-        onClick: function () {  
-            let row = _dgArea.datagrid('getSelected');
-
+        onClick: function () {
+            let row = _dgArea.datagrid('getSelected')
+    
             if (row) {
-                rowIndexArea = _dgArea.datagrid('getRowIndex', rowIndexArea);
+                let index = _dgArea.datagrid('getRowIndex', row)
 
                 $.messager.confirm('Confirmation', 'Are you sure delete this data?', function(r){
                     if (r){
@@ -464,25 +390,87 @@ $(document).ready(function () {
                                 }
                             });
                         } else {
-                            _dgArea.datagrid('cancelEdit', rowIndexArea)
-                                .datagrid('deleteRow', rowIndexArea);
+                            _dgArea.datagrid('cancelEdit', index)
+                                .datagrid('deleteRow', index)
 
                             $.messager.show({
                                 title:'Info',
                                 msg:'Data deleted.',
                                 timeout:5000,
                                 showType:'slide'
-                            });
+                            })
                         }
                     }
-
-                    rowIndexArea = undefined;
-                });
+                })
             } else {
-                Alert('warning', 'No selected data')
+                Alert('warning', 'No selected data');            
             }
         }
     });
+
+    var endEditing = () => {
+        if (editIndex == undefined) {return true}
+
+        if (_dgArea.datagrid('validateRow', editIndex)) {
+            let ed = _dgArea.datagrid('getEditor', {
+                index: editIndex,
+                field: 'area_id',
+            })
+
+            let row = _dgArea.datagrid('selectRow', editIndex)
+
+            row.name = $(ed.target).combobox('getText');
+
+            _dgArea.datagrid('endEdit', editIndex)
+
+            editIndex = undefined
+
+            return true
+        } else {
+            return false
+        }
+    }
+
+    var onClickCell = () => {
+        let row = _dgArea.datagrid('getSelected')
+
+        if (row) {
+            let index = _dgArea.datagrid('getRowIndex', row)
+
+            if (editIndex !== index) {
+                if (endEditing()) {
+                    _dgArea.datagrid('selectRow', index)
+                        .datagrid('beginEdit', index)
+
+                    editIndex = index
+                } else {
+                    setTimeout(function(){
+                        _dgArea.datagrid('selectRow', editIndex);
+                    },0);
+                }
+            }
+        } else {
+            Alert('warning', 'No selected data');
+        }
+    }
+
+    var onEndEdit = () => {
+        let row = _dgArea.datagrid('getSelected')
+        let index = _dgArea.datagrid('getRowIndex', row)
+
+        if (editIndex == index) {
+            let ed = _dgArea.datagrid('getEditor', {
+                index: editIndex,
+                field: 'area_id',
+            })
+
+            row.name = $(ed.target).combobox('getText');
+        } else {
+            setTimeout(function(){
+                _dgArea.datagrid('selectRow', editIndex);
+            },0);
+        }
+    }
 
     var loadData = () => {
         _dg.datagrid({
@@ -631,6 +619,10 @@ $(document).ready(function () {
                     _ff.form('load', response)
 
                     _code.textbox({readonly:true})
+
+                    setTimeout(() => {
+                        _product_service_id.combobox('setValue', response.product_service_id);
+                    }, 3000);
 
                     if (response.image_url) {
                         _btnPreview.linkbutton({disabled:false})

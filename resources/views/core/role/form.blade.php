@@ -13,3 +13,34 @@
         <input name="active" id="active" class="easyui-switchbutton" data-options="label:'Active',labelAlign:'right',disabled:true" value="1">
     </p>
 </form>
+
+<div class="easyui-tabs" data-options="fit:true">
+
+    <div title="Departement">
+        <table id="dgDepartement" class="easyui-datagrid" style="height: 76%;">
+        </table>
+
+        <div id="tbDepartement" style="padding:2px 5px;">
+            <span class="easyui-tooltip" title="Create">
+                <a id="btnAddDepartement" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add',">Create</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Accept">
+                <a id="btnOkDepartement" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok',">Accept</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Edit">
+                <a id="btnEditDepartement" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit',">Edit</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Cancel">
+                <a id="btnCancelDepartement" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-cancel',">Cancel</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Remove">
+                <a id="btnRemoveDepartement" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',">Remove</a>
+            </span>
+        </div>
+    </div>
+
+</div>

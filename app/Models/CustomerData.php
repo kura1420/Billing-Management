@@ -28,4 +28,9 @@ class CustomerData extends Model
     {
         return $this->belongsTo(AreaProduct::class, 'area_product_id');
     }
+
+    public function customer_promos()
+    {
+        return $this->hasMany(CustomerPromo::class);
+    }
 }

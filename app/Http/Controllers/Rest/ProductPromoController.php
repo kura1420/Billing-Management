@@ -67,6 +67,9 @@ class ProductPromoController extends Controller
                 'start' => date('Y-m-d', strtotime($request->start)),
                 'end' => date('Y-m-d', strtotime($request->end)),
                 'image' => $image,
+                'type' => $request->type,
+                'discount' => $request->discount,
+                'until_payment' => $request->until_payment,
             ]
         );
 
@@ -75,9 +78,6 @@ class ProductPromoController extends Controller
                 'product_promo_id' => $productPromo->id,
             ],
             [
-                'type' => $request->type,
-                'discount' => $request->discount,
-                'until_payment' => $request->until_payment,
                 'product_type_id' => $request->product_type_id,
                 'product_service_id' => $request->product_service_id,
             ]
@@ -87,16 +87,14 @@ class ProductPromoController extends Controller
             foreach ($areas as $key => $value) {
                 AreaProductPromo::updateOrCreate(
                     [
-                        'area_product_id' => $value['area_product_id'],
+                        // 'area_product_id' => $value['area_product_id'],
+                        'area_id' => $value['area_id'],
+                        'product_promo_id' => $productPromo->id,
                     ],
                     [
-                        'area_id' => $value['area_id'],
-                        'provinsi_id' => $value['provinsi_id'],
-                        'city_id' => $value['city_id'],
-                        'product_promo_id' => $productPromo->id,
-                        'active' => $value['active'] == 'true' || $value['active'] == 1 ? 1 : 0,
-                        'product_type_id' => $value['product_type_id'],
-                        'product_service_id' => $value['product_service_id'],
+                        'active' => $value['active'] == 'Yes' ? 1 : 0,
+                        'product_type_id' => $request->product_type_id,
+                        'product_service_id' => $request->product_service_id,
                     ]
                 );
             }
@@ -112,13 +110,9 @@ class ProductPromoController extends Controller
         $row = ProductPromo::find($id);
         $row->start = date('m/d/Y', strtotime($row->start));
         $row->end = date('m/d/Y', strtotime($row->end));
-        $row->active = $row->active == 1 ? "on" : "off";
         
         $product_service = $row->product_promo_services()->first();
-
-        $row->type = $product_service->type;
-        $row->discount = $product_service->discount;
-        $row->until_payment = $product_service->until_payment;
+        
         $row->product_type_id = $product_service->product_type_id;
         $row->product_service_id = $product_service->product_service_id;
 
@@ -153,16 +147,8 @@ class ProductPromoController extends Controller
                 return [
                     'id' => $row->id,
                     'area_id' => $row->area_id,
-                    'area_name' => \App\Models\Area::where('id', $row->area_id)->first()->name,
-                    'provinsi_id' => $row->provinsi_id,
-                    'city_id' => $row->city_id,
-                    'area_product_id' => $row->area_product_id,
-                    'product_promo_id' => $row->product_promo_id,
-                    'active' => $row->active,
-                    'product_type_id' => $row->product_type_id,
-                    'product_type_name' => \App\Models\ProductType::where('id', $row->product_type_id)->first()->name,
-                    'product_service_id' => $row->product_service_id,
-                    'product_service_name' => \App\Models\ProductService::where('id', $row->product_service_id)->first()->name,
+                    'name' => \App\Models\Area::where('id', $row->area_id)->first()->name,
+                    'active' => $row->active == 1 ? 'Yes' : 'No',
                 ];
             });
 
@@ -174,5 +160,28 @@ class ProductPromoController extends Controller
         AreaProductPromo::find($id)->delete();
 
         return response()->json('OK', 200);
+    }
+
+    public function areaFilter(Request $request)
+    {
+        $area_id = $request->area_id;
+        // $product_type_id = $request->product_type_id;
+        // $product_service_id = $request->product_service_id;
+
+        $rows = AreaProductPromo::where([
+            ['area_id', '=', $area_id],
+            ['active', '=', 1],
+            // ['product_type_id', '=', $product_type_id],
+            // ['product_service_id', '=', $product_service_id],
+        ])
+        ->get()
+        ->map(function ($row) {
+            return [
+                'id' => $row->id,
+                'name' => \App\Models\ProductPromo::where('id', $row->product_promo_id)->first()->name,
+            ];
+        });
+
+        return response()->json($rows, 200);
     }
 }

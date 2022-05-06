@@ -16,6 +16,9 @@
                     <input name="area_product_customer" id="area_product_customer" class="easyui-combogrid" data-options="label:'Product Customer',width:800,required:false,labelAlign:'right',disabled:true,labelWidth:120,">
                 </p>
                 <p>
+                    <input name="area_product_promo_id" id="area_product_promo_id" class="easyui-combobox" data-options="label:'Product Promo',width:800,required:false,labelAlign:'right',disabled:true,labelWidth:120,">
+                </p>
+                <p>
                     <input name="member_at" id="member_at" class="easyui-datebox" data-options="label:'Member At',width:800,required:false,labelAlign:'right',disabled:true,labelWidth:120,">
                 </p>
                 <p>

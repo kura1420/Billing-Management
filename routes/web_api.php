@@ -105,6 +105,7 @@ Route::prefix('product-promo')->group(function() {
         Route::get('/{id}', 'show');
         Route::get('/area/{id}', 'areaLists');
 
+        Route::post('/area-filter', 'areaFilter');
         Route::post('/lists', 'lists');
         Route::post('/', 'store');
         
@@ -149,11 +150,13 @@ Route::prefix('app-role')->group(function() {
     Route::controller(AppRoleController::class)->group(function() {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
+        Route::get('/departement/{id}', 'departementLists');
 
         Route::post('/lists', 'lists');
         Route::post('/', 'store');
         
         Route::delete('/{id}', 'destroy'); 
+        Route::delete('/departement/{id}', 'departementDestroy');
     });
 });
 

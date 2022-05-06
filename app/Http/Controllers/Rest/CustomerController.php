@@ -9,6 +9,7 @@ use App\Models\CustomerContact;
 use App\Models\CustomerData;
 use App\Models\CustomerDocument;
 use App\Models\CustomerProfile;
+use App\Models\CustomerPromo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -69,6 +70,7 @@ class CustomerController extends Controller
     public function store(CustomerRequest $request)
     {
         $contacts = json_decode($request->contacts, TRUE);
+        $area_product_promo_id = $request->area_product_promo_id ?? NULL;
 
         $customerData = CustomerData::updateOrCreate(
             [
@@ -149,6 +151,24 @@ class CustomerController extends Controller
             }
         }
 
+        if ($area_product_promo_id) {
+            $areaProductPromo = \App\Models\AreaProductPromo::with('product_promos')->where('id', $area_product_promo_id)->first();
+            $productPromo = $areaProductPromo->product_promos;
+
+            CustomerPromo::updateOrCreate(
+                [
+                    'customer_data_id' => $customerData->id,
+                    'area_product_promo_id' => $area_product_promo_id,
+                ],
+                [
+                    'product_promo_id' => $areaProductPromo->product_promo_id,
+                    'until_payment' => $productPromo->until_payment,
+                    'invoice_counting' => 0,
+                    'active' => 1,
+                ]
+            );
+        }
+
         $status = $request->id ? 200 : 201;
 
         return response()->json($customerData, $status);
@@ -158,12 +178,15 @@ class CustomerController extends Controller
     {
         $row = CustomerData::find($id);
         $customerProfile = $row->customer_profiles()->first();
+        $customerPromo = $row->customer_promos()->first();
 
         $row->member_at = date('m/d/Y', strtotime($row->member_at));
         $row->suspend_at = $row->suspend_at ? date('m/d/Y', strtotime($row->suspend_at)) : '';
         $row->terminate_at = $row->terminate_at ? date('m/d/Y', strtotime($row->terminate_at)) : '';
         $row->dismantle_at = $row->dismantle_at ? date('m/d/Y', strtotime($row->dismantle_at)) : '';
         $row->area_product_customer = $row->area_product_customer_id;
+
+        $row->area_product_promo_id = $customerPromo->area_product_promo_id;
 
         if ($customerProfile) {
             $row->name = $customerProfile->name;

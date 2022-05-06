@@ -46,6 +46,7 @@ $(document).ready(function () {
     let _id = $('#id');
     let _area_id = $('#area_id');
     let _area_product_customer = $('#area_product_customer');
+    let _area_product_promo_id = $('#area_product_promo_id');
     let _member_at = $('#member_at');
     let _active = $('#active');
 
@@ -95,6 +96,15 @@ $(document).ready(function () {
                         }
                     },
                 ]],
+            });
+
+            _area_product_promo_id.combobox({
+                disabled:false,
+                valueField: 'id',
+                textField: 'name',
+                method: 'post',
+                url: URL_REST + '/product-promo/area-filter',
+                queryParams: { area_id: record.id },
             });
         },
     });
@@ -890,6 +900,7 @@ $(document).ready(function () {
 
         _area_id.combobox({disabled:true})
         _area_product_customer.combogrid({disabled:true})
+        _area_product_promo_id.combobox({disabled:true})
         _member_at.datebox({disabled:true})
         _active.switchbutton({disabled:true})
 
@@ -920,6 +931,7 @@ $(document).ready(function () {
 
         _area_id.combobox({disabled:false})
         _area_product_customer.combogrid({disabled:false})
+        // _area_product_promo_id.combobox({disabled:false})
         _member_at.datebox({disabled:false})
         _active.switchbutton({disabled:false})
 

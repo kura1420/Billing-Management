@@ -155,6 +155,9 @@ class SendInvoice extends Command
 
                         /**
                          * hitung promo
+                         * cari area yg sedang promo
+                         * cari customer yang menggunakan area promo
+                         * total promo - counting promo
                          */
 
                         $billingCode = uniqid();

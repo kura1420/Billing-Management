@@ -13,4 +13,9 @@ class AreaProductPromo extends Model
     public $incrementing = false;
 
     protected $guarded = [];
+
+    public function product_promos()
+    {
+        return $this->belongsTo(ProductPromo::class, 'product_promo_id');
+    }
 }
