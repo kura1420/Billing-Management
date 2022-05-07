@@ -32,7 +32,7 @@
     </p>
 </form>
 
-<div class="easyui-panel" id="pProduct" title="List Product" data-options="fit:true,">
+<div class="easyui-panel" id="pProduct" title="Product" data-options="fit:true,">
     <table id="dgProduct" class="easyui-datagrid" style="height: 45%;">
         <thead>
             <tr>

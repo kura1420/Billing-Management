@@ -6,6 +6,7 @@ use App\Http\Controllers\Rest\AppProfileController;
 use App\Http\Controllers\Rest\AppRoleController;
 use App\Http\Controllers\Rest\AppUserController;
 use App\Http\Controllers\Rest\AreaController;
+use App\Http\Controllers\Rest\AuthController;
 use App\Http\Controllers\Rest\BillingInvoiceController;
 use App\Http\Controllers\Rest\BillingTemplateController;
 use App\Http\Controllers\Rest\BillingTypeController;
@@ -19,7 +20,15 @@ use App\Http\Controllers\Rest\ProductServiceController;
 use App\Http\Controllers\Rest\ProductTypeController;
 use App\Http\Controllers\Rest\ProvinsiController;
 use App\Http\Controllers\Rest\TaxController;
+use App\Http\Controllers\Rest\UserProfileController;
 use Illuminate\Support\Facades\Route;
+
+Route::prefix('auth')->group(function() {
+    Route::controller(AuthController::class)->group(function() {
+        Route::post('/login', 'login');
+        Route::post('/forgot', 'forgot');
+    });
+});
 
 Route::prefix('app')->group(function() {
     Route::controller(AppController::class)->group(function() {
@@ -143,6 +152,7 @@ Route::prefix('app-profile')->group(function() {
         Route::get('/', 'index');
         
         Route::post('/', 'store');
+        Route::post('/reset-secret', 'reset_secret');
     });
 });
 
@@ -152,6 +162,7 @@ Route::prefix('app-role')->group(function() {
         Route::get('/{id}', 'show');
         Route::get('/departement/{id}', 'departementLists');
 
+        Route::post('/menu/{id}', 'menuLists');
         Route::post('/lists', 'lists');
         Route::post('/', 'store');
         
@@ -255,5 +266,14 @@ Route::prefix('billing-invoice')->group(function() {
         Route::post('/', 'store');
         
         // Route::delete('/{id}', 'destroy'); 
+    });
+});
+
+Route::prefix('profile')->group(function() {
+    Route::controller(UserProfileController::class)->group(function() {
+        Route::get('/', 'index');
+        Route::get('/logout', 'logout');
+        
+        Route::post('/', 'update');
     });
 });

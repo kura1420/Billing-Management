@@ -50,12 +50,14 @@ class Suspend extends Notification
 
         if ($this->customBody) {
             return (new MailMessage)
+                ->subject($appProfile->name . ' - Suspend')
                 ->view('billing.invoice.email.notif', [
                     'content' => $this->customBody,
                 ])
                 ->attach(Storage::path($this->filepath));
         } else {
             return (new MailMessage)
+                ->subject($appProfile->name . ' - Suspend')
                 ->greeting('Kepada Yth. ' . $this->params[8])
                 ->line('Berikut kami informasikan kembali tagihan ' . $appProfile->name . ' Bulan ' . date('F Y') . ' sebesar ' . $this->params[5])
                 ->line('Silahkan melakukan pembayaran tanggal ' . $this->params[1]. ', bilamana belum melakukan pembayaran maka dengan berat hati kami akan mensuspend jaringan internet Anda.')

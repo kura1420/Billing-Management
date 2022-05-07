@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppRoleRequest;
 use App\Models\AppRole;
+use App\Models\AppRoleMenu;
 use App\Models\DepartementRole;
 use Illuminate\Http\Request;
 
@@ -36,6 +37,7 @@ class AppRoleController extends Controller
     public function store(AppRoleRequest $request)
     {
         $departements = json_decode($request->departements, TRUE);
+        $menus = json_decode($request->menus, TRUE);
 
         $appRole = AppRole::updateOrCreate(
             [
@@ -57,6 +59,21 @@ class AppRoleController extends Controller
                     ],
                     [
                         'active' => $departement['active'] == 'Yes' ? 1 : 0,
+                    ]
+                );
+            }
+        }
+
+        if (!empty($menus)) {
+            foreach ($menus as $key => $menu) {
+                AppRoleMenu::updateOrCreate(
+                    [
+                        'app_role_id' => $appRole->id,
+                        'app_menu_id' => $menu['id']
+                    ],
+                    [
+                        'active' => $menu['active'],
+                        'parent' => $menu['parent']
                     ]
                 );
             }
@@ -109,5 +126,35 @@ class AppRoleController extends Controller
         DepartementRole::find($id)->delete();
 
         return response()->json('OK', 200);
+    }
+
+    public function menuLists($id)
+    {
+        $rows = AppRoleMenu::where('app_role_id', $id)
+            ->whereNull('parent')
+            ->select('id', 'app_menu_id', 'parent', 'active')
+            ->get()
+            ->map(function($row) {
+                $row->id = $row->app_menu_id;
+                $row->name = \App\Models\AppMenu::where('id', $row->app_menu_id)->first()->name;
+                $row->parent = $row->parent;
+                $row->active = $row->active == 1 ? 'Yes' : 'No';
+
+                $children = [];
+                foreach ($row->children()->get() as $key => $value) {
+                    $children[] = [
+                        'id' => $value->app_menu_id,
+                        'name' => \App\Models\AppMenu::where('id', $value->app_menu_id)->first()->name,
+                        'parent' => $value->parent,
+                        'active' => $value->active == 1 ? 'Yes' : 'No',
+                    ];
+                }
+
+                $row->children = $children;
+
+                return $row;
+            });
+        
+        return response()->json($rows, 200);
     }
 }

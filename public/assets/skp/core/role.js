@@ -8,14 +8,16 @@ $(document).ready(function () {
 
     const _rest = URL_REST + '/app-role'
 
-    var editIndex = undefined;
+    var editIndexDepartement = undefined;
+    var editIndexMenu = undefined;
 
     let _tbs = $('#tbs');
     let _dg = $('#dg');
     let _ff = $('#ff');
     let _ss = $('#ss');
     
-    let _dgDepartement = $('#dgDepartement')
+    let _dgDepartement = $('#dgDepartement');
+    let _dgMenu = $('#dgMenu');
     
     let _btnAdd = $('#btnAdd');
     let _btnSave = $('#btnSave');
@@ -28,6 +30,11 @@ $(document).ready(function () {
     let _btnEditDepartement = $('#btnEditDepartement');
     let _btnCancelDepartement = $('#btnCancelDepartement');
     let _btnRemoveDepartement = $('#btnRemoveDepartement');
+
+    let _btnLoadMenu = $('#btnLoadMenu');
+    let _btnOkMenu = $('#btnOkMenu');
+    let _btnEditMenu = $('#btnEditMenu');
+    let _btnCancelMenu = $('#btnCancelMenu');
     
     let _id = $('#id');
     let _name = $('#name');
@@ -55,10 +62,10 @@ $(document).ready(function () {
         remoteSort:true,
         toolbar:'#tbDepartement',
         onDblClickRow: function (index, row) {
-            onClickCell()
+            endEditingDepartement()
         },
-        onEndEdit: function (index,row,changes) {
-            onEndEdit()
+        endEditingDepartement: function (index,row,changes) {
+            endEditingDepartement()
         },
         columns: [[
             {
@@ -87,6 +94,18 @@ $(document).ready(function () {
                 },
             },
         ]]
+    });
+
+    _dgMenu.treegrid({
+        singleSelect:true,
+        collapsible:true,
+        border:false,
+        fitColumns:true,
+        rownumbers:true,
+        idField:'id',
+        treeField:'name',
+        lines:true,
+        toolbar:'#tbMenu',
     });
 
     _ss.searchbox({
@@ -134,11 +153,43 @@ $(document).ready(function () {
             _ff.form('clear')
 
             loadDataDepartement('loadData', [])
+            loadDataMenu('loadData', [])
         }
     });
 
     _btnSave.linkbutton({
         onClick: function() {
+            let treeMenus = _dgMenu.treegrid('getData')
+            var menus = []
+
+            if (treeMenus.length > 0) {
+                $.each(treeMenus, function (key, val) { 
+                    menus.push({
+                        id: val.id,
+                        parent: null,
+                        active: val.active == undefined || val.active == 'Yes' ? 1 : 0
+                    });
+
+                    if (val.children) {
+                        $.each(val.children, function (k, v) { 
+                            if (val.active == 'No') {
+                                menus.push({
+                                    id: v.id,
+                                    parent: v.parent,
+                                    active: 0
+                                });
+                            } else {
+                                menus.push({
+                                    id: v.id,
+                                    parent: v.parent,
+                                    active: v.active == undefined || v.active == 'Yes' ? 1 : 0
+                                });
+                            }
+                        });
+                    } 
+                });
+            }
+
             $.messager.progress();
     
             _ff.form('submit', {
@@ -151,6 +202,7 @@ $(document).ready(function () {
     
                     param.active = _active.switchbutton('options').checked
                     param.departements = JSON.stringify(_dgDepartement.datagrid('getRows'))
+                    param.menus = JSON.stringify(menus)
 
                     param._token = $('meta[name="csrf-token"]').attr('content')
     
@@ -173,6 +225,7 @@ $(document).ready(function () {
 
                         loadData()
                         loadDataDepartement(parse.id)
+                        loadDataMenu(parse.id)
     
                         $.messager.show({
                             title:'Info',
@@ -260,22 +313,22 @@ $(document).ready(function () {
 
     _btnAddDepartement.linkbutton({
         onClick: function () {
-            if (endEditing()) {
+            if (endEditingDepartement()) {
                 _dgDepartement.datagrid('appendRow', {
                     active: 'Yes',
                 });
 
-                editIndex = _dgDepartement.datagrid('getRows').length - 1;
+                editIndexDepartement = _dgDepartement.datagrid('getRows').length - 1;
 
-                _dgDepartement.datagrid('selectRow', editIndex)
-                    .datagrid('beginEdit', editIndex);
+                _dgDepartement.datagrid('selectRow', editIndexDepartement)
+                    .datagrid('beginEdit', editIndexDepartement);
             }
         }
     });
 
     _btnOkDepartement.linkbutton({
         onClick: function () {
-            if (endEditing()) {
+            if (endEditingDepartement()) {
                 _dgDepartement.datagrid('acceptChanges');
             }
         }
@@ -283,7 +336,7 @@ $(document).ready(function () {
 
     _btnEditDepartement.linkbutton({
         onClick: function () {
-            onClickCell()
+            endEditingDepartement()
         }
     });
 
@@ -291,7 +344,7 @@ $(document).ready(function () {
         onClick: function () {
             _dgDepartement.datagrid('rejectChanges');
 
-            editIndex = undefined;
+            editIndexDepartement = undefined;
         }
     });
 
@@ -344,22 +397,22 @@ $(document).ready(function () {
         }
     });
 
-    var endEditing = () => {
-        if (editIndex == undefined) {return true}
+    var endEditingDepartement = () => {
+        if (editIndexDepartement == undefined) {return true}
 
-        if (_dgDepartement.datagrid('validateRow', editIndex)) {
+        if (_dgDepartement.datagrid('validateRow', editIndexDepartement)) {
             let ed = _dgDepartement.datagrid('getEditor', {
-                index: editIndex,
+                index: editIndexDepartement,
                 field: 'departement_id',
             })
 
-            let row = _dgDepartement.datagrid('selectRow', editIndex)
+            let row = _dgDepartement.datagrid('selectRow', editIndexDepartement)
 
             row.name = $(ed.target).combobox('getText');
 
-            _dgDepartement.datagrid('endEdit', editIndex)
+            _dgDepartement.datagrid('endEdit', editIndexDepartement)
 
-            editIndex = undefined
+            editIndexDepartement = undefined
 
             return true
         } else {
@@ -367,21 +420,21 @@ $(document).ready(function () {
         }
     }
 
-    var onClickCell = () => {
+    var endEditingDepartement = () => {
         let row = _dgDepartement.datagrid('getSelected')
 
         if (row) {
             let index = _dgDepartement.datagrid('getRowIndex', row)
 
-            if (editIndex !== index) {
-                if (endEditing()) {
+            if (editIndexDepartement !== index) {
+                if (endEditingDepartement()) {
                     _dgDepartement.datagrid('selectRow', index)
                         .datagrid('beginEdit', index)
 
-                    editIndex = index
+                    editIndexDepartement = index
                 } else {
                     setTimeout(function(){
-                        _dgDepartement.datagrid('selectRow', editIndex);
+                        _dgDepartement.datagrid('selectRow', editIndexDepartement);
                     },0);
                 }
             }
@@ -390,23 +443,92 @@ $(document).ready(function () {
         }
     }
 
-    var onEndEdit = () => {
+    var endEditingDepartement = () => {
         let row = _dgDepartement.datagrid('getSelected')
         let index = _dgDepartement.datagrid('getRowIndex', row)
 
-        if (editIndex == index) {
+        if (editIndexDepartement == index) {
             let ed = _dgDepartement.datagrid('getEditor', {
-                index: editIndex,
+                index: editIndexDepartement,
                 field: 'departement_id',
             })
 
             row.name = $(ed.target).combobox('getText');
         } else {
             setTimeout(function(){
-                _dgDepartement.datagrid('selectRow', editIndex);
+                _dgDepartement.datagrid('selectRow', editIndexDepartement);
             },0);
         }
     }
+
+    _btnLoadMenu.linkbutton({
+        onClick: function () {
+            _dgMenu.treegrid({
+                url: URL_REST + '/app-menu/lists',
+                loader: function (param, success, error) {
+                    let {method, url} = $(this).treegrid('options')
+                    
+                    if (method==null || url==null) return false
+    
+                    $.ajax({
+                        method: method,
+                        url: url,
+                        dataType: 'json',
+                        success: function (res) {
+                            success(res)
+                        },
+                        error: function (xhr, status) {
+                            error(xhr)
+                        }
+                    })
+                },
+                onLoadError: function (xhr) {
+                    let {statusText, responseJSON} = xhr
+    
+                    Alert('error', responseJSON, statusText)
+                },
+            });
+        }
+    });
+
+    _btnEditMenu.linkbutton({
+        onClick: function () {
+            let row = _dgMenu.treegrid('getSelected');
+
+            if (row) {
+                if (editIndexMenu !== undefined) {
+                    _dgMenu.treegrid('select', editIndexMenu);
+                    return
+                }
+
+                editIndexMenu = row.id
+
+                _dgMenu.treegrid('beginEdit', editIndexMenu)
+            } else {
+                Alert('warning', 'No selected data')                
+            }
+        }
+    });
+
+    _btnOkMenu.linkbutton({
+        onClick: function () {
+            if (editIndexMenu !== undefined) {
+                _dgMenu.treegrid('endEdit', editIndexMenu)
+                
+                editIndexMenu = undefined
+            }
+        }
+    });
+
+    _btnCancelMenu.linkbutton({
+        onClick: function () {
+            if (editIndexMenu !== undefined) {
+                _dgMenu.treegrid('cancelEdit', editIndexMenu);
+
+                editIndexMenu = undefined
+            }
+        }
+    });
 
     var loadData = () => {
         _dg.datagrid({
@@ -486,10 +608,39 @@ $(document).ready(function () {
         _dgDepartement.datagrid('fixRowHeight');
     }
 
+    var loadDataMenu = (app_role_id) => {
+        _dgMenu.treegrid({
+            url: _rest + '/menu/' + app_role_id,
+            loader: function (param, success, error) {
+                let {method, url} = $(this).treegrid('options')
+                
+                if (method==null || url==null) return false
+
+                $.ajax({
+                    method: method,
+                    url: url,
+                    dataType: 'json',
+                    success: function (res) {
+                        success(res)
+                    },
+                    error: function (xhr, status) {
+                        error(xhr)
+                    }
+                })
+            },
+            onLoadError: function (xhr) {
+                let {statusText, responseJSON} = xhr
+
+                Alert('error', responseJSON, statusText)
+            },
+        });
+    }
+
     var formReset = () => {
         _ff.form('clear')
 
         _dgDepartement.datagrid('loadData', [])
+        _dgMenu.treegrid('loadData', [])
 
         _btnSave.linkbutton({disabled:true})
         _btnEdit.linkbutton({disabled:false})
@@ -500,6 +651,11 @@ $(document).ready(function () {
         _btnEditDepartement.linkbutton({disabled:true})
         _btnCancelDepartement.linkbutton({disabled:true})
         _btnRemoveDepartement.linkbutton({disabled:true})
+
+        _btnLoadMenu.linkbutton({disabled:true})
+        _btnOkMenu.linkbutton({disabled:true})
+        _btnEditMenu.linkbutton({disabled:true})
+        _btnCancelMenu.linkbutton({disabled:true})
 
         _name.textbox({disabled:true})
         _desc.textbox({disabled:true})
@@ -516,6 +672,11 @@ $(document).ready(function () {
         _btnEditDepartement.linkbutton({disabled:false})
         _btnCancelDepartement.linkbutton({disabled:false})
         _btnRemoveDepartement.linkbutton({disabled:false})
+
+        _btnLoadMenu.linkbutton({disabled:false})
+        _btnOkMenu.linkbutton({disabled:false})
+        _btnEditMenu.linkbutton({disabled:false})
+        _btnCancelMenu.linkbutton({disabled:false})
     
         _name.textbox({disabled:false})
         _desc.textbox({disabled:false})
@@ -533,6 +694,7 @@ $(document).ready(function () {
             formEdit()
             
             loadDataDepartement(row.id)
+            loadDataMenu(row.id)
         } else {
             Alert('warning', 'ID not found')
         }

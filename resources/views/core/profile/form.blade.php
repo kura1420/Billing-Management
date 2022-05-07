@@ -28,4 +28,8 @@
         <input name="logo" id="logo" accept="image/*" class="easyui-filebox" data-options="label:'Logo:',width:400,labelAlign:'right',">
         <a id="btnPreview" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true">Preview</a>
     </p>
+    <p>
+        <input name="secret" id="secret" class="easyui-textbox" data-options="label:'API Secret',width:400,required:false,labelAlign:'right',max:100,readonly:true,">
+        <a id="btnResetSecret" href="javascript:void(0)" class="easyui-linkbutton">Reset Secret</a>
+    </p>
 </form>

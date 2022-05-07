@@ -30,8 +30,7 @@ Route::get('/', function () {
 Route::prefix('auth')->group(function() {
     Route::controller(AuthController::class)->group(function() {
         Route::get('/login', 'login');
-        Route::get('/forgot', 'forgot');
-        Route::get('/reset', 'reset');
+        Route::get('/reset/{token}', 'reset');
     });
 });
 

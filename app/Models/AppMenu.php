@@ -13,4 +13,21 @@ class AppMenu extends Model
     public $incrementing = false;
 
     protected $guarded = [];
+
+    public function children()
+    {
+        return $this->hasMany(AppMenu::class, 'parent', 'id');
+    }
+
+    public function parents()
+    {
+        return $this->hasOne(AppMenu::class, 'id', 'parent');
+    }
+
+    public function childrenActive()
+    {
+        return $this->hasMany(AppMenu::class, 'parent', 'id')
+            ->where('active', 1)
+            ->select('id', 'name', 'title', 'url', 'parent');
+    }
 }

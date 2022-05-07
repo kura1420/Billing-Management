@@ -53,12 +53,14 @@ class Invoice extends Notification
 
         if ($this->customBody) {
             return (new MailMessage)
+                ->subject($appProfile->name . ' - Invoice')
                 ->view('billing.invoice.email.notif', [
                     'content' => $this->customBody,
                 ])
                 ->attach(Storage::path($this->filepath));
         } else {
             return (new MailMessage)
+                ->subject($appProfile->name . ' - Invoice')
                 ->greeting('Kepada Yth. ' . $this->params[8])
                 ->line('Berikut kami informasikan tagihan ' . $appProfile->name . ' Bulan ' . date('F Y') . ' sebesar ' . $this->params[5])
                 ->line('Silahkan melakukan pembayaran sebelum tanggal ' . $this->params[2]. '.')

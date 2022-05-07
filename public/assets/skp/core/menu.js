@@ -31,19 +31,17 @@ $(document).ready(function () {
         url: _rest + '/lists'
     });
 
-    _dg.datagrid({
+    _dg.treegrid({
         singleSelect:true,
         collapsible:true,
         border:false,
         fitColumns:true,
-        pagination:true,
         rownumbers:true,
-        remoteSort:true,
+        idField:'id',
+        treeField:'name',
+        lines:true,
         toolbar:'#tb',
     });
-
-    _dg.datagrid('fixColumnSize');
-    _dg.datagrid('fixRowHeight');
 
     _ss.searchbox({
         prompt: 'Search',
@@ -58,9 +56,7 @@ $(document).ready(function () {
                 },
                 dataType: 'json',
                 success: function (res) {
-                    let {data} = res
-
-                    _dg.datagrid('loadData', data)
+                    _dg.treegrid('loadData', res)
                 },
                 error: function (xhr, status, error) {
                     let {statusText, responseJSON} = xhr
@@ -137,7 +133,7 @@ $(document).ready(function () {
     
     _btnEdit.linkbutton({
         onClick: function() {
-            let row = _dg.datagrid('getSelected')
+            let row = _dg.treegrid('getSelected')
     
             getData(row)
         }
@@ -145,7 +141,7 @@ $(document).ready(function () {
     
     _btnCopy.linkbutton({
         onClick: function () {  
-            let row = _dg.datagrid('getSelected')
+            let row = _dg.treegrid('getSelected')
         
             if (row) {
                 $.get(_rest + "/" + row.id,
@@ -170,7 +166,7 @@ $(document).ready(function () {
     
     _btnRemove.linkbutton({
         onClick: function() {
-            let row = _dg.datagrid('getSelected')
+            let row = _dg.treegrid('getSelected')
     
             if (row) {
                 $.messager.confirm('Confirmation', 'Are you sure delete this data?', function(r){
@@ -208,34 +204,23 @@ $(document).ready(function () {
     });
 
     var loadData = () => {
-        _dg.datagrid({
+        _dg.treegrid({
             method: 'get',
             url: _rest,
-            onDblClickRow: function (index, row) {
+            onDblClickRow: function (row) {
                 getData(row)
             },
             loader: function (param, success, error) {
-                let {method, url, pageNumber, pageSize, sortOrder, sortName} = $(this).datagrid('options')
+                let {method, url} = $(this).treegrid('options')
                 
                 if (method==null || url==null) return false
 
                 $.ajax({
                     method: method,
                     url: url,
-                    data: {
-                        page: pageNumber,
-                        rows: pageSize,
-                        sortOrder: sortOrder,
-                        sortName: sortName,
-                    },
                     dataType: 'json',
                     success: function (res) {
-                        let {total, data} = res
-
-                        success({
-                            total: total,
-                            rows: data
-                        })
+                        success(res)
                     },
                     error: function (xhr, status) {
                         error(xhr)
@@ -248,6 +233,9 @@ $(document).ready(function () {
                 Alert('error', responseJSON, statusText)
             },
         })
+
+        _dg.treegrid('fixColumnSize');
+        _dg.treegrid('fixRowHeight');
     }
 
     var formReset = () => {

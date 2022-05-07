@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\AppProfileRequest;
 use App\Models\AppProfile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class AppProfileController extends Controller
@@ -60,5 +61,29 @@ class AppProfileController extends Controller
         $status = $request->id ? 200 : 201;
 
         return response()->json('OK', $status);
+    }
+
+    public function reset_secret(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|string',
+        ]);
+        
+        if ($validator->fails()) {
+            return response()->json([
+                'data' => $validator->errors(),
+                'status' => 'NOT'
+            ], 422);
+        } else {
+            $id = $request->id ?? NULL;
+
+            $secret = Str::random(30);
+
+            AppProfile::find($id)->update([
+                'secret' => $secret,
+            ]);
+
+            return response()->json($secret, 200);
+        }        
     }
 }

@@ -1,10 +1,9 @@
-<table id="dg" class="easyui-datagrid" style="height: 100%;">
+<table id="dg" class="easyui-treegrid" style="height: 100%;">
     <thead>
         <tr>
             <th data-options="field:'name'" sortable="true">Name</th>
             <th data-options="field:'title'" sortable="true">Title</th>
             <th data-options="field:'url'" sortable="false">URL</th>
-            <th data-options="field:'parent'" sortable="true">Parent</th>
             <th data-options="
                 field:'active',
                 align:'center',
