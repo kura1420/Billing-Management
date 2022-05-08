@@ -192,6 +192,10 @@ class AreaController extends Controller
     
     public function customerLists($id)
     {
+        if ($id == 'clear') {
+            return response()->json([], 200);
+        }         
+
         $rows = AreaProductCustomer::join('provinsis', 'area_product_customers.provinsi_id', '=', 'provinsis.id')
             ->join('cities', 'area_product_customers.city_id', '=', 'cities.id')
             ->join('product_types', 'area_product_customers.product_type_id', '=', 'product_types.id')

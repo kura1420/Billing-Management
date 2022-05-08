@@ -11,6 +11,8 @@ $(document).ready(function () {
     var _picture_url = null;
     var rowIndexContact = undefined;
     var _file_url = null;
+    var _area_product_customer_value = undefined;
+    var _area_product_promo_value = undefined;
 
     let _tbs = $('#tbs');
     let _dg = $('#dg');
@@ -96,17 +98,40 @@ $(document).ready(function () {
                         }
                     },
                 ]],
-            });
-
-            _area_product_promo_id.combobox({
-                disabled:false,
-                valueField: 'id',
-                textField: 'name',
-                method: 'post',
-                url: URL_REST + '/product-promo/area-filter',
-                queryParams: { area_id: record.id },
+                onLoadSuccess: function (data) {  
+                    if (_area_product_customer_value) {
+                        _area_product_customer.combogrid('setValue', _area_product_customer_value)
+                    }
+                }
             });
         },
+    });
+
+    _area_product_customer.combogrid({
+        onChange: function (newValue, oldValue) {
+            if (newValue) {
+                let g = $(this).combogrid('grid')
+                let r = g.datagrid('getSelected')
+
+                if (r) {
+                    _area_product_promo_id.combobox({
+                        url: URL_REST + '/product-promo/area-filter',
+                        queryParams: {
+                            area_id: _area_id.combobox('getValue'),
+                            product_type_id: r.product_type_id,
+                            product_service_id: r.product_service_id
+                        },
+                        onLoadSuccess: function () {
+                            if (_area_product_promo_value) {
+                                _area_product_promo_id.combobox('setValue', _area_product_promo_value)
+                            }
+                        }
+                    })                    
+                }
+            } else {
+                _area_product_promo_id.combobox('loadData', []);
+            }
+        }
     });
 
     _gender.combobox({
@@ -308,8 +333,15 @@ $(document).ready(function () {
 
             loadDataContact('loadData', [])
             loadDataDocument('loadData', [])
+            _area_product_customer.combogrid({
+                method: 'get',
+                url: URL_REST + '/area/customer/reset'
+            })
+            _area_product_promo_id.combobox('loadData', [])
 
             _picture_url = null
+            _area_product_customer_value = null
+            _area_product_promo_value = null
         }
     });
 
@@ -615,6 +647,8 @@ $(document).ready(function () {
                         _ffDocument.form('clear');
 
                         _file_url = null
+                        _area_product_customer_value = null
+                        _area_product_promo_value = null
 
                         $.messager.show({
                             title:'Info',
@@ -883,14 +917,22 @@ $(document).ready(function () {
 
     var formReset = () => {
         _ff.form('clear')
+        
+        _dgContact.datagrid('loadData', [])
+
+        _area_product_customer.combogrid({
+            method: 'get',
+            url: URL_REST + '/area/customer/reset'
+        })
+        _area_product_promo_id.combobox('loadData', []);
 
         _picture_url = null;
+        _area_product_customer_value = null;
+        _area_product_promo_value = null;
 
         _btnSave.linkbutton({disabled:true})
         _btnEdit.linkbutton({disabled:false})
         _btnCopy.linkbutton({disabled:false})
-        
-        _dgContact.datagrid('loadData', [])
         
         _btnAddContact.linkbutton({disabled:true})
         _btnOkContact.linkbutton({disabled:true})
@@ -931,7 +973,7 @@ $(document).ready(function () {
 
         _area_id.combobox({disabled:false})
         _area_product_customer.combogrid({disabled:false})
-        // _area_product_promo_id.combobox({disabled:false})
+        _area_product_promo_id.combobox({disabled:false})
         _member_at.datebox({disabled:false})
         _active.switchbutton({disabled:false})
 
@@ -975,6 +1017,7 @@ $(document).ready(function () {
                         dismantle_at,
                         area_id,
                         area_product_customer,
+                        area_product_promo_id,
 
                         name,
                         gender,
@@ -1017,10 +1060,8 @@ $(document).ready(function () {
                     });
 
                     _picture_url = picture_url;
-
-                    setTimeout(() => {
-                        _area_product_customer.combogrid('setValue', area_product_customer);
-                    }, 3000);
+                    _area_product_customer_value = area_product_customer
+                    _area_product_promo_value = area_product_promo_id
                 },
                 error: function (xhr, status, error) {
                     Alert('error', 'Internal server error');

@@ -186,7 +186,9 @@ class CustomerController extends Controller
         $row->dismantle_at = $row->dismantle_at ? date('m/d/Y', strtotime($row->dismantle_at)) : '';
         $row->area_product_customer = $row->area_product_customer_id;
 
-        $row->area_product_promo_id = $customerPromo->area_product_promo_id;
+        if ($customerPromo) {
+            $row->area_product_promo_id = $customerPromo->area_product_promo_id;
+        }
 
         if ($customerProfile) {
             $row->name = $customerProfile->name;

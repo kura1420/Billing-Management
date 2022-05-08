@@ -9,6 +9,7 @@ $(document).ready(function () {
     const _rest = URL_REST + '/product-promo'
 
     var editIndex = undefined;
+    var _product_service_value = undefined;
 
     let _tbs = $('#tbs');
     let _dg = $('#dg');
@@ -58,17 +59,17 @@ $(document).ready(function () {
         }]
     });
 
-    _type.combobox({
-        onSelect: function (record) {
-            if (record.id == 'SER') {
-                _product_type_id.combobox({disabled:false});
-                _product_service_id.combobox({disabled:false});
-            } else {
-                _product_type_id.combobox({disabled:true});
-                _product_service_id.combobox({disabled:true});                
-            }
-        }
-    });
+    // _type.combobox({
+    //     onSelect: function (record) {
+    //         if (record.id == 'SER') {
+    //             _product_type_id.combobox({disabled:false});
+    //             _product_service_id.combobox({disabled:false});
+    //         } else {
+    //             _product_type_id.combobox({disabled:true});
+    //             _product_service_id.combobox({disabled:true});                
+    //         }
+    //     }
+    // });
 
     _product_type_id.combobox({
         valueField:'id',
@@ -78,6 +79,11 @@ $(document).ready(function () {
             _product_service_id.combobox({
                 onBeforeLoad: function (param) {
                     param.product_type_id = record.id
+                },
+                onLoadSuccess: function () {
+                    if (_product_service_value) {
+                        _product_service_id.combobox('setValue', _product_service_value)
+                    }
                 }
             });
 
@@ -188,6 +194,8 @@ $(document).ready(function () {
 
             _dgArea.datagrid('loadData', [])
 
+            _product_service_value = null
+
             _code.textbox('readonly', false)
         }
     });
@@ -227,6 +235,8 @@ $(document).ready(function () {
 
                         loadData()
                         loadDataArea(parse.id)
+
+                        _product_service_value = null
     
                         $.messager.show({
                             title:'Info',
@@ -555,6 +565,8 @@ $(document).ready(function () {
 
         _dgArea.datagrid('loadData', [])
 
+        _product_service_value = null
+
         _btnSave.linkbutton({disabled:true})
         _btnEdit.linkbutton({disabled:false})
         _btnCopy.linkbutton({disabled:false})
@@ -596,7 +608,8 @@ $(document).ready(function () {
         _type.combobox({disabled:false})
         _discount.numberbox({disabled:false})
         _until_payment.numberbox({disabled:false})
-        // _product_service_id.combobox({disabled:false})
+        _product_type_id.combobox({disabled:false})
+        _product_service_id.combobox({disabled:false})
     }
 
     var getData = (row) => {
@@ -620,9 +633,11 @@ $(document).ready(function () {
 
                     _code.textbox({readonly:true})
 
-                    setTimeout(() => {
-                        _product_service_id.combobox('setValue', response.product_service_id);
-                    }, 3000);
+                    // setTimeout(() => {
+                    //     _product_service_id.combobox('setValue', response.product_service_id);
+                    // }, 3000);
+
+                    _product_service_value = response.product_service_id
 
                     if (response.image_url) {
                         _btnPreview.linkbutton({disabled:false})

@@ -5,10 +5,12 @@ namespace App\Console\Commands;
 use App\Helpers\FileAction;
 use App\Helpers\Formatter;
 use App\Models\AppProfile;
+use App\Models\Area;
 use App\Models\BillingInvoice;
 use App\Models\BillingTemplate;
 use App\Models\BillingType;
 use App\Models\CustomerData;
+use App\Models\ProductPromo;
 use App\Notifications\Invoice;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
@@ -100,7 +102,7 @@ class SendInvoice extends Command
         $billingProducts = $billingType->billing_products;
         foreach ($billingProducts as $key => $billingProduct) {
             
-            $customerDatas = CustomerData::with(['customer_profiles', 'product_services', 'area_products'])
+            $customerDatas = CustomerData::with(['customer_profiles', 'product_services', 'area_products',])
                 ->where('active', 1)
                 ->where('product_type_id', $billingProduct->product_type_id)
                 ->where('product_service_id', $billingProduct->product_service_id);
@@ -118,6 +120,12 @@ class SendInvoice extends Command
                     $customerProfile = $customerData->customer_profiles;
                     $productService = $customerData->product_services;
                     $areaProduct = $customerData->area_products;
+                    $customerPromo = $customerData->customer_promos()->where('active', 1)->first();
+
+                    $area = Area::join('taxes', 'areas.ppn_tax_id', '=', 'taxes.id')
+                        ->where('areas.id', $areaProduct->area_id)
+                        ->select('taxes.value')
+                        ->first();
 
                     $billingInvoice = BillingInvoice::where('billing_type_id', $billingType->id)
                         ->where('customer_data_id', $customerData->id)
@@ -130,6 +138,10 @@ class SendInvoice extends Command
                     if ($billingInvoice->count() == 0) {
 
                         $price_active_after_cutoff = 0;
+                        $price_discount = 0;
+                        // $new_price = 0;
+                        // $ppn = 0;
+
                         if ($billingType->member_end_active > 0) {
                             $dateEndThisMonth = Carbon::today()->endOfMonth();
 
@@ -153,21 +165,19 @@ class SendInvoice extends Command
                             }
                         }
 
-                        /**
-                         * hitung promo
-                         * cari area yg sedang promo
-                         * cari customer yang menggunakan area promo
-                         * total promo - counting promo
-                         */
+                        if ($customerPromo) {
+                            $productPromo = ProductPromo::where('id', $customerPromo->product_promo_id)->where('active', 1)->first();
+
+                            $price_discount = ($productPromo->discount / 100) * $areaProduct->price_sub;
+                        }
 
                         $billingCode = uniqid();
 
-                        $discount = 0;
-                        $total = ($areaProduct->price_total + $price_active_after_cutoff) - $discount;
+                        $total = ($areaProduct->price_total + $price_active_after_cutoff) - $price_discount;
 
                         $price_sub = Formatter::rupiah($areaProduct->price_sub);
                         $price_ppn = Formatter::rupiah($areaProduct->price_ppn);
-                        $price_discount = Formatter::rupiah($discount);
+                        $price_discount = Formatter::rupiah($price_discount);
                         $price_total = Formatter::rupiah($total);
                         $price_after_cutoff_format = Formatter::rupiah($price_active_after_cutoff);
 
@@ -190,7 +200,7 @@ class SendInvoice extends Command
                             'price_ppn' => $areaProduct->price_ppn,
                             'price_sub' => $areaProduct->price_sub,
                             'price_total' => $total,
-                            'price_discount' => $discount,
+                            'price_discount' => $price_discount,
                             'product_type_id' => $billingProduct->product_type_id,
                             'product_service_id' => $billingProduct->product_service_id,
                             'file_invoice' => $file_invoice,

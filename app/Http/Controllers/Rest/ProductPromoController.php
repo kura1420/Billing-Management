@@ -165,23 +165,52 @@ class ProductPromoController extends Controller
     public function areaFilter(Request $request)
     {
         $area_id = $request->area_id;
-        // $product_type_id = $request->product_type_id;
-        // $product_service_id = $request->product_service_id;
+        $product_type_id = $request->product_type_id;
+        $product_service_id = $request->product_service_id;
 
-        $rows = AreaProductPromo::where([
+        $rows = [];
+
+        $areaTypeServices = AreaProductPromo::where([
             ['area_id', '=', $area_id],
             ['active', '=', 1],
-            // ['product_type_id', '=', $product_type_id],
-            // ['product_service_id', '=', $product_service_id],
-        ])
-        ->get()
-        ->map(function ($row) {
-            return [
-                'id' => $row->id,
-                'name' => \App\Models\ProductPromo::where('id', $row->product_promo_id)->first()->name,
-            ];
-        });
+            ['product_type_id', '=', $product_type_id],
+            ['product_service_id', '=', $product_service_id],
+        ])->get();
 
-        return response()->json($rows, 200);
+        foreach ($areaTypeServices as $areaTypeService) {
+            $rows[] = [
+                'id' => $areaTypeService->id,
+                'name' => \App\Models\ProductPromo::where('id', $areaTypeService->product_promo_id)->first()->name,
+            ];
+        }
+
+        $areaTypes = AreaProductPromo::where('area_id', '=', $area_id)
+        ->where('active', 1)
+        ->whereNull('product_type_id')
+        ->get();
+
+        foreach ($areaTypes as $areaType) {
+            $rows[] = [
+                'id' => $areaType->id,
+                'name' => \App\Models\ProductPromo::where('id', $areaType->product_promo_id)->first()->name,
+            ];
+        }
+
+        $areas = AreaProductPromo::where('area_id', '=', $area_id)
+        ->where('active', 1)
+        ->whereNull('product_type_id')
+        ->whereNull('product_service_id')
+        ->get();
+
+        foreach ($areas as $area) {
+            $rows[] = [
+                'id' => $area->id,
+                'name' => \App\Models\ProductPromo::where('id', $area->product_promo_id)->first()->name,
+            ];
+        }
+
+        $res = $rows;
+
+        return response()->json($res, 200);
     }
 }
