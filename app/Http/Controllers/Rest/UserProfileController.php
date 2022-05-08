@@ -15,9 +15,60 @@ class UserProfileController extends Controller
     {
         $id = session()->get('user_data')['id'];
         
-        $userProfile = UserProfile::where('user_id', $id)->first();
+        $userProfile = UserProfile::with('departements')->where('user_id', $id)->first();
 
-        return response()->json($userProfile, 200);
+        $result = [
+            'total' => 1,
+            'rows' => [
+                [
+                    'name' => 'Fullname',
+                    'value' => $userProfile->fullname,
+                    'group' => 'Profile',
+                    'editor' => 'textbox'
+                ],
+                [
+                    'name' => 'Email',
+                    'value' => $userProfile->email,
+                    'group' => 'Profile',
+                    'editor' => [
+                        'type' => 'textbox',
+                        'options' => [
+                            'validType' => 'email',
+                        ],
+                    ],
+                ],
+                [
+                    'name' => 'Telp',
+                    'value' => $userProfile->telp,
+                    'group' => 'Profile',
+                    'editor' => 'numberbox'
+                ],
+                [
+                    'name' => 'Handphone',
+                    'value' => $userProfile->handphone,
+                    'group' => 'Profile',
+                    'editor' => 'numberbox'
+                ],
+                [
+                    'name' => 'Departement',
+                    'value' => $userProfile->departements->name,
+                    'group' => 'Profile',
+                ],
+                [
+                    'name' => 'Password',
+                    'value' => '',
+                    'group' => 'Profile',
+                    'editor' => [
+                        'type' => 'passwordbox',
+                        'options' => [
+                            'showEye' => true
+                        ],
+                    ],
+                ],
+            ],
+        ];
+
+        return response()->json($result, 200);
     }
     
     public function store(UserProfileRequest $request)

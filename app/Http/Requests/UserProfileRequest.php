@@ -29,12 +29,12 @@ class UserProfileRequest extends FormRequest
 
         return [
             //
-            'name' => 'required|string|max:255',
+            'fullname' => 'required|string|max:255',
             'email' => 'required|string|max:255|email|unique:users,email,' . $id,
             'password' => 'nullable|string|min:6',
 
-            'telp' => 'nullable|string|max:20',
-            'handphone' => 'required|string|max:20',
+            'telp' => 'nullable|numeric',
+            'handphone' => 'required|numeric',
         ];
     }
 

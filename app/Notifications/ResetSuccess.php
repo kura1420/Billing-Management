@@ -45,9 +45,8 @@ class ResetSuccess extends Notification
     {
         return (new MailMessage)
                     ->subject('Reset Password Success')
-                    ->greeting('Dear ')
+                    ->greeting('Information')
                     ->line('Permintaan reset password anda telah kami proses, berikut detail akses terbaru dari akun anda:')
-                    ->line('Email: ')
                     ->line('Password: ' . $this->newPassword)
                     ->action('Login Ke Aplikasi', url('/'))
                     ->line('Terimakasih');

@@ -18,4 +18,10 @@ class AppRoleMenu extends Model
     {
         return $this->hasMany(AppRoleMenu::class, 'parent', 'app_menu_id');
     }
+
+    public function childrenActive()
+    {
+        return $this->hasMany(AppRoleMenu::class, 'parent', 'app_menu_id')
+            ->whereActive(1);
+    }
 }

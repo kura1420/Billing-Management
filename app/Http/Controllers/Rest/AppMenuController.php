@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Rest;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppMenuRequest;
 use App\Models\AppMenu;
+use App\Models\AppRoleMenu;
 use Illuminate\Http\Request;
 
 class AppMenuController extends Controller
@@ -30,7 +31,7 @@ class AppMenuController extends Controller
 
     public function store(AppMenuRequest $request)
     {
-        AppMenu::updateOrCreate(
+        $appMenu = AppMenu::updateOrCreate(
             [
                 'id' => $request->id,
             ],
@@ -42,6 +43,12 @@ class AppMenuController extends Controller
                 'active' => $request->active == 'true' ? 1 : 0,
             ]
         );
+
+        if ($request->active !== 'true') {
+            AppRoleMenu::where('app_menu_id', $appMenu->id)->update([
+                'active' => 0
+            ]);
+        }
 
         $status = $request->id ? 200 : 201;
 

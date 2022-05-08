@@ -30,250 +30,254 @@ Route::prefix('auth')->group(function() {
     });
 });
 
-Route::prefix('app')->group(function() {
-    Route::controller(AppController::class)->group(function() {
-        Route::post('/menu', 'menu');
+Route::middleware('authApp')->group(function() {
+
+    Route::prefix('app')->group(function() {
+        Route::controller(AppController::class)->group(function() {
+            Route::post('/menu', 'menu');
+        });
     });
-});
 
-Route::prefix('provinsi')->group(function() {
-    Route::controller(ProvinsiController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy');
+    Route::prefix('provinsi')->group(function() {
+        Route::controller(ProvinsiController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');
+        });
     });
-});
-
-Route::prefix('city')->group(function() {
-    Route::controller(CityController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy');
+    
+    Route::prefix('city')->group(function() {
+        Route::controller(CityController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');
+        });
     });
-});
-
-Route::prefix('departement')->group(function() {
-    Route::controller(DepartementController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy');        
+    
+    Route::prefix('departement')->group(function() {
+        Route::controller(DepartementController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');        
+        });
     });
-});
-
-Route::prefix('tax')->group(function() {
-    Route::controller(TaxController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy');   
+    
+    Route::prefix('tax')->group(function() {
+        Route::controller(TaxController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');   
+        });
     });
-});
-
-Route::prefix('product-type')->group(function() {
-    Route::controller(ProductTypeController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy'); 
+    
+    Route::prefix('product-type')->group(function() {
+        Route::controller(ProductTypeController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy'); 
+        });
     });
-});
-
-Route::prefix('product-service')->group(function() {
-    Route::controller(ProductServiceController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy');         
+    
+    Route::prefix('product-service')->group(function() {
+        Route::controller(ProductServiceController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');         
+        });
     });
-});
-
-Route::prefix('product-promo')->group(function() {
-    Route::controller(ProductPromoController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-        Route::get('/area/{id}', 'areaLists');
-
-        Route::post('/area-filter', 'areaFilter');
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy');
-        Route::delete('/area/{id}', 'areaDestroy');
+    
+    Route::prefix('product-promo')->group(function() {
+        Route::controller(ProductPromoController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+            Route::get('/area/{id}', 'areaLists');
+    
+            Route::post('/area-filter', 'areaFilter');
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');
+            Route::delete('/area/{id}', 'areaDestroy');
+        });
     });
-});
-
-Route::prefix('customer-type')->group(function() {
-    Route::controller(CustomerTypeController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy'); 
+    
+    Route::prefix('customer-type')->group(function() {
+        Route::controller(CustomerTypeController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy'); 
+        });
     });
-});
-
-Route::prefix('customer-segment')->group(function() {
-    Route::controller(CustomerSegmentController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy'); 
+    
+    Route::prefix('customer-segment')->group(function() {
+        Route::controller(CustomerSegmentController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy'); 
+        });
     });
-});
-
-Route::prefix('app-profile')->group(function() {
-    Route::controller(AppProfileController::class)->group(function() {
-        Route::get('/', 'index');
-        
-        Route::post('/', 'store');
-        Route::post('/reset-secret', 'reset_secret');
+    
+    Route::prefix('app-profile')->group(function() {
+        Route::controller(AppProfileController::class)->group(function() {
+            Route::get('/', 'index');
+            
+            Route::post('/', 'store');
+            Route::post('/reset-secret', 'reset_secret');
+        });
     });
-});
-
-Route::prefix('app-role')->group(function() {
-    Route::controller(AppRoleController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-        Route::get('/departement/{id}', 'departementLists');
-
-        Route::post('/menu/{id}', 'menuLists');
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy'); 
-        Route::delete('/departement/{id}', 'departementDestroy');
+    
+    Route::prefix('app-role')->group(function() {
+        Route::controller(AppRoleController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+            Route::get('/departement/{id}', 'departementLists');
+    
+            Route::post('/menu/{id}', 'menuLists');
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy'); 
+            Route::delete('/departement/{id}', 'departementDestroy');
+        });
     });
-});
-
-Route::prefix('app-menu')->group(function() {
-    Route::controller(AppMenuController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy'); 
+    
+    Route::prefix('app-menu')->group(function() {
+        Route::controller(AppMenuController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy'); 
+        });
     });
-});
-
-Route::prefix('app-user')->group(function() {
-    Route::controller(AppUserController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy'); 
+    
+    Route::prefix('app-user')->group(function() {
+        Route::controller(AppUserController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy'); 
+        });
     });
-});
-
-Route::prefix('billing-type')->group(function() {
-    Route::controller(BillingTypeController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-        Route::get('/product/{id}', 'productLists');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy'); 
-        Route::delete('/product/{id}', 'productDestroy');
+    
+    Route::prefix('billing-type')->group(function() {
+        Route::controller(BillingTypeController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+            Route::get('/product/{id}', 'productLists');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy'); 
+            Route::delete('/product/{id}', 'productDestroy');
+        });
     });
-});
-
-Route::prefix('billing-template')->group(function() {
-    Route::controller(BillingTemplateController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        Route::post('/preview', 'preview');
-        
-        Route::delete('/{id}', 'destroy'); 
+    
+    Route::prefix('billing-template')->group(function() {
+        Route::controller(BillingTemplateController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            Route::post('/preview', 'preview');
+            
+            Route::delete('/{id}', 'destroy'); 
+        });
     });
-});
-
-Route::prefix('area')->group(function() {
-    Route::controller(AreaController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-        Route::get('/product/{id}', 'productLists');
-        Route::get('/customer/{id}', 'customerLists');
-
-        Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        Route::delete('/{id}', 'destroy');
-        Route::delete('/product/{id}', 'productDestroy');
-        Route::delete('/customer/{id}', 'customerDestroy');
+    
+    Route::prefix('area')->group(function() {
+        Route::controller(AreaController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+            Route::get('/product/{id}', 'productLists');
+            Route::get('/customer/{id}', 'customerLists');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');
+            Route::delete('/product/{id}', 'productDestroy');
+            Route::delete('/customer/{id}', 'customerDestroy');
+        });
     });
-});
-
-Route::prefix('customer')->group(function() {
-    Route::controller(CustomerController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-        Route::get('/contact/{id}', 'contactLists');
-        Route::get('/document/{id}', 'documentLists');
-        Route::get('/document-show/{id}', 'documentShow');
-        Route::get('/document-file/{file}', 'documentFile');
-
-        Route::post('/lists', 'lists');
-        Route::post('/contact-merge/{id}', 'contactMerge');
-        Route::post('/', 'store');
-        Route::post('/document', 'documentStore');
-        
-        // Route::delete('/{id}', 'destroy');
-        Route::delete('/contact/{id}', 'contactDestroy');
-        Route::delete('/document/{id}', 'documentDestroy');
+    
+    Route::prefix('customer')->group(function() {
+        Route::controller(CustomerController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+            Route::get('/contact/{id}', 'contactLists');
+            Route::get('/document/{id}', 'documentLists');
+            Route::get('/document-show/{id}', 'documentShow');
+            Route::get('/document-file/{file}', 'documentFile');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/contact-merge/{id}', 'contactMerge');
+            Route::post('/', 'store');
+            Route::post('/document', 'documentStore');
+            
+            // Route::delete('/{id}', 'destroy');
+            Route::delete('/contact/{id}', 'contactDestroy');
+            Route::delete('/document/{id}', 'documentDestroy');
+        });
     });
-});
-
-Route::prefix('billing-invoice')->group(function() {
-    Route::controller(BillingInvoiceController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/{id}', 'show');
-
-        // Route::post('/lists', 'lists');
-        Route::post('/', 'store');
-        
-        // Route::delete('/{id}', 'destroy'); 
+    
+    Route::prefix('billing-invoice')->group(function() {
+        Route::controller(BillingInvoiceController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            // Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            // Route::delete('/{id}', 'destroy'); 
+        });
     });
-});
-
-Route::prefix('profile')->group(function() {
-    Route::controller(UserProfileController::class)->group(function() {
-        Route::get('/', 'index');
-        Route::get('/logout', 'logout');
-        
-        Route::post('/', 'update');
+    
+    Route::prefix('profile')->group(function() {
+        Route::controller(UserProfileController::class)->group(function() {
+            Route::get('/', 'index');
+            
+            Route::post('/', 'store');
+            Route::post('/logout', 'logout');
+        });
     });
+
 });

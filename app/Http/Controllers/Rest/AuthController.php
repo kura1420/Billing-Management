@@ -27,7 +27,7 @@ class AuthController extends Controller
                 'status' => 'NOT'
             ], 422);
         } else {
-            $user = User::where('email', $request->email)
+            $user = User::with('user_profiles')->where('email', $request->email)
                 ->where('active', 1)
                 ->first();
 
@@ -36,22 +36,27 @@ class AuthController extends Controller
                     session([
                         'user_login' => TRUE,
                         'user_data' => $user,
+                        'user_profile' => $user->user_profiles,
                     ]);
 
                     $user->update([
                         'last_login' => Carbon::now(),
                     ]);
 
-                    return response()->json('OK', 200);
+                    return response()->json($user, 200);
                 } else {
                     return response()->json([
-                        'data' => 'Salah username dan password',
+                        'data' => [
+                            'email' => 'Salah username dan password'
+                        ],
                         'status' => 'NOT'
                     ], 422);
                 }
             } else {
                 return response()->json([
-                    'data' => 'User tidak ditemukan',
+                    'data' => [
+                        'email' => 'User tidak ditemukan'
+                    ],
                     'status' => 'NOT'
                 ], 422);
             }            
@@ -61,13 +66,18 @@ class AuthController extends Controller
     public function forgot(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
+            'email_forgot' => 'required|string|email',
+        ], [
+            'email_forgot' => 'email'
         ]);
 
         if ($validator->fails()) {
-            return response()->json($validator->errors());
+            return response()->json([
+                'data' => $validator->errors(),
+                'status' => 'NOT'
+            ]);
         } else {
-            $user = User::where('email', $request->email)
+            $user = User::where('email', $request->email_forgot)
                 ->where('active', 1)
                 ->first();
 
@@ -83,7 +93,9 @@ class AuthController extends Controller
                 return response()->json('OK', 201);
             } else {
                 return response()->json([
-                    'data' => 'User tidak ditemukan',
+                    'data' => [
+                        'email' => 'User tidak ditemukan'
+                    ],
                     'status' => 'NOT'
                 ], 422);
             }

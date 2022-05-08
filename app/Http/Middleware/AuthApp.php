@@ -16,7 +16,7 @@ class AuthApp
      */
     public function handle(Request $request, Closure $next)
     {
-        $auth = session()->has('user_data');
+        $auth = session()->get('user_login');
 
         if ($auth) {
             return $next($request);

@@ -16,6 +16,6 @@ class UserProfile extends Model
 
     public function departements()
     {
-        return $this->belongsTo(Departement::class);
+        return $this->belongsTo(Departement::class, 'departement_id');
     }
 }

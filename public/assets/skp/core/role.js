@@ -62,10 +62,10 @@ $(document).ready(function () {
         remoteSort:true,
         toolbar:'#tbDepartement',
         onDblClickRow: function (index, row) {
-            endEditingDepartement()
+            onClickCellDepartement()
         },
-        endEditingDepartement: function (index,row,changes) {
-            endEditingDepartement()
+        onEndEdit: function (index,row,changes) {
+            onEndEditDepartement()
         },
         columns: [[
             {
@@ -336,7 +336,7 @@ $(document).ready(function () {
 
     _btnEditDepartement.linkbutton({
         onClick: function () {
-            endEditingDepartement()
+            onClickCellDepartement()
         }
     });
 
@@ -420,7 +420,7 @@ $(document).ready(function () {
         }
     }
 
-    var endEditingDepartement = () => {
+    var onClickCellDepartement = () => {
         let row = _dgDepartement.datagrid('getSelected')
 
         if (row) {
@@ -443,7 +443,7 @@ $(document).ready(function () {
         }
     }
 
-    var endEditingDepartement = () => {
+    var onEndEditDepartement = () => {
         let row = _dgDepartement.datagrid('getSelected')
         let index = _dgDepartement.datagrid('getRowIndex', row)
 

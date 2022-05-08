@@ -45,10 +45,10 @@ class Forgot extends Notification
     {
         return (new MailMessage)
                     ->subject('Request Reset Password')
-                    ->greeting('Hai, User')
+                    ->greeting('Perhatian,')
                     ->line('Akun anda telah melakukan permintaan reset password, bila ini benar anda silakan klik tombol di bawah ini untuk melanjutkan proses.')
                     ->line('Tapi jika bukan anda harap abaikan email ini.')
-                    ->action('Reset Password', url('/reset/' . $this->token))
+                    ->action('Reset Password', url('/auth/reset/' . $this->token))
                     ->line('Terimakasih');
     }
 

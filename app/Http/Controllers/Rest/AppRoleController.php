@@ -52,15 +52,26 @@ class AppRoleController extends Controller
 
         if (!empty($departements)) {
             foreach ($departements as $key => $departement) {
-                DepartementRole::updateOrCreate(
-                    [
+                $departementRole = DepartementRole::where([
+                    ['departement_id', '=', $departement['departement_id']]
+                ]);
+
+                $departementRoleCount = $departementRole->count();
+                $departementRoleRow = $departementRole->first();
+
+                if ($departementRoleCount > 0) {
+                    if ($departementRoleRow->app_role_id == $appRole->id) {
+                        $departementRole->update([
+                            'active' => $departement['active'] == 'Yes' ? 1 : 0
+                        ]);
+                    }
+                } else {
+                    DepartementRole::create([
                         'app_role_id' => $appRole->id,
-                        'departement_id' => $departement['departement_id']
-                    ],
-                    [
+                        'departement_id' => $departement['departement_id'],
                         'active' => $departement['active'] == 'Yes' ? 1 : 0,
-                    ]
-                );
+                    ]);
+                }
             }
         }
 
@@ -134,14 +145,15 @@ class AppRoleController extends Controller
             ->whereNull('parent')
             ->select('id', 'app_menu_id', 'parent', 'active')
             ->get()
-            ->map(function($row) {
+            ->map(function($row) use ($id) {
                 $row->id = $row->app_menu_id;
                 $row->name = \App\Models\AppMenu::where('id', $row->app_menu_id)->first()->name;
                 $row->parent = $row->parent;
                 $row->active = $row->active == 1 ? 'Yes' : 'No';
 
                 $children = [];
-                foreach ($row->children()->get() as $key => $value) {
+                $childs = $row->children()->where('app_role_id', $id)->get();
+                foreach ($childs as $key => $value) {
                     $children[] = [
                         'id' => $value->app_menu_id,
                         'name' => \App\Models\AppMenu::where('id', $value->app_menu_id)->first()->name,

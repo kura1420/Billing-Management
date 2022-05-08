@@ -11,13 +11,14 @@ class AuthController extends Controller
     //
     const FOLDER = 'auth.';
 
-    public function login()
-    {
-        # code...
-    }
-
     public function reset($token)
     {
+        $login_check = session()->has('user_login');
+
+        if ($login_check) {
+            return redirect('/');
+        }
+
         $user = User::where('token', $token)->firstOrFail();
 
         $newPassword = uniqid();

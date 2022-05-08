@@ -3,11 +3,61 @@
 namespace App\Http\Controllers\Rest;
 
 use App\Http\Controllers\Controller;
+use App\Models\AppRoleMenu;
+use App\Models\DepartementRole;
 use Illuminate\Http\Request;
 
 class AppController extends Controller
 {
     //
+    public function menu1()
+    {
+        $userProfile = session()->get('user_profile');
+        
+        $roleDepartement = DepartementRole::where('departement_id', $userProfile->departement_id)->first();
+
+        $appRoleID = $roleDepartement->app_role_id;
+        $roleDepartementMenu = AppRoleMenu::join('app_menus', 'app_role_menus.app_menu_id', '=', 'app_menus.id')
+            ->where('app_role_menus.app_role_id', $appRoleID)
+            ->whereNull('app_role_menus.parent')
+            ->where('app_role_menus.active', 1)
+            ->select([
+                'app_role_menus.app_menu_id as id',
+                    'app_menus.name as text',
+                    'app_menus.title',
+                    'app_menus.url',
+            ])
+            ->get()
+            ->map(function($row) use ($appRoleID) {
+                $children = [];
+                $childs = AppRoleMenu::join('app_menus', 'app_role_menus.app_menu_id', '=', 'app_menus.id')
+                    ->where('app_role_menus.app_role_id', $appRoleID)
+                    ->where('app_role_menus.parent', $row->id)
+                    ->where('app_role_menus.active', 1)
+                    ->select([
+                        'app_role_menus.app_menu_id as id',
+                            'app_menus.name',
+                            'app_menus.title',
+                            'app_menus.url',
+                    ])
+                    ->get();
+                foreach ($childs as $key => $value) {
+                    $children[] = [
+                        'id' => $value->id,
+                        'text' => $value->name,
+                        'title' => $value->title,
+                        'url' => $value->url,
+                    ];
+                }
+
+                $row->children = $children;
+
+                return $row;
+            });
+
+        return response()->json($roleDepartementMenu, 200);
+    }
+
     public function menu()
     {
         $res = [
