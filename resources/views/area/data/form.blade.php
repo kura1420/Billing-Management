@@ -76,15 +76,15 @@
 
         <div id="tbProduct" style="padding:2px 5px;">
             <span class="easyui-tooltip" title="Create">
-                <a id="btnAddProduct" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add',">Create</a>
+                <a id="btnAddProduct" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-add',">Create</a>
             </span>
             
             <span class="easyui-tooltip" title="Edit">
-                <a id="btnEditProduct" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit',">Edit</a>
+                <a id="btnEditProduct" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-edit',">Edit</a>
             </span>
             
             <span class="easyui-tooltip" title="Remove">
-                <a id="btnRemoveProduct" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',">Remove</a>
+                <a id="btnRemoveProduct" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-remove',">Remove</a>
             </span>
         </div>
 
@@ -152,15 +152,15 @@
         
         <div id="tbCustomer" style="padding:2px 5px;">
             <span class="easyui-tooltip" title="Create">
-                <a id="btnAddCustomer" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add',">Create</a>
+                <a id="btnAddCustomer" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-add',">Create</a>
             </span>
             
             <span class="easyui-tooltip" title="Edit">
-                <a id="btnEditCustomer" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit',">Edit</a>
+                <a id="btnEditCustomer" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-edit',">Edit</a>
             </span>
             
             <span class="easyui-tooltip" title="Remove">
-                <a id="btnRemoveCustomer" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',">Remove</a>
+                <a id="btnRemoveCustomer" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-remove',">Remove</a>
             </span>
         </div>
 

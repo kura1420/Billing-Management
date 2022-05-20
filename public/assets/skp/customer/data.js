@@ -940,6 +940,13 @@ $(document).ready(function () {
         _btnCancelContact.linkbutton({disabled:true})
         _btnRemoveContact.linkbutton({disabled:true})
 
+        _btnAddDocument.linkbutton({disabled:true})
+        _btnEditDocument.linkbutton({disabled:true})
+        _btnRemoveDocument.linkbutton({disabled:true})
+        _btnPreviewDocument.linkbutton({disabled:true})
+        _btnSaveDocument.linkbutton({disabled:true})
+        _btnCancelDocument.linkbutton({disabled:true})
+
         _area_id.combobox({disabled:true})
         _area_product_customer.combogrid({disabled:true})
         _area_product_promo_id.combobox({disabled:true})
@@ -970,6 +977,13 @@ $(document).ready(function () {
         _btnEditContact.linkbutton({disabled:false})
         _btnCancelContact.linkbutton({disabled:false})
         _btnRemoveContact.linkbutton({disabled:false})
+
+        _btnAddDocument.linkbutton({disabled:false})
+        _btnEditDocument.linkbutton({disabled:false})
+        _btnRemoveDocument.linkbutton({disabled:false})
+        _btnPreviewDocument.linkbutton({disabled:false})
+        _btnSaveDocument.linkbutton({disabled:false})
+        _btnCancelDocument.linkbutton({disabled:false})
 
         _area_id.combobox({disabled:false})
         _area_product_customer.combogrid({disabled:false})

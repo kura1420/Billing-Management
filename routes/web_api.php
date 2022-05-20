@@ -263,9 +263,10 @@ Route::middleware('authApp')->group(function() {
         Route::controller(BillingInvoiceController::class)->group(function() {
             Route::get('/', 'index');
             Route::get('/{id}', 'show');
+            Route::get('/viewfile/{id}/{type}/{filename}', 'viewfile');
     
             // Route::post('/lists', 'lists');
-            Route::post('/', 'store');
+            Route::post('/', 'verif');
             
             // Route::delete('/{id}', 'destroy'); 
         });

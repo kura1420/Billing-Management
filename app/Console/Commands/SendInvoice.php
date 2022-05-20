@@ -102,7 +102,7 @@ class SendInvoice extends Command
         $billingProducts = $billingType->billing_products;
         foreach ($billingProducts as $key => $billingProduct) {
             
-            $customerDatas = CustomerData::with(['customer_profiles', 'product_services', 'area_products',])
+            $queryCustomerDatas = CustomerData::with(['customer_profiles', 'product_services', 'area_products',])
                 ->where('active', 1)
                 ->where('product_type_id', $billingProduct->product_type_id)
                 ->where('product_service_id', $billingProduct->product_service_id);
@@ -110,10 +110,10 @@ class SendInvoice extends Command
             $dateCutOff = Carbon::today()->format('Y-m-') . $billingType->member_end_active;
                     
             if ($billingType->member_end_active > 0) {                        
-                $customerDatas->whereRaw('DATE_FORMAT(member_at, "%Y-%m-%d") <= "'. $dateCutOff .'"');
+                $queryCustomerDatas->whereRaw('DATE_FORMAT(member_at, "%Y-%m-%d") <= "'. $dateCutOff .'"');
             } 
 
-            $customerDatas->get();
+            $customerDatas = $queryCustomerDatas->get();
 
             if (!empty($customerDatas)) {
                 foreach ($customerDatas as $key => $customerData) {
@@ -146,9 +146,10 @@ class SendInvoice extends Command
                             $dateEndThisMonth = Carbon::today()->endOfMonth();
 
                             $customerDataActiveAfterCutOff = CustomerData::where('id', $customerData->id)
-                                ->whereRaw('DATE_FORMAT(member_at, "%Y-%m-%d") BETWEEN "' . $dateCutOff . '" AND "' . $dateEndThisMonth->format('Y-m-d') . '"');
+                                ->whereRaw('DATE_FORMAT(member_at, "%Y-%m-%d") BETWEEN "' . $dateCutOff . '" AND "' . $dateEndThisMonth->format('Y-m-d') . '"')
+                                ->first();
 
-                            if ($customerDataActiveAfterCutOff) {
+                            if (!empty($customerDataActiveAfterCutOff)) {
                                 $member_at = date('Y-m-d', strtotime($customerDataActiveAfterCutOff->member_at));
                                 
                                 $dateRangeMemberActiveUntilEndMonths = CarbonPeriod::create($member_at, Carbon::today()->format('Y-m-d'));
@@ -175,11 +176,11 @@ class SendInvoice extends Command
 
                         $total = ($areaProduct->price_total + $price_active_after_cutoff) - $price_discount;
 
-                        $price_sub = Formatter::rupiah($areaProduct->price_sub);
-                        $price_ppn = Formatter::rupiah($areaProduct->price_ppn);
-                        $price_discount = Formatter::rupiah($price_discount);
-                        $price_total = Formatter::rupiah($total);
-                        $price_after_cutoff_format = Formatter::rupiah($price_active_after_cutoff);
+                        $format_price_sub = Formatter::rupiah($areaProduct->price_sub);
+                        $format_price_ppn = Formatter::rupiah($areaProduct->price_ppn);
+                        $format_price_discount = Formatter::rupiah($price_discount);
+                        $format_price_total = Formatter::rupiah($total);
+                        $format_price_after_cutoff_format = Formatter::rupiah($price_active_after_cutoff);
 
                         $productName = $productService->name;
                         $customerCode = $customerData->code;
@@ -227,13 +228,13 @@ class SendInvoice extends Command
                     
                                 'product_service' => $productName,
                                 
-                                'price_sub' => $price_sub,
-                                'price_ppn' => $price_ppn,
+                                'price_sub' => $format_price_sub,
+                                'price_ppn' => $format_price_ppn,
                                 'price_discount' => $price_discount,
-                                'price_total' => $price_total,
+                                'price_total' => $format_price_total,
 
                                 'price_active_after_cutoff' => $price_active_after_cutoff,
-                                'price_after_cutoff_format' => $price_after_cutoff_format,
+                                'price_after_cutoff_format' => $format_price_after_cutoff_format,
                     
                                 'sayit' => $terbilang,
                             ],
@@ -245,15 +246,15 @@ class SendInvoice extends Command
                         $invoiceDateFormat = date('d F Y', strtotime($customerInvoice->notif_at));
                         $dueDateFormat = date('d F Y', strtotime($customerInvoice->suspend_at));
     
-                        $price_sub = Formatter::rupiah($customerInvoice->price_sub);
-                        $price_ppn = Formatter::rupiah($customerInvoice->price_ppn);
-                        $price_total = Formatter::rupiah($customerInvoice->price_total);
+                        $format_price_sub = Formatter::rupiah($customerInvoice->price_sub);
+                        $format_price_ppn = Formatter::rupiah($customerInvoice->price_ppn);
+                        $format_price_total = Formatter::rupiah($customerInvoice->price_total);
     
                         $productName = $productService->name;
                         $customerCode = $customerData->code;
                         $customerName = $customerProfile->name;
 
-                        $filepath = $filepath = $path . $customerInvoice->file_invoice;
+                        $filepath = $path . $customerInvoice->file_invoice;
                     }
 
                     self::sendEmail(
@@ -264,9 +265,9 @@ class SendInvoice extends Command
                             $invoiceDateFormat,
                             $dueDateFormat,
     
-                            $price_sub,
-                            $price_ppn,
-                            $price_total,
+                            $format_price_sub,
+                            $format_price_ppn,
+                            $format_price_total,
     
                             $productName,
                             $customerCode,

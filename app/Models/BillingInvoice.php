@@ -19,13 +19,23 @@ class BillingInvoice extends Model
         return $this->belongsTo(CustomerData::class, 'customer_data_id');
     }
 
+    public function billing_types()
+    {
+        return $this->belongsTo(BillingType::class, 'billing_type_id');
+    }
+
+    public function product_types()
+    {
+        return $this->belongsTo(ProductType::class, 'product_type_id');
+    }
+
     public function product_services()
     {
         return $this->belongsTo(ProductService::class, 'product_service_id');
     }
 
-    public function billing_types()
+    public function users()
     {
-        return $this->belongsTo(BillingType::class, 'billing_type_id');
+        return $this->belongsTo(User::class, 'verif_by_user_id');
     }
 }

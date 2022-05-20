@@ -392,7 +392,7 @@ $(document).ready(function () {
                     _type.combobox('setValue', type)
                 },
                 error: function (xhr, status, error) {
-
+                    Alert('warning', 'Internal Server Error')
                 }
             });
         } else {

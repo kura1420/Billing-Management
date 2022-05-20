@@ -13,21 +13,25 @@
         </div>
     </div>
     <div id="tab-tools">
-        <span class="easyui-tooltip" title="Create">
+        <!-- <span class="easyui-tooltip" title="Create">
             <a id="btnAdd" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'"></a>
-        </span>
-        
-        <span class="easyui-tooltip" title="Save">
-            <a id="btnSave" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-save',disabled:true"></a>
-        </span>
-        
-        <span class="easyui-tooltip" title="Edit">
-            <a id="btnEdit" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit'"></a>
-        </span>
-        
-        <!-- <span class="easyui-tooltip" title="Duplicate">
-            <a id="btnCopy" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-copy'"></a>
         </span> -->
+        
+        <span class="easyui-tooltip" title="Verif">
+            <a id="btnSave" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok',disabled:true"></a>
+        </span>
+        
+        <span class="easyui-tooltip" title="Manual Payment">
+            <a id="btnEdit" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit',disabled:true"></a>
+        </span>
+        
+        <span class="easyui-tooltip" title="Cancel">
+            <a id="btnCancel" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-cancel',disabled:true"></a>
+        </span>
+        
+        <span class="easyui-tooltip" title="Unsuspend">
+            <a id="btnUnsuspend" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-undo',disabled:true,"></a>
+        </span>
         
         <!-- <span class="easyui-tooltip" title="Remove">
             <a id="btnRemove" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove'"></a>

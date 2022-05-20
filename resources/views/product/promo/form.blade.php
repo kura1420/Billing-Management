@@ -57,23 +57,23 @@
 
         <div id="tbArea" style="padding:2px 5px;">
             <span class="easyui-tooltip" title="Create">
-                <a id="btnAddArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add',">Create</a>
+                <a id="btnAddArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-add',">Create</a>
             </span>
             
             <span class="easyui-tooltip" title="Accept">
-                <a id="btnOkArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok',">Accept</a>
+                <a id="btnOkArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-ok',">Accept</a>
             </span>
             
             <span class="easyui-tooltip" title="Edit">
-                <a id="btnEditArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit',">Edit</a>
+                <a id="btnEditArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-edit',">Edit</a>
             </span>
             
             <span class="easyui-tooltip" title="Cancel">
-                <a id="btnCancelArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-cancel',">Cancel</a>
+                <a id="btnCancelArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-cancel',">Cancel</a>
             </span>
             
             <span class="easyui-tooltip" title="Remove">
-                <a id="btnRemoveArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove',">Remove</a>
+                <a id="btnRemoveArea" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-remove',">Remove</a>
             </span>
         </div>
     </div>

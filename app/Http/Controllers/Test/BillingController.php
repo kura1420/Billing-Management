@@ -13,6 +13,15 @@ class BillingController extends Controller
     //
     public function index()
     {
+        $appProfile = \App\Models\AppProfile::first();
+
+        $x = asset('storage/app_profile/' . $appProfile->logo);
+
+        return $x;
+    }
+
+    public function index1()
+    {
         $customerDatas = CustomerData::with(['customer_profiles', 'product_services', 'area_products'])->get();        
 
         /**
