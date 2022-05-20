@@ -62,7 +62,7 @@ class Invoice extends Notification
             return (new MailMessage)
                 ->subject($appProfile->name . ' - Invoice')
                 ->greeting('Kepada Yth. ' . $this->params[8])
-                ->line('Berikut kami informasikan tagihan ' . $appProfile->name . ' Bulan ' . date('F Y') . ' sebesar ' . $this->params[5])
+                ->line('Berikut kami informasikan tagihan ' . $appProfile->name . ' Bulan ' . date('F Y', strtotime($this->params[0])) . ' sebesar ' . $this->params[5])
                 ->line('Silahkan melakukan pembayaran sebelum tanggal ' . $this->params[2]. '.')
                 ->attach(Storage::path($this->filepath));
         }       

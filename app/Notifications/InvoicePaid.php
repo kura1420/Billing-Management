@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\AppProfile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,14 +12,19 @@ class InvoicePaid extends Notification
 {
     use Queueable;
 
+    private $params;
+    private $customBody;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($params, $customBody = NULL)
     {
         //
+        $this->params = $params;
+        $this->customBody = $customBody;
     }
 
     /**
@@ -40,10 +46,21 @@ class InvoicePaid extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        $appProfile = AppProfile::first();
+
+        if ($this->customBody) {
+            return (new MailMessage)
+                ->subject($appProfile->name . ' - Invoice Paid')
+                ->view('billing.invoice.email.notif', [
+                    'content' => $this->customBody,
+                ]);
+        } else {
+            return (new MailMessage)
+                ->subject($appProfile->name . ' - Invoice Paid')
+                ->greeting('Kepada Yth. ' . $this->params[8])
+                ->line('Terimakasih sudah melakukan pembayaran untuk tagihan Bulan ' . date('F Y', strtotime($this->params[1])) . ' sebesar ' . $this->params[5])
+                ->line('Pembayaran dilakukan pada waktu ' . $this->params[2]);
+        }
     }
 
     /**

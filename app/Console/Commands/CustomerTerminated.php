@@ -55,7 +55,7 @@ class CustomerTerminated extends Command
             ->get();
 
         foreach ($billingInvoices as $key => $billingInvoice) {
-            if ($todayString == date('Y-m-d', strtotime($billingInvoice->terminate_at))) {
+            if ($todayString !== date('Y-m-d', strtotime($billingInvoice->terminate_at))) {
                 $customerData = $billingInvoice->customer_data;
                 $productService = $billingInvoice->product_services;
 
@@ -78,12 +78,12 @@ class CustomerTerminated extends Command
                 self::sendEmail($customerProfile, $billingTemplate, $replace);
 
                 CustomerData::where('id', $customerData->id)->update([
-                    'status' => 0,
+                    'active' => 0,
                     'terminate_at' => $today,
                 ]);
 
                 $billingInvoice->update([
-                    'status' => 3,
+                    'status' => 4,
                     'terminate_at' => $today,
                 ]);
             }

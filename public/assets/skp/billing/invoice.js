@@ -138,6 +138,11 @@ $(document).ready(function () {
                     } else {
                         loadData()
 
+                        _btnSave.linkbutton({disabled:true})
+                        _btnEdit.linkbutton({disabled:true})
+                        _btnCancel.linkbutton({disabled:true})
+                        _btnUnsuspend.linkbutton({disabled:true})
+
                         _status.textbox('setValue', 'Paid')
     
                         $.messager.show({
@@ -193,7 +198,7 @@ $(document).ready(function () {
                         showType:'slide'
                     })
                     
-                    _status.textbox('Unsuspend')
+                    _status.textbox('setValue', 'Unsuspend')
 
                     loadData()
                 },
@@ -360,7 +365,7 @@ $(document).ready(function () {
         
                     formEdit()
 
-                    if (response.status == 'Paid') {
+                    if (response.status == 'Paid' || response.status == 'Terminated') {
                         _btnEdit.linkbutton({disabled:true})
                     }
                 },

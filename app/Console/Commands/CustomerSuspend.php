@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Helpers\Formatter;
 use App\Models\BillingInvoice;
 use App\Models\BillingTemplate;
 use App\Models\CustomerData;
@@ -55,7 +56,7 @@ class CustomerSuspend extends Command
             ->get();
 
         foreach ($billingInvoices as $key => $billingInvoice) {
-            if ($todayString == date('Y-m-d', strtotime($billingInvoice->suspend_at))) {
+            if ($todayString !== date('Y-m-d', strtotime($billingInvoice->suspend_at))) {
                 $customerData = $billingInvoice->customer_data;
                 $productService = $billingInvoice->product_services;
                 $billingType = $billingInvoice->billing_types;
@@ -64,16 +65,16 @@ class CustomerSuspend extends Command
 
                 $terminateDate = $today->addDay("+" . $billingType->terminated);
 
-                $filepath = 'billing/invoice/' . $today->format('Y-m') . '/' . $billingInvoice->file_invoice;
+                $filepath = 'billing/invoice/' . date('Y-m', strtotime($billingInvoice->notif_at)) . '/' . $billingInvoice->file_invoice;
 
                 $replace = [
                     $billingInvoice->code,
                     $today,
                     $terminateDate,
                 
-                    $billingInvoice->price_sub,
-                    $billingInvoice->price_ppn,
-                    $billingInvoice->price_total,
+                    Formatter::rupiah($billingInvoice->price_sub),
+                    Formatter::rupiah($billingInvoice->price_ppn),
+                    Formatter::rupiah($billingInvoice->price_total),
                 
                     $productService->name,
                     $customerData->code,
@@ -83,13 +84,14 @@ class CustomerSuspend extends Command
                 self::sendEmail($customerProfile, $billingTemplate, $replace, $filepath);
 
                 CustomerData::where('id', $customerData->id)->update([
-                    'status' => 0,
+                    // 'status' => 0,
                     'suspend_at' => $today,
                 ]);
 
                 $billingInvoice->update([
                     'status' => 2,
                     'suspend_at' => $today,
+                    'terminate_at' => $terminateDate,
                 ]);
             }
         }

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\AppProfile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,14 +12,19 @@ class Unsuspend extends Notification
 {
     use Queueable;
 
+    private $params;
+    private $customBody;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($params, $customBody = NULL)
     {
         //
+        $this->params = $params;
+        $this->customBody = $customBody;
     }
 
     /**
@@ -40,10 +46,21 @@ class Unsuspend extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        $appProfile = AppProfile::first();
+
+        if ($this->customBody) {
+            return (new MailMessage)
+                ->subject($appProfile->name . ' - Unsuspend')
+                ->view('billing.invoice.email.notif', [
+                    'content' => $this->customBody,
+                ]);
+        } else {
+            return (new MailMessage)
+                ->subject($appProfile->name . ' - Unsuspend')
+                ->greeting('Kepada Yth. ' . $this->params[8])
+                ->line('Layanan anda telah di Unsuspend, harap segera melakukan pembayaran untuk tagihan Bulan '. date('F Y', strtotime($this->params[1])) . ' sebesar ' . $this->params[5])
+                ->line('Bila layanan tersebut belum dilakukan pembayaran maka dalam waktu 24Jam, layanan anda akan kami Suspend kembali.');
+        }
     }
 
     /**

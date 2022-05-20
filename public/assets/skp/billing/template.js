@@ -80,6 +80,14 @@ $(document).ready(function () {
                 id: 'wtverif',
                 text: 'Waiting Verif Paid',
             },
+            {
+                id: 'unsuspend',
+                text: 'Unsuspend'
+            },
+            {
+                id: 'resuspend',
+                text: 'Resuspend'
+            },
         ],
     })
 

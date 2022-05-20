@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\AppProfile;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -11,14 +12,21 @@ class Terminate extends Notification
 {
     use Queueable;
 
+    private $params;
+    private $filepath;
+    private $customBody;
+
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($params, $filepath, $customBody = NULL)
     {
         //
+        $this->params = $params;
+        $this->filepath = $filepath;
+        $this->customBody = $customBody;
     }
 
     /**
@@ -40,10 +48,21 @@ class Terminate extends Notification
      */
     public function toMail($notifiable)
     {
-        return (new MailMessage)
-                    ->line('The introduction to the notification.')
-                    ->action('Notification Action', url('/'))
-                    ->line('Thank you for using our application!');
+        $appProfile = AppProfile::first();
+
+        if ($this->customBody) {
+            return (new MailMessage)
+                ->subject($appProfile->name . ' - Terminated')
+                ->view('billing.invoice.email.notif', [
+                    'content' => $this->customBody,
+                ]);
+        } else {
+            return (new MailMessage)
+                ->subject($appProfile->name . ' - Terminated')
+                ->greeting('Kepada Yth. ' . $this->params[8])
+                ->line('Bersama ini kami informasikan kembali bahwa untuk layanan Anda telah kami lakukan pemutusan layanan.')
+                ->line('Sehingga anda tidak dapat menggunakan layanan ini kembali, untuk informasi lebih lanjut silahkan hubungi Call Center.');
+        }
     }
 
     /**

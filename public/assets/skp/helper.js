@@ -69,15 +69,11 @@ function billingStatus (value) {
             break;
 
         case 3:
-            status = 'Terminated'
+            status = 'Unsuspend'
             break;
 
         case 4:
-            status = 'Waiting Verif'
-            break;
-
-        case 5:
-            status = 'Unsuspend'
+            status = 'Terminated'
             break;
     
         default:

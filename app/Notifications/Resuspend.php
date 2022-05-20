@@ -7,14 +7,12 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Facades\Storage;
 
-class Suspend extends Notification
+class Resuspend extends Notification
 {
     use Queueable;
 
     private $params;
-    private $filepath;
     private $customBody;
 
     /**
@@ -22,11 +20,10 @@ class Suspend extends Notification
      *
      * @return void
      */
-    public function __construct($params, $filepath, $customBody = NULL)
+    public function __construct($params, $customBody = NULL)
     {
         //
         $this->params = $params;
-        $this->filepath = $filepath;
         $this->customBody = $customBody;
     }
 
@@ -53,19 +50,16 @@ class Suspend extends Notification
 
         if ($this->customBody) {
             return (new MailMessage)
-                ->subject($appProfile->name . ' - Suspend')
+                ->subject($appProfile->name . ' - Resuspend')
                 ->view('billing.invoice.email.notif', [
                     'content' => $this->customBody,
-                ])
-                ->attach(Storage::path($this->filepath));
+                ]);
         } else {
             return (new MailMessage)
-                ->subject($appProfile->name . ' - Suspend')
+                ->subject($appProfile->name . ' - Resuspend')
                 ->greeting('Kepada Yth. ' . $this->params[8])
-                ->line('Berikut kami informasikan kembali tagihan ' . $appProfile->name . ' Bulan ' . date('F Y', strtotime($this->params[1])) . ' sebesar ' . $this->params[5])
-                ->line('Silahkan melakukan pembayaran tanggal ' . $this->params[1]. ', bilamana belum melakukan pembayaran maka dengan berat hati kami akan mensuspend jaringan internet Anda.')
-                ->line('Jika masih belum dilakukan juga dan melewati tanggal ' . $this->params[2] . ', melalui informasi ini kami akan melakukan pemutusan secara keseluruhan.')
-                ->attach(Storage::path($this->filepath));
+                ->line('Layanan anda telah di Suspend kembali, harap segera melakukan pembayaran untuk tagihan Bulan '. date('F Y', strtotime($this->params[1])) . ' sebesar ' . $this->params[5])
+                ->line('Jika masih belum dilakukan juga dan melewati tanggal ' . $this->params[2] . ', melalui informasi ini kami akan melakukan pemutusan secara keseluruhan.');
         }
     }
 

@@ -17,6 +17,8 @@ class Formatter {
 	{
 		$terbilang = new Terbilang();
 
-		return $terbilang->parse($number)->getResult();
+		$result = $terbilang->parse($number)->getResult();
+
+		return ucwords($result);
 	}
 }

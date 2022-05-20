@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Rest;
 
+use App\Helpers\Formatter;
 use App\Http\Controllers\Controller;
 use App\Models\BillingInvoice;
+use App\Models\BillingTemplate;
 use App\Notifications\InvoicePaid;
+use App\Notifications\Unsuspend;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -35,8 +38,7 @@ class BillingInvoiceController extends Controller
                 'billing_invoices.price_total',
                 'billing_invoices.price_discount',
                 'billing_invoices.notif_at',
-                'billing_invoices.created_at',
-                'billing_invoices.updated_at',
+                'billing_invoices.verif_payment_at',
                     'billing_types.name as billing_type_id',
                         'customer_data.code as customer_data_id',
                             'product_types.name as product_type_id',
@@ -71,7 +73,12 @@ class BillingInvoiceController extends Controller
             'users'
         ])->find($id);
         
-        $customerProfile = $row->customer_data->customer_profiles()->select('name', 'email', 'handphone', 'telp')->first();
+        $customerProfile = $row->customer_data->customer_profiles()->select([
+            'name', 
+            'email', 
+            'handphone', 
+            'telp', 
+        ])->first();
 
         $obj = new \stdClass;
         
@@ -97,9 +104,9 @@ class BillingInvoiceController extends Controller
         $obj->email = $customerProfile->email;
         $obj->telp = $customerProfile->telp;
         $obj->handphone = $customerProfile->handphone;
-        $obj->member_at = $customerProfile->member_at;
-        $obj->suspend_at = $customerProfile->suspend_at;
-        $obj->terminate_at = $customerProfile->terminate_at;
+        $obj->member_at = $row->customer_data->member_at;
+        $obj->suspend_at = $row->customer_data->suspend_at;
+        $obj->terminate_at = $row->customer_data->terminate_at;
 
         return $obj;
     }
@@ -117,30 +124,142 @@ class BillingInvoiceController extends Controller
             ], 422);
         } else {
             $id = $request->id ?? NULL;
-            $row = BillingInvoice::with('customer_data')->find($id);
+
+            $row = BillingInvoice::with([
+                'customer_data',
+                'product_types',
+                'product_services',
+            ])->find($id);
+            
             $customerProfile = $row->customer_data->customer_profiles()->first();
 
             $file_payment = $row->file_payment ?? uniqid();
             $file_payment = $file_payment . '.' . $request->file_payment->extension();
-
             $request->file('file_payment')->storeAs(
                 'billing/invoice-paid/' . date('Y-m') .'/',
                 $file_payment
             );
 
+            $payment_at = Carbon::now();
+
+            $replace = [
+                $row->code,
+                $row->notif_at,
+                $payment_at,
+    
+                Formatter::rupiah($row->price_sub),
+                Formatter::rupiah($row->price_ppn),
+                Formatter::rupiah($row->price_total),
+    
+                $row->product_services->name,
+                $row->customer_data->code,
+                $customerProfile->name,
+            ];
+
+            $billingTemplate = BillingTemplate::where('sender', 'email')->where('type', 'paid')->first();
+
+            $emailBody = NULL;
+            if (!empty($billingTemplate)) {
+                $search = [
+                    '_invoice_code_',
+                    '_invoice_date_',
+                    '_invoice_due_',
+        
+                    '_price_sub_',
+                    '_price_ppn_',
+                    '_price_total_',
+        
+                    '_product_service_',
+                    '_customer_code_',
+                    '_customer_name_',
+                ];
+    
+                $emailBody = str_replace($search, $replace, $billingTemplate->content);
+            }            
+
+            $customerProfile->notify(new InvoicePaid($replace, $emailBody));
+
             $row->update([
                 'status' => 1,
                 'suspend_at' => NULL,
-                'verif_payment_at' => Carbon::now(),
+                'verif_payment_at' => $payment_at,
                 'verif_by_user_id' => session()->get('user_data')['id'],
                 'file_payment' => $file_payment,
                 'type_payment' => 'manual',
             ]);
 
-            $customerProfile->notify(new InvoicePaid());
-
             return response()->json('OK', 200);
         }
+    }
+
+    public function unsuspend($id)
+    {
+        $row = BillingInvoice::with([
+            'customer_data',
+            'product_types',
+            'product_services',
+        ])
+        ->where('id', $id)
+        ->where('status', 2)
+        ->first();
+        
+        if (!empty($row)) {
+            $customerProfile = $row->customer_data->customer_profiles()->first();
+
+            $unsuspend_at = Carbon::now();
+            $resuspend_at = $unsuspend_at->addHours(12);
+
+            $replace = [
+                $row->code,
+                $unsuspend_at,
+                $resuspend_at,
+
+                Formatter::rupiah($row->price_sub),
+                Formatter::rupiah($row->price_ppn),
+                Formatter::rupiah($row->price_total),
+
+                $row->product_services->name,
+                $row->customer_data->code,
+                $customerProfile->name,
+            ];
+
+            $billingTemplate = BillingTemplate::where('sender', 'email')->where('type', 'unsuspend')->first();
+
+            $emailBody = NULL;
+            if (!empty($billingTemplate)) {
+                $search = [
+                    '_invoice_code_',
+                    '_invoice_date_',
+                    '_invoice_due_',
+        
+                    '_price_sub_',
+                    '_price_ppn_',
+                    '_price_total_',
+        
+                    '_product_service_',
+                    '_customer_code_',
+                    '_customer_name_',
+                ];
+
+                $emailBody = str_replace($search, $replace, $billingTemplate->content);
+            }            
+
+            $customerProfile->notify(new Unsuspend($replace, $emailBody));
+
+            $row->update([
+                'status' => 3,
+                'suspend_at' => $resuspend_at,
+            ]);
+
+            return response()->json('OK', 200); 
+        } else {
+            return response()->json([
+                'data' => [
+                    'id' => 'Invoice tidak dalam status suspend'
+                ],
+                'status' => 'NOT'
+            ], 422);
+        }    
     }
 
     public function viewfile($id, $type, $filename)

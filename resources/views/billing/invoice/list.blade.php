@@ -36,11 +36,11 @@
                 },
             " sortable="true">Invoice</th>
             <th data-options="
-                field:'updated_at',
+                field:'verif_payment_at',
                 formatter: function(value, row) {
                     return TimestampString2Datetime(value)
                 },
-            " sortable="true">Updated At</th>
+            " sortable="true">Payment At</th>
         </tr>
     </thead>
 </table>

@@ -16,14 +16,14 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Console\Command;
 
-class SendInvoice extends Command
+class CustomerInvoice extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'send:invoice';
+    protected $signature = 'customer:invoice';
 
     /**
      * The console command description.
@@ -230,7 +230,7 @@ class SendInvoice extends Command
                                 
                                 'price_sub' => $format_price_sub,
                                 'price_ppn' => $format_price_ppn,
-                                'price_discount' => $price_discount,
+                                'price_discount' => $format_price_discount,
                                 'price_total' => $format_price_total,
 
                                 'price_active_after_cutoff' => $price_active_after_cutoff,

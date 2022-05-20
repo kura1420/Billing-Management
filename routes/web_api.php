@@ -253,7 +253,6 @@ Route::middleware('authApp')->group(function() {
             Route::post('/', 'store');
             Route::post('/document', 'documentStore');
             
-            // Route::delete('/{id}', 'destroy');
             Route::delete('/contact/{id}', 'contactDestroy');
             Route::delete('/document/{id}', 'documentDestroy');
         });
@@ -265,10 +264,8 @@ Route::middleware('authApp')->group(function() {
             Route::get('/{id}', 'show');
             Route::get('/viewfile/{id}/{type}/{filename}', 'viewfile');
     
-            // Route::post('/lists', 'lists');
             Route::post('/', 'verif');
-            
-            // Route::delete('/{id}', 'destroy'); 
+            Route::post('/unsuspend/{id}', 'unsuspend');
         });
     });
     
