@@ -13,4 +13,9 @@ class ConfigController extends Controller
     {
         return view(self::FOLDER . 'tax.main');
     }
+
+    public function bank()
+    {
+        return view(self::FOLDER . 'bank.main');
+    }
 }

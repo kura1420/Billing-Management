@@ -7,6 +7,7 @@ use App\Http\Controllers\Rest\AppRoleController;
 use App\Http\Controllers\Rest\AppUserController;
 use App\Http\Controllers\Rest\AreaController;
 use App\Http\Controllers\Rest\AuthController;
+use App\Http\Controllers\Rest\BankController;
 use App\Http\Controllers\Rest\BillingInvoiceController;
 use App\Http\Controllers\Rest\BillingTemplateController;
 use App\Http\Controllers\Rest\BillingTypeController;
@@ -83,6 +84,18 @@ Route::middleware('authApp')->group(function() {
             Route::post('/', 'store');
             
             Route::delete('/{id}', 'destroy');   
+        });
+    });
+
+    Route::prefix('bank')->group(function() {
+        Route::controller(BankController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');  
         });
     });
     

@@ -184,5 +184,37 @@
                 </tr>
 			</table>
 		</div>
+
+		<br>
+
+		@if ($va_number !== '')
+		<div class="invoice-box">
+			<table cellpadding="0" cellspacing="0">
+				<tr class="heading">
+					<td>Transfer to</td>
+				</tr>
+
+				<tr class="item">
+					<table>
+						<tr>
+							<td><b>Bank</b></td>
+							<td>BCA</td>
+						</tr>
+
+						<tr>
+							<td><b>Virtual Account</b></td>
+							<td>{{$va_number}}</td>
+						</tr>
+
+						<tr>
+							<td><b>Total</b></td>
+							<td>{{$price_total}}</td>
+						</tr>
+					</table>
+				</tr>
+			</table>
+		</div>
+		@endif
+
 	</body>
 </html>

@@ -54,6 +54,7 @@ Route::middleware('authApp')->group(function() {
     Route::prefix('config')->group(function() {
         Route::controller(ConfigController::class)->group(function() {
             Route::get('/tax', 'tax');
+            Route::get('/bank', 'bank');
         });
     });
 

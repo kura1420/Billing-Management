@@ -1,11 +1,10 @@
 <?php
 
-use App\Http\Controllers\Test\AuthController;
-use App\Http\Controllers\Test\BillingController;
+use App\Http\Controllers\Test\SampleController;
 use Illuminate\Support\Facades\Route;
 
-Route::prefix('billing')->group(function() {
-    Route::controller(BillingController::class)->group(function () {
+Route::prefix('sample')->group(function() {
+    Route::controller(SampleController::class)->group(function() {
         Route::get('/', 'index');
     });
 });
