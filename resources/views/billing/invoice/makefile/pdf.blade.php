@@ -187,34 +187,57 @@
 
 		<br>
 
-		@if ($va_number !== '')
-		<div class="invoice-box">
-			<table cellpadding="0" cellspacing="0">
-				<tr class="heading">
-					<td>Transfer to</td>
-				</tr>
-
-				<tr class="item">
-					<table>
-						<tr>
-							<td><b>Bank</b></td>
-							<td>BCA</td>
+		@switch ($payment_type)
+			@case('static_va')
+				<div class="invoice-box">
+					<table cellpadding="0" cellspacing="0">
+						<tr class="heading">
+							<td>Transfer to</td>
 						</tr>
 
-						<tr>
-							<td><b>Virtual Account</b></td>
-							<td>{{$va_number}}</td>
-						</tr>
+						<tr class="item">
+							<table>
+								<tr>
+									<td><b>Bank</b></td>
+									<td>{{$bank_name}}</td>
+								</tr>
 
-						<tr>
-							<td><b>Total</b></td>
-							<td>{{$price_total}}</td>
+								<tr>
+									<td><b>Virtual Account</b></td>
+									<td>{{$trx_payment}}</td>
+								</tr>
+
+								<tr>
+									<td><b>Total</b></td>
+									<td>{{$price_total}}</td>
+								</tr>
+							</table>
 						</tr>
 					</table>
-				</tr>
-			</table>
-		</div>
-		@endif
+				</div>
+				@break
+
+			@case('payment_link')
+				<div class="invoice-box">
+					<table cellpadding="0" cellspacing="0">
+						<tr class="heading">
+							<td>Transfer to</td>
+						</tr>
+
+						<tr class="item">
+							<table>
+								<tr>
+									<td align="center"><b><a href="{{$trx_payment}}">Click Here to Choose Your Payment</a></b></td>
+								</tr>
+							</table>
+						</tr>
+					</table>
+				</div>
+				@break
+
+			@default
+				@break
+		@endswitch
 
 	</body>
 </html>

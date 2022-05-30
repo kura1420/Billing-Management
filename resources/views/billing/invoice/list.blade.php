@@ -38,7 +38,9 @@
             <th data-options="
                 field:'verif_payment_at',
                 formatter: function(value, row) {
-                    return TimestampString2Datetime(value)
+                    if (value) {
+                        return TimestampString2Datetime(value)
+                    }
                 },
             " sortable="true">Payment At</th>
         </tr>

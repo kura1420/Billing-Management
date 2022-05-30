@@ -22,7 +22,7 @@ class RestApi {
         $this->API_HOST = $api->host;
 
         $this->API_CONFIG = Http::withOptions([
-            'debug' => false,
+            'debug' => FALSE,
         ])
         ->withHeaders([
            $api->user_label => $api->user_value,
@@ -36,14 +36,17 @@ class RestApi {
         $class = new RestApi();
 
         switch ($method) {
+            case 'get':
             case 'GET':
                 return $class->_get($endpoint, $params);
                 break;
 
+            case 'post':
             case 'POST':
                 return $class->_post($endpoint, $params);
                 break;
 
+            case 'put':
             case 'PUT':
                 return $class->_put($endpoint, $params);
                 break;
@@ -57,8 +60,10 @@ class RestApi {
     protected function _get($endpoint, $params = NULL)
     {
         if (!empty($params)) {
+            $target = $this->API_HOST . $endpoint;
+
             $res = $this->API_CONFIG
-                ->get($endpoint, $params);
+                ->get($target, $params);
         } else {
             $target = $this->API_HOST . $endpoint;
 
@@ -73,8 +78,10 @@ class RestApi {
 
     protected function _post($endpoint, $params)
     {
+        $target = $this->API_HOST . $endpoint;
+
         $res = $this->API_CONFIG
-            ->post($endpoint, $params);
+            ->post($target, $params);
 
         $res->throw();
         
@@ -83,8 +90,10 @@ class RestApi {
 
     protected function _put($endpoint, $params)
     {
+        $target = $this->API_HOST . $endpoint;
+
         $res = $this->API_CONFIG
-            ->put($endpoint, $params);
+            ->put($target, $params);
 
         $res->throw();
         

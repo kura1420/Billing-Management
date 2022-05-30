@@ -279,6 +279,7 @@ Route::middleware('authApp')->group(function() {
     
             Route::post('/', 'verif');
             Route::post('/unsuspend/{id}', 'unsuspend');
+            Route::post('/resend/{id}', 'resend');
         });
     });
     

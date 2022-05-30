@@ -6,10 +6,12 @@ use App\Helpers\Formatter;
 use App\Http\Controllers\Controller;
 use App\Models\BillingInvoice;
 use App\Models\BillingTemplate;
+use App\Notifications\Invoice;
 use App\Notifications\InvoicePaid;
 use App\Notifications\Unsuspend;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -162,8 +164,8 @@ class BillingInvoiceController extends Controller
             if (!empty($billingTemplate)) {
                 $search = [
                     '_invoice_code_',
-                    '_invoice_date_',
-                    '_invoice_due_',
+                    '_start_date_',
+                    '_end_date_',
         
                     '_price_sub_',
                     '_price_ppn_',
@@ -229,8 +231,8 @@ class BillingInvoiceController extends Controller
             if (!empty($billingTemplate)) {
                 $search = [
                     '_invoice_code_',
-                    '_invoice_date_',
-                    '_invoice_due_',
+                    '_start_date_',
+                    '_end_date_',
         
                     '_price_sub_',
                     '_price_ppn_',
@@ -283,5 +285,82 @@ class BillingInvoiceController extends Controller
                 return abort(404);
                 break;
         }
+    }
+
+    public function resend(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => [
+                'nullable',
+                'string',
+                'email',
+            ],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'data' => $validator->errors(),
+                'status' => 'NOT'
+            ], 422);
+        } else {
+            $email = $request->email ?? NULL;
+
+            $row = BillingInvoice::with([
+                'customer_data',
+                'product_types',
+                'product_services',
+            ])
+            ->where('id', $id)
+            ->first();
+
+            $customerProfile = $row->customer_data->customer_profiles()->first();
+    
+            $replace = [
+                $row->code,
+                date('d M Y', strtotime($row->notif_at)),
+                date('d M Y', strtotime($row->suspend_at)),
+    
+                Formatter::rupiah($row->price_sub),
+                Formatter::rupiah($row->price_ppn),
+                Formatter::rupiah($row->price_total),
+    
+                $row->product_services->name,
+                $row->customer_data->code,
+                $customerProfile->name,
+            ];
+    
+            $filepath = 'billing/invoice/' . date('Y-m', strtotime($row->notif_at)) . '/' . $row->file_invoice;
+    
+            $billingTemplate = BillingTemplate::where('sender', 'email')->where('type', 'notif')->first();
+    
+            $emailBody = NULL;
+                
+            if (!empty($billingTemplate)) {
+                $search = [
+                    '_invoice_code_',
+                    '_start_date_',
+                    '_end_date_',
+        
+                    '_price_sub_',
+                    '_price_ppn_',
+                    '_price_total_',
+            
+                    '_product_service_',
+                    '_customer_code_',
+                    '_customer_name_',
+                ];
+
+                $emailBody = str_replace($search, $replace, $billingTemplate->content);
+            }
+
+            if (empty($email)) {
+                $customerProfile->notify(new Invoice($replace, $filepath, $emailBody));
+            } else {
+                Notification::route('mail', $email)
+                    ->notify(new Invoice($replace, $filepath, $emailBody));
+            }            
+    
+            return response()->json('OK', 200); 
+        }        
     }
 }

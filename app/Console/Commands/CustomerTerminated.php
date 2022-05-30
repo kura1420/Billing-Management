@@ -99,8 +99,8 @@ class CustomerTerminated extends Command
         if ($billingTemplate) {
             $search = [
                 '_invoice_code_',
-                '_invoice_date_',
-                '_invoice_due_',
+                '_start_date_',
+                '_end_date_',
 
                 '_price_sub_',
                 '_price_ppn_',

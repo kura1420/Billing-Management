@@ -23,8 +23,8 @@
                 <td>
                     <ul>
                         <li> _invoice_code_ </li>
-                        <li> _invoice_date_ </li>
-                        <li> _invoice_due_ </li>
+                        <li> _start_date_ </li>
+                        <li> _end_date_ </li>
                     </ul>
                 </td>
                 <td>

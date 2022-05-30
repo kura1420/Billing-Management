@@ -13,9 +13,9 @@
         </div>
     </div>
     <div id="tab-tools">
-        <!-- <span class="easyui-tooltip" title="Create">
-            <a id="btnAdd" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-add'"></a>
-        </span> -->
+        <span class="easyui-tooltip" title="Resend">
+            <a id="btnResend" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-send_email',disabled:true"></a>
+        </span>
         
         <span class="easyui-tooltip" title="Verif">
             <a id="btnSave" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok',disabled:true"></a>

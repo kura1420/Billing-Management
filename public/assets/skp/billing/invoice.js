@@ -16,7 +16,7 @@ $(document).ready(function () {
     let _ff = $('#ff');
     let _ss = $('#ss');
     
-    // let _btnAdd = $('#btnAdd');
+    let _btnResend = $('#btnResend');
     let _btnSave = $('#btnSave');
     let _btnEdit = $('#btnEdit');
     let _btnUnsuspend = $('#btnUnsuspend');
@@ -94,17 +94,65 @@ $(document).ready(function () {
         }
     });
 
-    // _btnAdd.linkbutton({
-    //     onClick: function() {
-    //         _tbs.tabs({
-    //             selected: 1
-    //         })
-        
-    //         formEdit()
-    
-    //         _ff.form('clear')
-    //     }
-    // });
+    _btnResend.linkbutton({
+        onClick: function() {
+            var _wResend = $.messager.prompt({
+                title: 'Confirmation Resend Invoice',
+                msg: 'Masukkan alamat email tujuan diluar data profile customer',
+                buttons: [{
+                    text:'Send',
+                    handler:function(){
+                        var opts = _wResend.dialog('options');
+                        var value = _wResend.find('.messager-input').val();
+                        opts.fn(value);
+                    }
+                },{
+                    text:'Cancel',
+                    handler:function(){
+                        _wResend.dialog('close');
+                    }
+                }],
+                fn: function (r) {
+                    $.messager.progress();
+            
+                    $.ajax({
+                        type: "POST",
+                        url: _rest + "/resend/" + _id.textbox('getValue'),
+                        data: {email: r},
+                        dataType: "json",
+                        success: function (response) {
+                            $.messager.progress('close');
+                            
+                            _wResend.dialog('close');
+                            
+                            $.messager.show({
+                                title:'Info',
+                                msg:'Invoice Resend.',
+                                timeout:5000,
+                                showType:'slide'
+                            })
+                        },
+                        error: function (xhr, error) {
+                            $.messager.progress('close');
+
+                            let {status, responseJSON} = xhr
+
+                            if (status == 422) {
+                                let msg = []
+                                for (var d in responseJSON.data) {
+                                    msg.push(responseJSON.data[d].toString())
+                                }
+
+                                Alert('warning', msg.join('<br />'));
+                            } else {
+                                Alert('warning', 'Internal Server Error')
+                            }
+                        }
+                    });
+                },
+            });
+        }
+    });
 
     _btnSave.linkbutton({
         onClick: function() {
@@ -323,6 +371,7 @@ $(document).ready(function () {
     var formReset = () => {
         _ff.form('clear')
 
+        _btnResend.linkbutton({disabled:true})
         _btnSave.linkbutton({disabled:true})
         _btnEdit.linkbutton({disabled:true})
         _btnCancel.linkbutton({disabled:true})
@@ -335,6 +384,7 @@ $(document).ready(function () {
     }
 
     var formEdit = () => {
+        _btnResend.linkbutton({disabled:false})
         _btnSave.linkbutton({disabled:true})
         _btnEdit.linkbutton({disabled:false})
         _btnCancel.linkbutton({disabled:true})

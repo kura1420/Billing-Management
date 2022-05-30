@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class BillingInvoice extends Model
 {
-    use HasFactory, Uuid;
+    use HasFactory;
 
     public $incrementing = false;
 
@@ -37,5 +37,10 @@ class BillingInvoice extends Model
     public function users()
     {
         return $this->belongsTo(User::class, 'verif_by_user_id');
+    }
+
+    public function invoice_transaction_modes()
+    {
+        return $this->hasMany(InvoiceTransactionMode::class);
     }
 }

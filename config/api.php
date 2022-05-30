@@ -2,7 +2,7 @@
 
 return [
     'prod' => [
-        // 'host' => 'https://api-stg.oyindonesia.com/api',
+        // 'host' => 'https://partner.oyindonesia.com/api',
     
         // 'user_label' => 'x-oy-username',
         // 'user_value' => 'syakur',

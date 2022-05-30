@@ -6,6 +6,7 @@ use App\Helpers\Formatter;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Http\Controllers\Controller;
 use App\Models\AppProfile;
+use App\Models\Bank;
 use App\Models\CustomerData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class SampleController extends Controller
         $customerProfile = $customerData->customer_profiles;
         $productService = $customerData->product_services;
         $areaProduct = $customerData->area_products;
+        $bank = Bank::whereActive(1)->first();
 
         $data = [
             'invoice_code' => uniqid(),
@@ -47,7 +49,11 @@ class SampleController extends Controller
             'price_active_after_cutoff' => 0,
             'price_after_cutoff_format' => Formatter::rupiah(0),
 
-            'va_number' => 123123123,
+            'payment_type' => 'va',
+            'va_number' => 123123,
+
+            'bank_code' => $bank->code,
+            'bank_name' => $bank->name,
                             
             'sayit' => Formatter::rupiahSpeakOnBahasa(60),
         ];

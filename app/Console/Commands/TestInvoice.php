@@ -21,21 +21,21 @@ use Illuminate\Support\Str;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class CustomerInvoice extends Command
+class TestInvoice extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'customer:invoice';
+    protected $signature = 'test:invoice';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Send Notification Invoice to Customer';
+    protected $description = 'Test Send Invoice Before Send To Customer';
 
     /**
      * Create a new command instance.
@@ -81,18 +81,7 @@ class CustomerInvoice extends Command
                 'dateMonthYear' => $dateMonthYear,
             ];
 
-            if ($billingType->repeat) {
-                if (
-                    ($todayString >= $invoiceDate->toDateString()) &&
-                    ($todayString < $dueDate->toDateString())
-                ) {
-                    self::process($billingType, $dateFormat, $appProfile, $billingTemplate, $bank);
-                }
-            } else {
-                if ($todayString == $invoiceDate->toDateString()) {
-                    self::process($billingType, $dateFormat, $appProfile, $billingTemplate, $bank);
-                }
-            }
+            self::process($billingType, $dateFormat, $appProfile, $billingTemplate, $bank);
         }
 
         return 0;
@@ -110,8 +99,7 @@ class CustomerInvoice extends Command
             use ($billingType,$appProfile, $billingTemplate, $bank, $today, $invoiceDateFormat, $dueDate, $dueDateFormat, $dateMonthYear) 
             {
                 $billingProducts = $billingType->billing_products;
-                foreach ($billingProducts as $key => $billingProduct) {
-                    
+                foreach ($billingProducts as $key => $billingProduct) {                    
                     $queryCustomerDatas = CustomerData::with(['customer_profiles', 'product_services', 'area_products',])
                         ->where('active', 1)
                         ->where('product_type_id', $billingProduct->product_type_id)
@@ -207,6 +195,10 @@ class CustomerInvoice extends Command
                                 $trx_payment = NULL;
 
                                 switch ($payment_type) {
+                                    case 'payment_link':
+                                        $trx_payment = url("/pg/fund-acceptance/payment-link/$billingId/$billingCode/create");
+                                        break;
+
                                     case 'static_va':
                                         $payment_params = [
                                             'partner_user_id' => $customerData->id,
@@ -236,6 +228,7 @@ class CustomerInvoice extends Command
                                                 'mode' => $payment_type,
                                                 'trx_id' => $payment_id,
                                                 'trx_payment' => $trx_payment,
+                                                'trx_bank_code' => $bank->code,
                                             ]);
                                         }
                                         break;
