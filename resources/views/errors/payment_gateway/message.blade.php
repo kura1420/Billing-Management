@@ -13,7 +13,7 @@
     <h1>Information!</h1>
     <div>
         <p>
-            {{ $message }}
+            @php echo $message; @endphp
         </p>
         <p>&mdash; {{ config('app.name', 'Laravel') }}</p>
     </div>

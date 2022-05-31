@@ -22,6 +22,7 @@ $(document).ready(function () {
     let _id = $('#id');
     let _code = $('#code');
     let _name = $('#name');
+    let _rekening = $('#rekening');
     let _active = $('#active');
     let _responsible_name = $('#responsible_name');
 
@@ -255,6 +256,7 @@ $(document).ready(function () {
         _name.textbox({disabled:true})
         _code.textbox({disabled:true})
         _responsible_name.textbox({disabled:true})
+        _rekening.textbox({disabled:true})
         _active.switchbutton({disabled:true})
     }
 
@@ -266,6 +268,7 @@ $(document).ready(function () {
         _name.textbox({disabled:false})
         _code.textbox({disabled:false})
         _responsible_name.textbox({disabled:false})
+        _rekening.textbox({disabled:false})
         _active.switchbutton({disabled:false})
     }
 

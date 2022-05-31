@@ -50,6 +50,11 @@ class RestApi {
             case 'PUT':
                 return $class->_put($endpoint, $params);
                 break;
+
+            case 'delete':
+            case 'DELETE':
+                return $class->_delete($endpoint);
+                break;
             
             default:
                 return "method not defined";
@@ -98,6 +103,18 @@ class RestApi {
         $res->throw();
         
         return $res->object();        
+    }
+
+    protected function _delete($endpoint)
+    {
+        $target = $this->API_HOST . $endpoint;
+
+        $res = $this->API_CONFIG
+            ->delete($target);
+
+        $res->throw();
+
+        return $res->object();
     }
 
 }

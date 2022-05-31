@@ -15,6 +15,7 @@
             "
             sortable="true">Active</th>
             <th data-options="field:'responsible_name'" sortable="true">Responsible Name</th>
+            <th data-options="field:'rekening'" sortable="true">Rekening</th>
         </tr>
     </thead>
 </table>

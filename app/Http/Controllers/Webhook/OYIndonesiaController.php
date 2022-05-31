@@ -11,11 +11,12 @@ use App\Models\CustomerContact;
 use App\Models\CustomerProfile;
 use App\Models\InvoiceTransactionMode;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 
 class OYIndonesiaController extends Controller
 {
     //
-    public function fundAcceptancePaymentLinkCreate($id, $code)
+    public function fundAcceptancePaymentLinkCreate($id, $code, $mode)
     {
         $appProfile = AppProfile::first();
 
@@ -35,74 +36,207 @@ class OYIndonesiaController extends Controller
             }
         }
 
-        $paymentLinkCreate = TRUE;
-        if (count($row->invoice_transaction_modes)>0) {
-            if ($row->invoice_transaction_modes->trx_id) {
-                $endpoint = '/payment-checkout/' . $row->invoice_transaction_modes->trx_id;
-                $method = 'GET';
-                $params = NULL;
+        switch ($mode) {
+            case 'create':
+                $paymentLinkCreate = TRUE;
+                if (count($row->invoice_transaction_modes)>0) {
+                    $invoice_transaction_mode = $row->invoice_transaction_modes[0];
+
+                    if ($invoice_transaction_mode->trx_id) {
+                        $endpoint = '/payment-checkout/' . $invoice_transaction_mode->trx_id;
+                        $method = 'GET';
+                        $params = NULL;
+            
+                        $res = RestApi::run($endpoint, $method, $params);
+            
+                        if ($res->status) {
+                            $paymentLinkCreate = FALSE;
+
+                            $data = $res->data;
+                            switch ($data->status) {
+                                case 'WAITING_PAYMENT':
+                                    return redirect($invoice_transaction_mode->trx_payment);
+                                    break;
+
+                                case 'EXPIRED':
+                                case 'FAILED':
+                                    InvoiceTransactionMode::where('id', $invoice_transaction_mode->id)
+                                        ->update([
+                                            'status' => $data->status,
+                                        ]);
+
+                                    $recreateCardPayment = url("/pg/fund-acceptance/payment-link/$id/$code/recreate");
+
+                                    $message = 'Pembayaran Anda "Expired/FAILED" silahkan klik <a href="'.$recreateCardPayment.'" style="font-weight: bold;">Buat Pembayaran</a> untuk mendapatkannya kembali.';
+                                    
+                                    return view('errors.payment_gateway.message', compact('message'));                            
+                                    break;
+                                
+                                default:
+                                    return abort(404);
+                                    break;
+                            }
+                        } else {
+                            $message = 'Gagal membuat koneksi ke payment gateway, silahkan <a href="javascript:void(0)" onclick="window.location.reload()" style="font-weight: bold;">refresh/perbarui</a> halaman.';
     
-                $res = RestApi::run($endpoint, $method, $params);
+                            return view('errors.payment_gateway.message', compact('message'));
+                        }       
+                    } else {
+                        $message = 'Gagal membuat card payment, silahkan <a href="javascript:void(0)" onclick="window.location.reload()" style="font-weight: bold;">refresh/perbarui</a> halaman.';
+
+                        return view('errors.payment_gateway.message', compact('message'));
+                    }
+                }
+
+                if ($paymentLinkCreate) {
+                    $invoiceTransactionModeId = Str::uuid();
+
+                    $endpoint = '/payment-checkout/create-v2';
+                    $method = 'POST';
+                    $params = [
+                        'partner_tx_id' => $invoiceTransactionModeId,
+                        'child_balance' => NULL,
+                        'description' => 'Invoice periode ' . date('F Y', strtotime($row->notif_at)),
+                        'notes' => 'Invoice Create ' . date('d F Y', strtotime($row->notif_at)) . ' Due Date ' . date('d F Y', strtotime($row->suspend_at)),
+                        'sender_name' => $appProfile->name,
+                        'amount' => (int) $row->price_total,
+                        'email' => implode(';', $emails),
+                        'phone_number' => $customerProfile->handphone,
+                        'is_open' => TRUE,
+                        'include_admin_fee' => FALSE,
+                        'list_disabled_payment_methods' => '',
+                        'list_enabled_banks' => '',
+                        'list_enabled_ewallet' => '',
+                        'expiration' => Carbon::now()->addHours(2)->format('Y-m-d H:m:s'),
+                        'due_date' => $row->suspend_at,
+                        'va_display_name' => $customerProfile->name,
+                    ];
+        
+                    $res = RestApi::run($endpoint, $method, $params);
+        
+                    if ($res->status) {                
+                        InvoiceTransactionMode::create([
+                            'id' => $invoiceTransactionModeId,
+                            'billing_invoice_id' => $row->id,
+                            'mode' => 'payment_link',
+                            'trx_id' => $res->payment_link_id,
+                            'trx_payment' => $res->url,
+                            'trx_bank_code' => NULL,
+                            'response' => json_encode($res),
+                        ]);
+        
+                        return redirect($res->url);
+                    } else {
+                        $message = $res->message ?? NULL;
+
+                        return view('errors.payment_gateway.message', compact('message'));
+                    }
+                } else {
+                    return abort(404);
+                }
+                break;
+
+            case 'recreate':
+                if (count($row->invoice_transaction_modes)>0) {
+                    $invoice_transaction_mode = $row->invoice_transaction_modes[0];
+
+                    if ($invoice_transaction_mode->trx_id) {
+                        $endpoint = '/payment-checkout/' . $invoice_transaction_mode->trx_id;
+                        $method = 'GET';
+                        $params = NULL;
+            
+                        $res = RestApi::run($endpoint, $method, $params);
+
+                        if ($res->status) {
+                            $data = $res->data;
+
+                            if ($data->status == 'EXPIRED' || $data->status == 'FAILED') {
+                                $invoiceTransactionModeId = Str::uuid();
+
+                                $endpoint = '/payment-checkout/create-v2';
+                                $method = 'POST';
+                                $params = [
+                                    'partner_tx_id' => $invoiceTransactionModeId,
+                                    'child_balance' => NULL,
+                                    'description' => 'Invoice periode ' . date('F Y', strtotime($row->notif_at)),
+                                    'notes' => 'Invoice Create ' . date('d F Y', strtotime($row->notif_at)) . ' Due Date ' . date('d F Y', strtotime($row->suspend_at)),
+                                    'sender_name' => $appProfile->name,
+                                    'amount' => (int) $row->price_total,
+                                    'email' => implode(';', $emails),
+                                    'phone_number' => $customerProfile->handphone,
+                                    'is_open' => TRUE,
+                                    'include_admin_fee' => FALSE,
+                                    'list_disabled_payment_methods' => '',
+                                    'list_enabled_banks' => '',
+                                    'list_enabled_ewallet' => '',
+                                    'expiration' => Carbon::now()->addHours(2)->format('Y-m-d H:m:s'),
+                                    'due_date' => $row->suspend_at,
+                                    'va_display_name' => $customerProfile->name,
+                                ];
+                    
+                                $res = RestApi::run($endpoint, $method, $params);
+                    
+                                if ($res->status) {                  
+                                    InvoiceTransactionMode::create([
+                                        'id' => $invoiceTransactionModeId,
+                                        'billing_invoice_id' => $row->id,
+                                        'mode' => 'payment_link',
+                                        'trx_id' => $res->payment_link_id,
+                                        'trx_payment' => $res->url,
+                                        'trx_bank_code' => NULL,
+                                        'response' => json_encode($res),
+                                    ]);
+                    
+                                    return redirect($res->url);
+                                } else {
+                                    $message = $res->message ?? NULL;
+                    
+                                    return view('errors.payment_gateway.message', compact('message'));
+                                }
+                            } else {
+                                return abort(404);
+                            }                            
+                        } else {
+                            $message = 'Gagal membuat card payment, silahkan <a href="javascript:void(0)" onclick="window.location.reload()" style="font-weight: bold;">refresh/perbarui</a> halaman.';
     
-                if ($res->status) {
-                    $paymentLinkCreate = FALSE;
-    
-                    return redirect($row->invoice_transaction_modes->trx_payment);
-                }            
-            }
-        }
-
-        if ($paymentLinkCreate) {
-            $endpoint = '/payment-checkout/create-v2';
-            $method = 'POST';
-            $params = [
-                'partner_tx_id' => $row->id,
-                'child_balance' => NULL,
-                'description' => 'Invoice periode ' . date('F Y', strtotime($row->notif_at)),
-                'notes' => 'Invoice Create ' . date('d F Y', strtotime($row->notif_at)) . ' Due Date ' . date('d F Y', strtotime($row->suspend_at)),
-                'sender_name' => $appProfile->name,
-                'amount' => (int) $row->price_total,
-                'email' => implode(';', $emails),
-                'phone_number' => $customerProfile->handphone,
-                'is_open' => TRUE,
-                'include_admin_fee' => FALSE,
-                'list_disabled_payment_methods' => '',
-                'list_enabled_banks' => '',
-                'list_enabled_ewallet' => '',
-                'expiration' => Carbon::now()->addHours(2)->format('Y-m-d H:m:s'),
-                'due_date' => $row->suspend_at,
-                'va_display_name' => $customerProfile->name,
-            ];
-
-            $res = RestApi::run($endpoint, $method, $params);
-
-            if ($res->status) {                
-                InvoiceTransactionMode::updateOrCreate(
-                    [
-                        'billing_invoice_id' => $row->id,
-                    ],
-                    [
-                        'mode' => 'payment_link',
-                        'trx_id' => $res->payment_link_id,
-                        'trx_payment' => $res->url,
-                        'trx_bank_code' => NULL,
-                    ]
-                );
-
-                return redirect($res->url);
-            } else {
-                $message = $res->message ?? NULL;
-
-                return view('errors.payment_gateway.invalid_format', compact('message'));
-            }
+                            return view('errors.payment_gateway.message', compact('message'));
+                        }                        
+                    } else {
+                        return abort(404);
+                    }
+                } else {
+                    return abort(404);
+                }
+                break;
+            
+            default:
+                return abort(404);
+                break;
         }
     }
 
     public function fundAcceptanceCallback(Request $request)
     {
-        $tx_ref_number = $request->tx_ref_number ?? NULL;
+        $data = $request->data ?? [];
+        $id = $data->partner_tx_id ?? NULL;
+        $tx_ref_number = $data->tx_ref_number ?? NULL;
+        $status = $data->status ?? NULL;
 
-        return response()->json($tx_ref_number);
+        $invoiceTransactionMode = InvoiceTransactionMode::find($id);
+        
+        BillingInvoice::where('id' , $invoiceTransactionMode->billing_invoice_id)
+            ->update([
+                'status' => 1,
+                'verif_payment_at' => Carbon::now(),
+                'type_payment' => 'PG',
+            ]);
+        
+        $invoiceTransactionMode->update([
+            'tx_ref_number' => $tx_ref_number,
+            'status' => $status,
+        ]);
+
+        return response()->json($request->all(), 200);
     }
 
     public function staticVACallback(Request $request)

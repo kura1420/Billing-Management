@@ -207,6 +207,10 @@ class CustomerInvoice extends Command
                                 $trx_payment = NULL;
 
                                 switch ($payment_type) {
+                                    case 'payment_link':
+                                        $trx_payment = url("/pg/fund-acceptance/payment-link/$billingId/$billingCode/create");
+                                        break;
+                                        
                                     case 'static_va':
                                         $payment_params = [
                                             'partner_user_id' => $customerData->id,

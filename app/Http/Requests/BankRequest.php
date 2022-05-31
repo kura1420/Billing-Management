@@ -40,17 +40,18 @@ class BankRequest extends FormRequest
             'name' => 'required|string|max:255',
             'active' => [
                 'required',
-                function ($attr, $val, $fail) {
+                function ($attr, $val, $fail) use ($id) {
                     if ($val == "true") {
-                        $check = Bank::where('active', 1)->count();
+                        $bank = Bank::where('active', 1)->first();
 
-                        if ($check > 0) {
+                        if ($bank->id !== (int) $id && $bank->active == 1) {
                             $fail("Hanya di perbolehkan 1 bank saja yang aktif.");
                         }
                     }
                 }
             ],
             'responsible_name' => 'required|string|max:255',
+            'rekening' => $codeRules . '|string|max:100|alpha_num|unique:banks,rekening,' . $id,
         ];
     }
 

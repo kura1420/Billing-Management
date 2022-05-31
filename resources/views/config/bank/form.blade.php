@@ -10,6 +10,9 @@
         <input name="name" id="name" class="easyui-textbox" data-options="label:'Name',width:800,required:true,labelAlign:'right',max:255,disabled:true,">
     </p>
     <p>
+        <input name="rekening" id="rekening" class="easyui-textbox" data-options="label:'Rekening',width:800,required:true,labelAlign:'right',max:100,disabled:true,">
+    </p>
+    <p>
         <input name="active" id="active" class="easyui-switchbutton" data-options="label:'Active',labelAlign:'right',disabled:true" value="1">
     </p>
     <p>

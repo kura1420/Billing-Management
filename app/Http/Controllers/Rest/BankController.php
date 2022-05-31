@@ -26,6 +26,7 @@ class BankController extends Controller
             $result = $table->where('name', 'like', "%{$search}%")
                 ->orWhere('code', 'like', "%{$search}%")
                 ->orWhere('responsible_name', 'like', "%{$search}%")
+                ->orWher('rekening', 'like', "%{$search}%")
                 ->paginate($rows);
         } else {
             $result = $table->paginate($rows);
@@ -45,6 +46,7 @@ class BankController extends Controller
                 'code' => $request->code,
                 'active' => $request->active == 'true' ? 1 : 0,
                 'responsible_name' => $request->responsible_name,
+                'rekening' => $request->rekening,
             ]
         );
 
@@ -56,7 +58,7 @@ class BankController extends Controller
     public function show($id)
     {
         $row = Bank::find($id);
-        $row->active = $row->active ? 'on' : 'off';
+        // $row->active = $row->active ? 'on' : 'off';
 
         return $row;
     }
