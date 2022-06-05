@@ -2,14 +2,17 @@
 
 namespace App\Http\Controllers\Webhook;
 
+use App\Helpers\Formatter;
 use App\Helpers\RestApi;
 use App\Http\Controllers\Controller;
 use App\Models\AppProfile;
 use Illuminate\Http\Request;
 use App\Models\BillingInvoice;
+use App\Models\BillingTemplate;
 use App\Models\CustomerContact;
 use App\Models\CustomerProfile;
 use App\Models\InvoiceTransactionMode;
+use App\Notifications\InvoicePaid;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
@@ -217,26 +220,76 @@ class OYIndonesiaController extends Controller
 
     public function fundAcceptanceCallback(Request $request)
     {
-        $data = $request->data ?? [];
-        $id = $data->partner_tx_id ?? NULL;
-        $tx_ref_number = $data->tx_ref_number ?? NULL;
-        $status = $data->status ?? NULL;
+        $res = $request->all();
+        $id = $request->partner_tx_id;
+        $tx_ref_number = $request->tx_ref_number;
+        $status = $request->status;
+        $sender_bank = $request->sender_bank;
+        $payment_method = $request->payment_method;
 
         $invoiceTransactionMode = InvoiceTransactionMode::find($id);
         
-        BillingInvoice::where('id' , $invoiceTransactionMode->billing_invoice_id)
-            ->update([
-                'status' => 1,
-                'verif_payment_at' => Carbon::now(),
-                'type_payment' => 'PG',
-            ]);
+        $billingInvoice = BillingInvoice::with([
+            'customer_data',
+            'product_types',
+            'product_services',
+        ])->where('id' , $invoiceTransactionMode->billing_invoice_id)->first();
+
+        $customerProfile = $billingInvoice->customer_data->customer_profiles()->first();
+
+        $replace = [
+            $billingInvoice->code,
+            date('d M Y', strtotime($billingInvoice->notif_at)),
+            date('d M Y', strtotime($billingInvoice->suspend_at)),
+
+            Formatter::rupiah($billingInvoice->price_sub),
+            Formatter::rupiah($billingInvoice->price_ppn),
+            Formatter::rupiah($billingInvoice->price_total),
+
+            $billingInvoice->product_services->name,
+            $billingInvoice->customer_data->code,
+            $customerProfile->name,
+        ];
+        
+        $billingInvoice->update([
+            'status' => 1,
+            'verif_payment_at' => Carbon::now(),
+            'type_payment' => 'PG',
+        ]);
         
         $invoiceTransactionMode->update([
             'tx_ref_number' => $tx_ref_number,
             'status' => $status,
+            'sender_bank' => $sender_bank,
+            'payment_method' => $payment_method,
+            'response' => json_encode($res),
         ]);
 
-        return response()->json($request->all(), 200);
+        $billingTemplate = BillingTemplate::where('sender', 'email')->where('type', 'paid')->first();
+    
+        $emailBody = NULL;
+
+        if (!empty($billingTemplate)) {
+            $search = [
+                '_invoice_code_',
+                '_start_date_',
+                '_end_date_',
+    
+                '_price_sub_',
+                '_price_ppn_',
+                '_price_total_',
+        
+                '_product_service_',
+                '_customer_code_',
+                '_customer_name_',
+            ];
+
+            $emailBody = str_replace($search, $replace, $billingTemplate->content);
+        }
+
+        $customerProfile->notify(new InvoicePaid($replace, $emailBody));
+
+        return response()->json('OK', 200);
     }
 
     public function staticVACallback(Request $request)

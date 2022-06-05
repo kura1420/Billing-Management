@@ -41,6 +41,7 @@ class CustomerRequest extends FormRequest
             // 'suspend_at' => 'nullable|date',
             // 'terminate_at' => 'nullable|date',
             // 'dismantle_at' => 'nullable|date',
+            'service_trigger' => 'required|string|unique:customer_data,service_trigger,' . $id,
             'customer_type_id' => 'required|string',
             'customer_segment_id' => 'required|string',
             'area_id' => 'required|string',

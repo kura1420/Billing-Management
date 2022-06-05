@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'authApp' => \App\Http\Middleware\AuthApp::class,
         'authApi' => \App\Http\Middleware\AuthApi::class,
+        'authMikrotik' => \App\Http\Middleware\AuthMikrotik::class,
     ];
 }

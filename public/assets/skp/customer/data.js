@@ -46,6 +46,7 @@ $(document).ready(function () {
     let _btnCancelDocument = $('#btnCancelDocument');
 
     let _id = $('#id');
+    let _service_trigger = $('#service_trigger');
     let _area_id = $('#area_id');
     let _area_product_customer = $('#area_product_customer');
     let _area_product_promo_id = $('#area_product_promo_id');
@@ -947,6 +948,7 @@ $(document).ready(function () {
         _btnSaveDocument.linkbutton({disabled:true})
         _btnCancelDocument.linkbutton({disabled:true})
 
+        _service_trigger.textbox({disabled:true})
         _area_id.combobox({disabled:true})
         _area_product_customer.combogrid({disabled:true})
         _area_product_promo_id.combobox({disabled:true})
@@ -985,6 +987,7 @@ $(document).ready(function () {
         _btnSaveDocument.linkbutton({disabled:false})
         _btnCancelDocument.linkbutton({disabled:false})
 
+        _service_trigger.textbox({disabled:false})
         _area_id.combobox({disabled:false})
         _area_product_customer.combogrid({disabled:false})
         _area_product_promo_id.combobox({disabled:false})
@@ -1029,6 +1032,7 @@ $(document).ready(function () {
                         suspend_at,
                         terminate_at,
                         dismantle_at,
+                        service_trigger,
                         area_id,
                         area_product_customer,
                         area_product_promo_id,
@@ -1051,7 +1055,8 @@ $(document).ready(function () {
                     _ff.form('load', {
                         id: id,
                         code: code,
-                        active: active,
+                        active: active.toString(),
+                        service_trigger: service_trigger,
                         member_at: member_at,
                         suspend_at: suspend_at,
                         terminate_at: terminate_at,

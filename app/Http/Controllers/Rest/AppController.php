@@ -104,6 +104,7 @@ class AppController extends Controller
                     [ 'id' => rand(1, 999), 'text' => 'Departement', 'url' => 'organization/departement' ],
                     [ 'id' => rand(1, 999), 'text' => 'Tax', 'url' => 'config/tax' ],
                     [ 'id' => rand(1, 999), 'text' => 'Bank', 'url' => 'config/bank' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Router Site', 'url' => 'config/router-site' ],
                 ],
             ],
             [

@@ -19,6 +19,6 @@ class Formatter {
 
 		$result = $terbilang->parse($number)->getResult();
 
-		return ucwords($result);
+		return ucwords($result) . " Rupiah";
 	}
 }

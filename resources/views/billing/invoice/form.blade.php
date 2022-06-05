@@ -28,7 +28,10 @@
                     <input name="price_total" id="price_total" class="easyui-numberbox" data-options="label:'Total',width:800,labelAlign:'right',readonly:true,labelWidth:150,precision:2,decimalSeparator:'.',groupSeparator:',',">
                 </p>
                 <p>
-                    <input name="verif_by_user_id" id="verif_by_user_id" class="easyui-textbox" data-options="label:'Verif Payment By',width:800,labelAlign:'right',readonly:true,labelWidth:150,">
+                    <input name="payment_by" id="payment_by" class="easyui-textbox" data-options="label:'Payment By',width:800,labelAlign:'right',readonly:true,labelWidth:150,">
+                </p>
+                <p>
+                    <input name="verif_by_user_id" id="verif_by_user_id" class="easyui-textbox" data-options="label:'Verif Payment By User',width:800,labelAlign:'right',readonly:true,labelWidth:150,">
                 </p>
                 <p>
                     <input name="verif_payment_at" id="verif_payment_at" class="easyui-textbox" data-options="label:'Verif Payment At',width:800,labelAlign:'right',readonly:true,labelWidth:150,">

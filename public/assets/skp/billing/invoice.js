@@ -21,7 +21,6 @@ $(document).ready(function () {
     let _btnEdit = $('#btnEdit');
     let _btnUnsuspend = $('#btnUnsuspend');
     let _btnCancel = $('#btnCancel');
-    // let _btnRemove = $('#btnRemove');
     let _btnFileInvoice = $('#btnFileInvoice');
     let _btnFilePayment = $('#btnFilePayment');
     
@@ -33,6 +32,7 @@ $(document).ready(function () {
     let _price_sub = $('#price_sub');
     let _price_total = $('#price_total');
     let _price_discount = $('#price_discount');
+    let _payment_by = $('#payment_by');
     let _verif_payment_at = $('#verif_payment_at');
     let _verif_by_user_id = $('#verif_by_user_id');
     let _notif_at = $('#notif_at');
@@ -269,45 +269,6 @@ $(document).ready(function () {
             });
         }
     });
-    
-    // _btnRemove.linkbutton({
-    //     onClick: function() {
-    //         let row = _dg.datagrid('getSelected')
-    
-    //         if (row) {
-    //             $.messager.confirm('Confirmation', 'Are you sure delete this data?', function(r){
-    //                 if (r){
-    //                     $.ajax({
-    //                         type: "delete",
-    //                         url: _rest + '/' + row.id,
-    //                         dataType: "json",
-    //                         success: function (response) {
-    //                             loadData()
-    
-    //                             _tbs.tabs({
-    //                                 selected: 0
-    //                             })
-    
-    //                             $.messager.show({
-    //                                 title:'Info',
-    //                                 msg:'Data deleted.',
-    //                                 timeout:5000,
-    //                                 showType:'slide'
-    //                             })
-    //                         },
-    //                         error: function (xhr, status, error) {
-    //                             let {statusText, responseJSON} = xhr
-    
-    //                             Alert('error', responseJSON, statusText)
-    //                         }
-    //                     });
-    //                 }
-    //             });
-    //         } else {
-    //             Alert('warning', 'No selected data')
-    //         }
-    //     }
-    // });
 
     _btnFileInvoice.linkbutton({
         onClick: function () {
@@ -416,6 +377,7 @@ $(document).ready(function () {
                     formEdit()
 
                     if (response.status == 'Paid' || response.status == 'Terminated') {
+                        _btnResend.linkbutton({disabled:true})
                         _btnEdit.linkbutton({disabled:true})
                     }
                 },

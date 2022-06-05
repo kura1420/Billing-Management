@@ -300,6 +300,7 @@ class CustomerInvoice extends Command
                             
                                         'bank_code' => $bank->code,
                                         'bank_name' => $bank->name,
+                                        'responsible_name' => $bank->responsible_name,
                             
                                         'sayit' => $terbilang,
                                     ],

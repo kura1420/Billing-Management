@@ -53,6 +53,7 @@ Route::middleware('authApp')->group(function() {
         Route::controller(ConfigController::class)->group(function() {
             Route::get('/tax', 'tax');
             Route::get('/bank', 'bank');
+            Route::get('/router-site', 'router_site');
         });
     });
 

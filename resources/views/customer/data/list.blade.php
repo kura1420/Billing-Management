@@ -11,7 +11,7 @@
             <th data-options="field:'member_at'" sortable="true">Member At</th>
             <th data-options="field:'suspend_at'" sortable="true">Suspend At</th>
             <th data-options="field:'terminate_at'" sortable="true">Terminate At</th>
-            <th data-options="field:'dismantle_at'" sortable="true">Dismantle At</th>
+            <!-- <th data-options="field:'dismantle_at'" sortable="true">Dismantle At</th> -->
             <th data-options="
                 field:'active',
                 align:'center',

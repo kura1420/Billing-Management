@@ -32,10 +32,6 @@
         <span class="easyui-tooltip" title="Unsuspend">
             <a id="btnUnsuspend" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-undo',disabled:true,"></a>
         </span>
-        
-        <!-- <span class="easyui-tooltip" title="Remove">
-            <a id="btnRemove" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove'"></a>
-        </span> -->
     </div>
 </div>
 

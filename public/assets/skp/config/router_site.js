@@ -6,7 +6,7 @@ $(document).ready(function () {
         }
     });
 
-    const _rest = URL_REST + '/app-user'
+    const _rest = URL_REST + '/router-site'
 
     let _tbs = $('#tbs');
     let _dg = $('#dg');
@@ -17,20 +17,16 @@ $(document).ready(function () {
     let _btnSave = $('#btnSave');
     let _btnEdit = $('#btnEdit');
     let _btnCopy = $('#btnCopy');
+    let _btnRemove = $('#btnRemove');
     
-    let _name = $('#name');
-    let _email = $('#email');
+    let _id = $('#id');
+    let _site = $('#site');
+    let _host = $('#host');
+    let _port = $('#port');
+    let _user = $('#user');
     let _password = $('#password');
+    let _desc = $('#desc');
     let _active = $('#active');
-    // let _telp = $('#telp');
-    // let _handphone = $('#handphone');
-    let _departement_id = $('#departement_id');
-
-    _departement_id.combobox({
-        valueField:'id',
-        textField:'name',
-        url: URL_REST + '/departement/lists'
-    });
 
     _dg.datagrid({
         singleSelect:true,
@@ -101,7 +97,8 @@ $(document).ready(function () {
                         $.messager.progress('close');
                     }
     
-                    param.active = _active.switchbutton('options').checked
+                    param.id = _id.textbox('getValue')
+                    param.active = _active.switchbutton('options').checked 
                     param._token = $('meta[name="csrf-token"]').attr('content')
     
                     return isValid;
@@ -165,6 +162,45 @@ $(document).ready(function () {
             }
         }
     });
+    
+    _btnRemove.linkbutton({
+        onClick: function() {
+            let row = _dg.datagrid('getSelected')
+    
+            if (row) {
+                $.messager.confirm('Confirmation', 'Are you sure delete this data?', function(r){
+                    if (r){
+                        $.ajax({
+                            type: "delete",
+                            url: _rest + '/' + row.id,
+                            dataType: "json",
+                            success: function (response) {
+                                loadData()
+    
+                                _tbs.tabs({
+                                    selected: 0
+                                })
+    
+                                $.messager.show({
+                                    title:'Info',
+                                    msg:'Data deleted.',
+                                    timeout:5000,
+                                    showType:'slide'
+                                })
+                            },
+                            error: function (xhr, status, error) {
+                                let {statusText, responseJSON} = xhr
+    
+                                Alert('error', responseJSON, statusText)
+                            }
+                        });
+                    }
+                });
+            } else {
+                Alert('warning', 'No selected data')
+            }
+        }
+    });
 
     var loadData = () => {
         _dg.datagrid({
@@ -219,13 +255,13 @@ $(document).ready(function () {
         _btnEdit.linkbutton({disabled:false})
         _btnCopy.linkbutton({disabled:false})
 
-        _name.textbox({disabled:true});
-        _email.textbox({disabled:true});
-        _password.passwordbox({disabled:true});
+        _site.textbox({disabled:true})
+        _host.textbox({disabled:true})
+        _port.numberbox({disabled:true})
+        _user.textbox({disabled:true})
+        _password.passwordbox({disabled:true})
+        _desc.textbox({disabled:true})
         _active.switchbutton({disabled:true})
-        // _telp.maskedbox({disabled:true});
-        // _handphone.maskedbox({disabled:true});
-        _departement_id.combobox({disabled:true});
     }
 
     var formEdit = () => {
@@ -233,13 +269,13 @@ $(document).ready(function () {
         _btnEdit.linkbutton({disabled:true})
         _btnCopy.linkbutton({disabled:true})
     
-        _name.textbox({disabled:false});
-        _email.textbox({disabled:false});
-        _password.passwordbox({disabled:false});
+        _site.textbox({disabled:false})
+        _host.textbox({disabled:false})
+        _port.numberbox({disabled:false})
+        _user.textbox({disabled:false})
+        _password.passwordbox({disabled:false})
+        _desc.textbox({disabled:false})
         _active.switchbutton({disabled:false})
-        // _telp.maskedbox({disabled:false});
-        // _handphone.maskedbox({disabled:false});
-        _departement_id.combobox({disabled:false});
     }
 
     var getData = (row) => {

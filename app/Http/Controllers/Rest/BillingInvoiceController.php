@@ -11,9 +11,12 @@ use App\Notifications\InvoicePaid;
 use App\Notifications\Unsuspend;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use RouterOS\{Client, Query, Config};
+use RouterOS\Exceptions\ConnectException;
 
 class BillingInvoiceController extends Controller
 {
@@ -72,7 +75,7 @@ class BillingInvoiceController extends Controller
             'billing_types',
             'product_types',
             'product_services',
-            'users'
+            'users',
         ])->find($id);
         
         $customerProfile = $row->customer_data->customer_profiles()->select([
@@ -81,6 +84,10 @@ class BillingInvoiceController extends Controller
             'handphone', 
             'telp', 
         ])->first();
+
+        $invoice_transaction_mode = $row->invoice_transaction_modes()->where('status', 'complete')->first();
+
+        $mode = $invoice_transaction_mode ? $invoice_transaction_mode->mode : NULL;
 
         $obj = new \stdClass;
         
@@ -92,6 +99,7 @@ class BillingInvoiceController extends Controller
         $obj->price_sub = $row->price_sub;
         $obj->price_total = $row->price_total;
         $obj->price_discount = (int)$row->price_discount;
+        $obj->payment_by = $row->type_payment == 'manual' ? 'MANUAl' : $mode;
         $obj->verif_payment_at = $row->verif_payment_at;
         $obj->verif_by_user_id = $row->users ? $row->users->name : NULL;
         $obj->notif_at = $row->notif_at;
@@ -244,7 +252,9 @@ class BillingInvoiceController extends Controller
                 ];
 
                 $emailBody = str_replace($search, $replace, $billingTemplate->content);
-            }            
+            }
+
+            self::mikrotik($row->customer_data);
 
             $customerProfile->notify(new Unsuspend($replace, $emailBody));
 
@@ -362,5 +372,59 @@ class BillingInvoiceController extends Controller
     
             return response()->json('OK', 200); 
         }        
+    }
+
+    protected static function mikrotik($customerData)
+    {
+        try {
+            $areaRouters = \App\Models\AreaRoute::join('router_sites', 'area_routes.router_site_id', '=', 'router_sites.id')
+                ->where('area_routes.area_id', $customerData->area_id)
+                ->select([
+                    'router_sites.site',
+                    'router_sites.host',
+                    'router_sites.port',
+                    'router_sites.user',
+                    'router_sites.password'
+                ])
+                ->get();
+
+            foreach ($areaRouters as $key => $value) {
+                $config = (new Config())
+                    ->set('host', $value->host)
+                    ->set('port', (int) $value->port)
+                    ->set('user', $value->user)
+                    ->set('pass', $value->password);
+                    
+                $client = new Client($config);
+
+                $command = '/ip/firewall/address-list/print';
+                $query = (new Query($command))
+                    ->where('address', $customerData->service_trigger);
+                
+                $result = $client->query($query)->read();
+
+                if (!empty($result)) {
+                    $paramID = $result[0]['.id'];
+
+                    $command = '/ip/firewall/address-list/set';
+                    $query = (new Query($command))
+                        ->equal('.id', $paramID)
+                        ->equal('comment', 'Unsuspend at ' . Carbon::now());
+
+                    sleep(.1);
+
+                    $command = '/ip/firewall/address-list/enable';
+                    $query = (new Query($command))
+                        ->equal('.id', $paramID);
+
+                    break;
+                }
+
+                sleep(3);
+                unset($client);
+            }
+        } catch (\Exception $e) {
+            Log::warning($e->getMessage());
+        }
     }
 }

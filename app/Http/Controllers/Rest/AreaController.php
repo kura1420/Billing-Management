@@ -7,6 +7,7 @@ use App\Http\Requests\AreaRequest;
 use App\Models\Area;
 use App\Models\AreaProduct;
 use App\Models\AreaProductCustomer;
+use App\Models\AreaRoute;
 use Illuminate\Http\Request;
 
 class AreaController extends Controller
@@ -46,6 +47,7 @@ class AreaController extends Controller
     {
         $products = json_decode($request->products, TRUE);
         $customers = json_decode($request->customers, TRUE);
+        $routerSites = json_decode($request->router_sites, TRUE);
 
         $area = Area::updateOrCreate(
             [
@@ -124,6 +126,23 @@ class AreaController extends Controller
                             'active' => $value['active'] == 'true' || $value['active'] == 1 ? 1 : 0,
                         ]);
                 }  
+            }
+        }
+
+        if (!empty($routerSites)) {
+            foreach ($routerSites as $key => $value) {
+                if (empty($value['id'])) {
+                    AreaRoute::create([
+                        'area_id' => $area->id,
+                        'router_site_id' => $value['router_site_id'],
+                    ]);
+                } else {
+                    AreaRoute::find($value['id'])
+                        ->update([
+                            'area_id' => $area->id,
+                            'router_site_id' => $value['router_site_id'],
+                        ]);
+                }
             }
         }
 
@@ -230,6 +249,30 @@ class AreaController extends Controller
     public function customerDestroy($id)
     {
         AreaProductCustomer::find($id)->delete();
+
+        return response()->json('OK', 200);
+    }
+
+    public function routersiteLists($id)
+    {
+        $rows = AreaRoute::join('router_sites', 'area_routes.router_site_id', '=', 'router_sites.id')
+            ->where('area_routes.area_id', $id)
+            ->select([
+                'area_routes.id',
+                'area_routes.router_site_id',
+                    'router_sites.site',
+                    'router_sites.host',
+                    'router_sites.desc',
+                    'router_sites.active',
+            ])
+            ->get();
+
+        return response()->json($rows);
+    }
+
+    public function routersiteDestroy($id)
+    {
+        AreaRoute::find($id)->delete();
 
         return response()->json('OK', 200);
     }

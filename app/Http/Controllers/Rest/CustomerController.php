@@ -84,6 +84,7 @@ class CustomerController extends Controller
                 // 'suspend_at' => $request->suspend_at ? date('Y-m-d-', strtotime($request->suspend_at)) : NULL,
                 // 'terminate_at' => $request->terminate_at ? date('Y-m-d', strtotime($request->terminate_at)) : NULL,
                 // 'dismantle_at' => $request->dismantle_at ? date('Y-m-d', strtotime($request->dismantle_at)) : NULL,
+                'service_trigger' => $request->service_trigger,
                 'customer_type_id' => $request->customer_type_id,
                 'customer_segment_id' => $request->customer_segment_id,
                 'area_id' => $request->area_id,

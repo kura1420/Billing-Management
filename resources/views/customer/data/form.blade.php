@@ -10,6 +10,9 @@
                     <input name="code" id="code" class="easyui-textbox" data-options="label:'Code',width:800,labelAlign:'right',max:20,readonly:true,labelWidth:120,">
                 </p>
                 <p>
+                    <input name="service_trigger" id="service_trigger" class="easyui-textbox" data-options="label:'Service Trigger',labelAlign:'right',disabled:true,labelWidth:120,width:800,required:true,">
+                </p>
+                <p>
                     <input name="area_id" id="area_id" class="easyui-combobox" data-options="label:'Area',width:800,required:true,labelAlign:'right',disabled:true,labelWidth:120,">
                 </p>    
                 <p>

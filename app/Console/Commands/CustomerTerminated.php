@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\AreaRoute;
 use App\Models\BillingInvoice;
 use App\Models\BillingTemplate;
 use App\Models\CustomerData;
@@ -9,6 +10,9 @@ use App\Models\CustomerProfile;
 use App\Notifications\Terminate;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use RouterOS\{Client, Query, Config};
+use RouterOS\Exceptions\ConnectException;
 
 class CustomerTerminated extends Command
 {
@@ -75,6 +79,8 @@ class CustomerTerminated extends Command
                     $customerProfile->name,
                 ];
 
+                self::mikrotik($customerData);
+
                 self::sendEmail($customerProfile, $billingTemplate, $replace);
 
                 CustomerData::where('id', $customerData->id)->update([
@@ -90,6 +96,60 @@ class CustomerTerminated extends Command
         }
 
         return 0;
+    }
+
+    protected static function mikrotik($customerData)
+    {
+        try {
+            $areaRouters = AreaRoute::join('router_sites', 'area_routes.router_site_id', '=', 'router_sites.id')
+                ->where('area_routes.area_id', $customerData->area_id)
+                ->select([
+                    'router_sites.site',
+                    'router_sites.host',
+                    'router_sites.port',
+                    'router_sites.user',
+                    'router_sites.password'
+                ])
+                ->get();
+
+            foreach ($areaRouters as $key => $value) {
+                $config = (new Config())
+                    ->set('host', $value->host)
+                    ->set('port', (int) $value->port)
+                    ->set('user', $value->user)
+                    ->set('pass', $value->password);
+                    
+                $client = new Client($config);
+
+                $command = '/ip/firewall/address-list/print';
+                $query = (new Query($command))
+                    ->where('address', $customerData->service_trigger);
+                
+                $result = $client->query($query)->read();
+
+                if (!empty($result)) {
+                    $paramID = $result[0]['.id'];
+
+                    $command = '/ip/firewall/address-list/set';
+                    $query = (new Query($command))
+                        ->equal('.id', $paramID)
+                        ->equal('comment', 'Resuspend at ' . Carbon::now());
+
+                    sleep(.1);
+
+                    $command = '/ip/firewall/address-list/disable';
+                    $query = (new Query($command))
+                        ->equal('.id', $paramID);
+
+                    break;
+                }
+
+                sleep(3);
+                unset($client);
+            }
+        } catch (\Exception $e) {
+            Log::warning($e->getMessage());
+        }
     }
 
     protected static function sendEmail($customerProfile, $billingTemplate, $replace) 

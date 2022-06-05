@@ -10,6 +10,7 @@ $(document).ready(function () {
 
     var rowIndexProduct = undefined;
     var rowIndexCustomer = undefined;
+    var rowIndexRouter = undefined;
 
     let _tbs = $('#tbs');
     let _dg = $('#dg');
@@ -23,6 +24,10 @@ $(document).ready(function () {
     let _dgCustomer = $('#dgCustomer');
     let _ffCustomer = $('#ffCustomer');
     let _wCustomer = $('#wCustomer');
+
+    let _dgRouter = $('#dgRouter');
+    let _ffRouter = $('#ffRouter');
+    let _wRouter = $('#wRouter');
 
     let _btnAdd = $('#btnAdd');
     let _btnSave = $('#btnSave');
@@ -42,6 +47,12 @@ $(document).ready(function () {
     let _btnOkCustomer = $('#btnOkCustomer');
     let _btnCancelCustomer = $('#btnCancelCustomer');
 
+    let _btnAddRouter = $('#btnAddRouter');
+    let _btnEditRouter = $('#btnEditRouter');
+    let _btnRemoveRouter = $('#btnRemoveRouter');
+    let _btnOkRouter = $('#btnOkRouter');
+    let _btnCancelRouter = $('#btnCancelRouter');
+
     let _id = $('#id');
     let _code = $('#code');
     let _name = $('#name');
@@ -59,6 +70,8 @@ $(document).ready(function () {
     let _c_customer_type_id = $('#c_customer_type_id');
     let _c_customer_segment_id = $('#c_customer_segment_id');
     let _c_active = $('#c_active');
+
+    let _r_router = $('#r_router');
 
     _ppn_tax_id.combobox({
         valueField:'id',
@@ -187,6 +200,46 @@ $(document).ready(function () {
         }
     });
 
+    _dgRouter.datagrid({
+        singleSelect:true,
+        collapsible:true,
+        border:false,
+        fitColumns:true,
+        pagination:true,
+        rownumbers:true,
+        toolbar:'#tbRouter',
+        onDblClickRow: function () {
+            let row = _dgRouter.datagrid('getSelected');
+            rowIndexRouter = _dgRouter.datagrid('getRowIndex', row);
+
+            _wRouter.window('open');
+
+            _r_router.combogrid({
+                panelWidth:600,
+                fitColumns:true,
+                idField:'id',
+                textField:'site',
+                method:'post',
+                url: URL_REST + '/router-site/lists',
+                columns:[[
+                    {field:'site',title:'Site'},
+                    {field:'host',title:'Host'},
+                    {field:'desc',title:'Desc'},
+                    {
+                        field:'active',title:'Active',
+                        formatter: function (value, row) {
+                            return value == 1 ? 'Active' : 'No Active'
+                        }
+                    },
+                ]],
+            });
+
+            _ffRouter.form('load', {
+                r_router: row.router_site_id,
+            });
+        }
+    });
+
     _ss.searchbox({
         prompt: 'Search',
         searcher: function (value, name) {
@@ -233,6 +286,7 @@ $(document).ready(function () {
 
             _dgProduct.datagrid('loadData', [])
             _dgCustomer.datagrid('loadData', [])
+            _dgRouter.datagrid('loadData', [])
 
             _code.textbox('readonly', false)
 
@@ -257,6 +311,7 @@ $(document).ready(function () {
 
                     param.products = JSON.stringify(_dgProduct.datagrid('getRows')),
                     param.customers = JSON.stringify(_dgCustomer.datagrid('getRows')),
+                    param.router_sites = JSON.stringify(_dgRouter.datagrid('getRows')),
                     
                     param._token = $('meta[name="csrf-token"]').attr('content')
     
@@ -280,6 +335,7 @@ $(document).ready(function () {
                         loadData()
                         loadDataProduct(parse.id)
                         loadDataCustomer(parse.id)
+                        loadDataRouter(parse.id)
     
                         $.messager.show({
                             title:'Info',
@@ -711,6 +767,151 @@ $(document).ready(function () {
         }
     });
 
+    _btnAddRouter.linkbutton({
+        onClick: function () {
+            _wRouter.window('open');
+
+            _r_router.combogrid({
+                panelWidth:600,
+                fitColumns:true,
+                idField:'id',
+                textField:'site',
+                method:'post',
+                url: URL_REST + '/router-site/lists',
+                columns:[[
+                    {field:'site',title:'Site'},
+                    {field:'host',title:'Host'},
+                    {field:'desc',title:'Desc'},
+                    {
+                        field:'active',title:'Active',
+                        formatter: function (value, row) {
+                            return value == 1 ? 'Active' : 'No Active'
+                        }
+                    },
+                ]],
+            });
+        }
+    });
+
+    _btnEditRouter.linkbutton({
+        onClick: function () {  
+            let row = _dgRouter.datagrid('getSelected')
+
+            if (row) {
+                rowIndexRouter = _dgRouter.datagrid('getRowIndex', row)
+
+                _wRouter.window('open')
+
+                _ffRouter.form('load', {
+                    r_router: row.router_site_id,
+                })
+            } else {
+                Alert('warning', 'No Data selected');                
+            }
+        }
+    });
+
+    _btnOkRouter.linkbutton({
+        onClick: function () {
+            if (_ffRouter.form('validate')) {
+                let g = _r_router.combogrid('grid');
+                let r = g.datagrid('getSelected');
+
+                if (rowIndexRouter !== undefined) {
+                    _dgRouter.datagrid('updateRow', {
+                        index: rowIndexRouter,
+                        row: {
+                            site: r.site,
+                            host: r.host,
+                            desc: r.desc,
+                            active: r.active,
+                            router_site_id: r.id,
+                        }
+                    });
+                } else {
+                    _dgRouter.datagrid('appendRow', {
+                        id: null,
+
+                        site: r.site,
+                        host: r.host,
+                        desc: r.desc,
+                        active: r.active,
+                        router_site_id: r.id,
+                    })
+                }
+
+                rowIndexRouter = undefined
+
+                _dgRouter.datagrid('fixColumnSize');
+                _dgRouter.datagrid('fixRowHeight');
+
+                _wRouter.window('close');
+                _ffRouter.form('clear');
+            }
+        }
+    });
+
+    _btnCancelRouter.linkbutton({
+        onClick: function () {
+            _wRouter.window('close');
+
+            _ffRouter.form('clear');
+
+            rowIndexRouter = undefined;
+        }
+    });
+
+    _btnRemoveRouter.linkbutton({
+        onClick: function () {
+            let row = _dgRouter.datagrid('getSelected');
+
+            if (row) {
+                rowIndexRouter = _dgRouter.datagrid('getRowIndex', rowIndexRouter);
+
+                $.messager.confirm('Confirmation', 'Are you sure delete this data?', function(r){
+                    if (r){
+                        if (row.id) {
+                            $.ajax({
+                                type: "delete",
+                                url: _rest + '/router-site/' + row.id,
+                                dataType: "json",
+                                success: function (response) {
+                                    loadDataRouter(_id.textbox('getValue'))
+
+                                    $.messager.show({
+                                        title:'Info',
+                                        msg:'Data deleted.',
+                                        timeout:5000,
+                                        showType:'slide'
+                                    })
+                                },
+                                error: function (xhr, status, error) {
+                                    let {statusText, responseJSON} = xhr
+
+                                    Alert('error', responseJSON, statusText)
+                                }
+                            });
+                        } else {
+                            _dgRouter.datagrid('cancelEdit', rowIndexRouter)
+                                .datagrid('deleteRow', rowIndexRouter);
+
+                            $.messager.show({
+                                title:'Info',
+                                msg:'Data deleted.',
+                                timeout:5000,
+                                showType:'slide'
+                            });
+                        }
+                    }
+
+                    rowIndexRouter = undefined;
+                });
+            } else {
+                Alert('warning', 'No selected data')
+            }
+        }
+    });
+
     var loadData = () => {
         _dg.datagrid({
             method: 'get',
@@ -821,6 +1022,38 @@ $(document).ready(function () {
         _dgCustomer.datagrid('fixRowHeight');
     }
 
+    var loadDataRouter = (area_id) => {
+        _dgRouter.datagrid({
+            method: 'get',
+            url: _rest + '/router-site/' + area_id,
+            loader: function (param, success, error) {
+                let {method, url} = $(this).datagrid('options')
+
+                if (method==null || url==null) return false
+
+                $.ajax({
+                    method: method,
+                    url: url,
+                    dataType: 'json',
+                    success: function (res) {
+                        success(res)
+                    },
+                    error: function (xhr, status) {
+                        error(xhr)
+                    }
+                })
+            },
+            onLoadError: function (objs) {
+                let {statusText, responseJSON} = objs
+
+                Alert('error', responseJSON, statusText)
+            },
+        });
+
+        _dgRouter.datagrid('fixColumnSize');
+        _dgRouter.datagrid('fixRowHeight');
+    }
+
     var formReset = () => {
         _ff.form('clear')
 
@@ -830,6 +1063,7 @@ $(document).ready(function () {
 
         _dgProduct.datagrid('loadData', [])
         _dgCustomer.datagrid('loadData', [])
+        _dgRouter.datagrid('loadData', [])
 
         _btnAddProduct.linkbutton({disabled:true})
         _btnEditProduct.linkbutton({disabled:true})
@@ -838,6 +1072,10 @@ $(document).ready(function () {
         _btnAddCustomer.linkbutton({disabled:true})
         _btnEditCustomer.linkbutton({disabled:true})
         _btnRemoveCustomer.linkbutton({disabled:true})
+
+        _btnAddRouter.linkbutton({disabled:true})
+        _btnEditRouter.linkbutton({disabled:true})
+        _btnRemoveRouter.linkbutton({disabled:true})
 
         _name.textbox({disabled:true})
         _desc.textbox({disabled:true})
@@ -858,6 +1096,10 @@ $(document).ready(function () {
         _btnEditCustomer.linkbutton({disabled:false})
         _btnRemoveCustomer.linkbutton({disabled:false})
 
+        _btnAddRouter.linkbutton({disabled:false})
+        _btnEditRouter.linkbutton({disabled:false})
+        _btnRemoveRouter.linkbutton({disabled:false})
+
         _name.textbox({disabled:false})
         _desc.textbox({disabled:false})
         _ppn_tax_id.combobox({disabled:false})
@@ -876,6 +1118,7 @@ $(document).ready(function () {
 
             loadDataProduct(row.id);
             loadDataCustomer(row.id);
+            loadDataRouter(row.id)
 
             _code.textbox({readonly:true})
         } else {

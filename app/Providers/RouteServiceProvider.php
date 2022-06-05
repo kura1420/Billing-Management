@@ -38,25 +38,35 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
+            # api to client
             Route::prefix('api')
                 ->middleware('api')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/api.php'));
 
+            # page application
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->group(base_path('routes/web.php'));
 
+            # rest api application
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->prefix('rest')
                 ->group(base_path('routes/web_api.php'));
 
+            # for payment gateway
             Route::middleware('web')
                 ->namespace($this->namespace)
                 ->prefix('pg')
                 ->group(base_path('routes/web_webhook.php'));
 
+            Route::middleware(['web', 'authMikrotik'])
+                ->namespace($this->namespace)
+                ->prefix('mikrotik')
+                ->group(base_path('routes/web_mikrotik.php'));
+
+            # sample 
             if (config('app.debug')) {
                 Route::middleware('web')
                     ->namespace($this->namespace)

@@ -18,4 +18,9 @@ class ConfigController extends Controller
     {
         return view(self::FOLDER . 'bank.main');
     }
+
+    public function router_site()
+    {
+        return view(self::FOLDER . 'router_site.main');
+    }
 }

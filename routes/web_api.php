@@ -16,13 +16,26 @@ use App\Http\Controllers\Rest\CustomerController;
 use App\Http\Controllers\Rest\CustomerSegmentController;
 use App\Http\Controllers\Rest\CustomerTypeController;
 use App\Http\Controllers\Rest\DepartementController;
+use App\Http\Controllers\Rest\MikrotikController;
 use App\Http\Controllers\Rest\ProductPromoController;
 use App\Http\Controllers\Rest\ProductServiceController;
 use App\Http\Controllers\Rest\ProductTypeController;
 use App\Http\Controllers\Rest\ProvinsiController;
+use App\Http\Controllers\Rest\RouterSiteController;
 use App\Http\Controllers\Rest\TaxController;
 use App\Http\Controllers\Rest\UserProfileController;
 use Illuminate\Support\Facades\Route;
+
+Route::prefix('mikrotik')->group(function() {
+    Route::controller(MikrotikController::class)->group(function() {
+        Route::get('/', 'index');
+
+        Route::middleware('authMikrotik')->group(function() {
+            Route::post('/users', 'users');
+            Route::post('/ip-address', 'ipAddress');
+        });
+    });
+});
 
 Route::prefix('auth')->group(function() {
     Route::controller(AuthController::class)->group(function() {
@@ -89,6 +102,18 @@ Route::middleware('authApp')->group(function() {
 
     Route::prefix('bank')->group(function() {
         Route::controller(BankController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/lists', 'lists');
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');  
+        });
+    });
+
+    Route::prefix('router-site')->group(function() {
+        Route::controller(RouterSiteController::class)->group(function() {
             Route::get('/', 'index');
             Route::get('/{id}', 'show');
     
@@ -242,6 +267,7 @@ Route::middleware('authApp')->group(function() {
             Route::get('/{id}', 'show');
             Route::get('/product/{id}', 'productLists');
             Route::get('/customer/{id}', 'customerLists');
+            Route::get('/router-site/{id}', 'routersiteLists');
     
             Route::post('/lists', 'lists');
             Route::post('/', 'store');
@@ -249,6 +275,7 @@ Route::middleware('authApp')->group(function() {
             Route::delete('/{id}', 'destroy');
             Route::delete('/product/{id}', 'productDestroy');
             Route::delete('/customer/{id}', 'customerDestroy');
+            Route::delete('/router-site/{id}', 'routersiteDestroy');
         });
     });
     

@@ -51,9 +51,6 @@ $(document).ready(function () {
         toolbar:'#tb',
     });
 
-    _dg.datagrid('fixColumnSize');
-    _dg.datagrid('fixRowHeight');
-
     _ss.searchbox({
         prompt: 'Search',
         searcher: function (value, name) {
@@ -257,6 +254,9 @@ $(document).ready(function () {
                 Alert('error', responseJSON, statusText)
             },
         })
+
+        _dg.datagrid('fixColumnSize');
+        _dg.datagrid('fixRowHeight');
     }
 
     var formReset = () => {
