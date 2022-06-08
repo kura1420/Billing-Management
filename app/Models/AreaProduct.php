@@ -13,4 +13,9 @@ class AreaProduct extends Model
     public $incrementing = false;
 
     protected $guarded = [];
+
+    public function customer_data()
+    {
+        return $this->hasMany(CustomerData::class);
+    }
 }

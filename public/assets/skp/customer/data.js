@@ -177,6 +177,15 @@ $(document).ready(function () {
         },{
             "id":'passpor',
             "text":"Passpor"
+        },{
+            "id":'siup',
+            "text":"SIUP"
+        },{
+            "id":'npwp',
+            "text":"NPWP"
+        },{
+            "id":'tdp',
+            "text":"TDP"
         },]
     });
 

@@ -9,6 +9,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -63,6 +64,7 @@ Route::middleware('authApp')->group(function() {
             Route::get('/user', 'user');
             Route::get('/role', 'role');
             Route::get('/menu', 'menu');
+            Route::get('/log', 'log');
         });
     });
 
@@ -98,6 +100,12 @@ Route::middleware('authApp')->group(function() {
     Route::prefix('user')->group(function() {
         Route::controller(UserController::class)->group(function() {
             Route::get('/profile', 'profile');
+        });
+    });
+
+    Route::prefix('report')->group(function() {
+        Route::controller(ReportController::class)->group(function() {
+            Route::get('/summary', 'summary');
         });
     });
   

@@ -16,11 +16,13 @@ use App\Http\Controllers\Rest\CustomerController;
 use App\Http\Controllers\Rest\CustomerSegmentController;
 use App\Http\Controllers\Rest\CustomerTypeController;
 use App\Http\Controllers\Rest\DepartementController;
+use App\Http\Controllers\Rest\LogController;
 use App\Http\Controllers\Rest\MikrotikController;
 use App\Http\Controllers\Rest\ProductPromoController;
 use App\Http\Controllers\Rest\ProductServiceController;
 use App\Http\Controllers\Rest\ProductTypeController;
 use App\Http\Controllers\Rest\ProvinsiController;
+use App\Http\Controllers\Rest\ReportController;
 use App\Http\Controllers\Rest\RouterSiteController;
 use App\Http\Controllers\Rest\TaxController;
 use App\Http\Controllers\Rest\UserProfileController;
@@ -268,14 +270,17 @@ Route::middleware('authApp')->group(function() {
             Route::get('/product/{id}', 'productLists');
             Route::get('/customer/{id}', 'customerLists');
             Route::get('/router-site/{id}', 'routersiteLists');
+            Route::get('/update-price/{id}', 'updatePriceList');
     
             Route::post('/lists', 'lists');
             Route::post('/', 'store');
+            Route::post('/update-price', 'updatePriceStore');
             
             Route::delete('/{id}', 'destroy');
             Route::delete('/product/{id}', 'productDestroy');
             Route::delete('/customer/{id}', 'customerDestroy');
             Route::delete('/router-site/{id}', 'routersiteDestroy');
+            Route::delete('/update-price/{id}', 'updatePriceDestroy');
         });
     });
     
@@ -316,6 +321,24 @@ Route::middleware('authApp')->group(function() {
             
             Route::post('/', 'store');
             Route::post('/logout', 'logout');
+        });
+    });
+
+    Route::prefix('app-log')->group(function() {
+        Route::controller(LogController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{filename}', 'show');
+            Route::get('/download/{filename}', 'download');
+        });
+    });
+
+    Route::prefix('report')->group(function() {
+        Route::controller(ReportController::class)->group(function() {
+            Route::post('/totals', 'totals');
+            Route::post('/area', 'areaChart');
+            Route::post('/product-service', 'productServiceChart');
+            Route::post('/customer-segment', 'customerSegmentChart');
+            Route::post('/list-invoice-pay', 'listInvoicePay');
         });
     });
 

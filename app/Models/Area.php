@@ -13,4 +13,9 @@ class Area extends Model
     public $incrementing = false;
 
     protected $guarded = [];
+
+    public function area_products()
+    {
+        return $this->hasMany(AreaProduct::class);
+    }
 }

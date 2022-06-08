@@ -93,6 +93,16 @@
                 </form>
             </div>
         </div>
+
+        <div id="wUpdatePriceProduct" class="easyui-window" title="Form Update Price" data-options="modal:true,closed:true," style="width:500px;height:400px;padding:10px;">
+            <div class="easyui-layout" data-options="fit:true,border:false,">
+                <form id="ffUpdatePriceProduct" method="post">
+                    <div data-options="region:'center'" style="padding:10px;">
+                        ads
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <div title="Customer">
@@ -215,5 +225,32 @@
                 </form>
             </div>
         </div>        
+    </div>
+
+    <div title="Schedule Update Price">
+        <table id="dgUpdatePrice" class="easyui-datagrid" style="height: 55%;">
+        </table>
+        
+        <div id="tbUpdatePrice" style="padding:2px 5px;">
+            <span class="easyui-tooltip" title="Create">
+                <a id="btnAddUpdatePrice" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-add',">Create</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Accept">
+                <a id="btnOkUpdatePrice" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-ok',">Accept</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Edit">
+                <a id="btnEditUpdatePrice" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-edit',">Edit</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Cancel">
+                <a id="btnCancelUpdatePrice" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-cancel',">Cancel</a>
+            </span>
+            
+            <span class="easyui-tooltip" title="Remove">
+                <a id="btnRemoveUpdatePrice" href="javascript:void(0)" class="easyui-linkbutton" data-options="disabled:true,plain:true,iconCls:'icon-remove',">Remove</a>
+            </span>
+        </div>
     </div>
 </div>

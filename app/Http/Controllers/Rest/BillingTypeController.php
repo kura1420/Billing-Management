@@ -43,7 +43,8 @@ class BillingTypeController extends Controller
                 'id' => $request->id,
             ],
             [
-                'code' => strtoupper($request->code),
+                // 'code' => strtoupper($request->code),
+                'code' => uniqid(),
                 'name' => $request->name,
                 'desc' => $request->desc,
                 'notif' => $request->notif,
@@ -89,6 +90,8 @@ class BillingTypeController extends Controller
     public function show($id)
     {
         $row = BillingType::find($id);
+        $row->repeat = $row->repeat == 1 ? "on" : "off";
+        $row->active = $row->active == 1 ? "on" : "off";
 
         return $row;
     }

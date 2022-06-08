@@ -4,7 +4,7 @@
     </p>
     
     <p>
-        <input name="code" id="code" class="easyui-textbox" data-options="label:'Code',width:800,required:true,labelAlign:'right',max:20,readonly:true,">
+        <input name="code" id="code" class="easyui-textbox" data-options="label:'Code',width:800,labelAlign:'right',max:20,readonly:true,">
     </p>
     <p>
         <input name="name" id="name" class="easyui-textbox" data-options="label:'Name',width:800,required:true,labelAlign:'right',max:255,disabled:true,">

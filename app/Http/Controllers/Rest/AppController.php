@@ -99,6 +99,22 @@ class AppController extends Controller
             ],
             [
                 'id' => rand(1, 999),
+                'text' => 'Report',
+                'children' => [
+                    [ 'id' => rand(1, 999), 'text' => 'Summary', 'url' => 'report/summary' ],
+                ],
+            ],
+            [
+                'id' => rand(1, 999),
+                'text' => 'Hotspot',
+                'children' => [
+                    [ 'id' => rand(1, 999), 'text' => 'User Profile', 'url' => 'mikrotik/user-profile' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Voucher', 'url' => 'mikrotik/voucher' ],
+                    [ 'id' => rand(1, 999), 'text' => 'User Active', 'url' => 'mikrotik/user-active' ],
+                ],
+            ],
+            [
+                'id' => rand(1, 999),
                 'text' => 'Setting',
                 'children' => [
                     [ 'id' => rand(1, 999), 'text' => 'Departement', 'url' => 'organization/departement' ],
@@ -115,6 +131,7 @@ class AppController extends Controller
                     [ 'id' => rand(1, 999), 'text' => 'User', 'url' => 'core/user' ],
                     [ 'id' => rand(1, 999), 'text' => 'Role', 'url' => 'core/role' ],
                     [ 'id' => rand(1, 999), 'text' => 'Menu', 'url' => 'core/menu' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Log', 'url' => 'core/log' ],
                 ],
             ],
         ];

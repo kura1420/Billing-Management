@@ -11,6 +11,7 @@ $(document).ready(function () {
     var rowIndexProduct = undefined;
     var rowIndexCustomer = undefined;
     var rowIndexRouter = undefined;
+    var rowIndexUpdatePrice = undefined;
 
     let _tbs = $('#tbs');
     let _dg = $('#dg');
@@ -28,6 +29,8 @@ $(document).ready(function () {
     let _dgRouter = $('#dgRouter');
     let _ffRouter = $('#ffRouter');
     let _wRouter = $('#wRouter');
+
+    let _dgUpdatePrice = $('#dgUpdatePrice');
 
     let _btnAdd = $('#btnAdd');
     let _btnSave = $('#btnSave');
@@ -52,6 +55,12 @@ $(document).ready(function () {
     let _btnRemoveRouter = $('#btnRemoveRouter');
     let _btnOkRouter = $('#btnOkRouter');
     let _btnCancelRouter = $('#btnCancelRouter');
+
+    let _btnAddUpdatePrice = $('#btnAddUpdatePrice');
+    let _btnOkUpdatePrice = $('#btnOkUpdatePrice');
+    let _btnEditUpdatePrice = $('#btnEditUpdatePrice');
+    let _btnCancelUpdatePrice = $('#btnCancelUpdatePrice');
+    let _btnRemoveUpdatePrice = $('#btnRemoveUpdatePrice');
 
     let _id = $('#id');
     let _code = $('#code');
@@ -240,6 +249,86 @@ $(document).ready(function () {
         }
     });
 
+    _dgUpdatePrice.datagrid({
+        singleSelect:true,
+        collapsible:true,
+        border:false,
+        fitColumns:true,
+        pagination:true,
+        rownumbers:true,
+        border:false,
+        toolbar:'#tbUpdatePrice',
+        onDblClickRow: function (index, row) {
+            editRowUpdatePrice()
+        },
+        onEndEdit: function (index, row) {
+            var ed = $(this).datagrid('getEditor', {
+                index: index, 
+                field: 'start_from',
+            });
+    
+            row.text = $(ed.target).combobox('getText')
+        },
+        onBeforeSelect: function (index, row) {
+            if (index !== rowIndexUpdatePrice) {
+                setTimeout(function(){
+                    _dgUpdatePrice.datagrid('selectRow', rowIndexUpdatePrice);
+                },0);
+            }
+        },
+        columns: [[
+            {
+                field: 'start_from', title: 'Start From', width: 300,
+                formatter:function(value,row){
+                    switch (value) {
+                        case "malam_ini":
+                            return "Malam ini";
+                            break;
+
+                        case "awal_bulan":
+                            return "Awal Bulan";
+                            break;
+
+                        case "akhir_bulan":
+                            return "Akhir Bulan";
+                            break;
+                    
+                        default:
+                            return "No Defined";
+                            break;
+                    }
+                },
+                editor: {
+                    type: 'combobox',
+                    options: {
+                        valueField:'id',
+                        textField:'text',
+                        data: [{
+                            "id":'malam_ini',
+                            "text":"Malam ini"
+                        },{
+                            "id":'awal_bulan',
+                            "text":"Awal Bulan"
+                        },{
+                            "id":'akhir_bulan',
+                            "text":"Akhir Bulan"
+                        }],
+                        required:true,
+                    },
+                },
+            },
+            {
+                field:'status', title:'Status', width: 300,
+                formatter:function(value,row){
+                    return value == 1 ? 'Sudah diproses' : 'Belum Diproses'
+                },
+            },
+            {
+                field:'date', title:'Create At', width: 300,
+            },
+        ]],
+    });
+
     _ss.searchbox({
         prompt: 'Search',
         searcher: function (value, name) {
@@ -309,9 +398,9 @@ $(document).ready(function () {
                     param.id = _id.textbox('getValue')
                     param.active = _active.switchbutton('options').checked
 
-                    param.products = JSON.stringify(_dgProduct.datagrid('getRows')),
-                    param.customers = JSON.stringify(_dgCustomer.datagrid('getRows')),
-                    param.router_sites = JSON.stringify(_dgRouter.datagrid('getRows')),
+                    param.products = JSON.stringify(_dgProduct.datagrid('getRows'))
+                    param.customers = JSON.stringify(_dgCustomer.datagrid('getRows'))
+                    param.router_sites = JSON.stringify(_dgRouter.datagrid('getRows'))
                     
                     param._token = $('meta[name="csrf-token"]').attr('content')
     
@@ -912,6 +1001,175 @@ $(document).ready(function () {
         }
     });
 
+    _btnAddUpdatePrice.linkbutton({
+        onClick: function () {
+            if (_id.textbox('getValue')) {
+                if (rowIndexUpdatePrice == undefined) {
+                    _dgUpdatePrice.datagrid('appendRow', {
+                        start_from: '',
+                    });
+    
+                    rowIndexUpdatePrice = _dgUpdatePrice.datagrid('getRows').length-1;
+    
+                    _dgUpdatePrice.datagrid('selectRow', rowIndexUpdatePrice)
+                        .datagrid('beginEdit', rowIndexUpdatePrice);
+                } else {
+                    setTimeout(function(){
+                        _dgUpdatePrice.datagrid('selectRow', rowIndexUpdatePrice);
+                    },0);                
+                }                
+            } else {
+                Alert('warning', 'Silahkan save data area dan data product area dulu');                 
+            }
+        }
+    });
+
+    _btnOkUpdatePrice.linkbutton({
+        onClick: function () {
+            if (rowIndexUpdatePrice !== undefined) {
+                if (endEditingUpdatePrice()) {
+                    $.messager.progress();
+
+                    let row = _dgUpdatePrice.datagrid('getSelected');
+
+                    $.ajax({
+                        type: "post",
+                        url: _rest + "/update-price",
+                        data: {
+                            start_from: row.start_from,
+                            area: _id.textbox('getValue')
+                        },
+                        dataType: "json",
+                        success: function (response) {
+                            $.messager.progress('close');
+
+                            loadDataUpdatePrice(_id.textbox('getValue'))                            
+                        },
+                        error: function (xhr, error) {
+                            $.messager.progress('close'); 
+
+                            let {status, responseJSON} = xhr
+
+                            if (status == 422) {
+                                let msg = []
+                                for (var d in responseJSON.data) {
+                                    msg.push(responseJSON.data[d].toString())
+                                }
+
+                                Alert('warning', msg.join('<br />'));
+                            } else {
+                                Alert('warning', 'Internal Server Error')
+                            }
+                        }
+                    });
+                }
+            } else {
+                Alert('warning', 'No selected data');                
+            }
+        }
+    });
+
+    _btnEditUpdatePrice.linkbutton({
+        onClick: function () {
+            editRowUpdatePrice()
+        }
+    });
+
+    _btnCancelUpdatePrice.linkbutton({
+        onClick: function () {
+            _dgUpdatePrice.datagrid('rejectChanges');
+
+            rowIndexUpdatePrice = undefined;
+        }
+    });
+
+    _btnRemoveUpdatePrice.linkbutton({
+        onClick: function () {
+            if (rowIndexUpdatePrice == undefined) {
+                let row = _dgUpdatePrice.datagrid('getSelected')
+
+                if (row) {
+                    rowIndexUpdatePrice = _dgUpdatePrice.datagrid('getRowIndex', row)
+
+                    $.messager.confirm('Confirmation', 'Are you sure delete this data?', function(r){
+                        if (r){
+                            if (row.id) {
+                                $.ajax({
+                                    type: "delete",
+                                    url: _rest + '/update-price/' + row.id,
+                                    dataType: "json",
+                                    success: function (response) {
+                                        loadDataUpdatePrice(_id.textbox('getValue'))
+
+                                        $.messager.show({
+                                            title:'Info',
+                                            msg:'Data deleted.',
+                                            timeout:5000,
+                                            showType:'slide'
+                                        })
+                                    },
+                                    error: function (xhr, status, error) {
+                                        let {statusText, responseJSON} = xhr
+
+                                        Alert('error', responseJSON, statusText)
+                                    }
+                                });
+                            } else {
+                                _dgUpdatePrice.datagrid('cancelEdit', rowIndexUpdatePrice)
+                                        .datagrid('deleteRow', rowIndexUpdatePrice);
+
+                                $.messager.show({
+                                    title:'Info',
+                                    msg:'Data deleted.',
+                                    timeout:5000,
+                                    showType:'slide'
+                                });
+                            }
+                        }
+
+                        rowIndexUpdatePrice = undefined;
+                    });
+                } else {
+                    Alert('warning', 'No selected data'); 
+                }
+            } else {   
+                setTimeout(function(){
+                    _dgUpdatePrice.datagrid('selectRow', rowIndexUpdatePrice);
+                },0);              
+            }
+        }
+    });
+
+    var editRowUpdatePrice = () => {
+        if (rowIndexUpdatePrice == undefined) {
+            let row = _dgUpdatePrice.datagrid('getSelected');
+
+            if (row) {
+                rowIndexUpdatePrice = _dgUpdatePrice.datagrid('getRowIndex', row);
+
+                _dgUpdatePrice.datagrid('selectRow', rowIndexUpdatePrice)
+                    .datagrid('beginEdit', rowIndexUpdatePrice);
+            }
+        } else {
+            setTimeout(function(){
+                _dgUpdatePrice.datagrid('selectRow', rowIndexUpdatePrice);
+            },0);             
+        }
+    }
+
+    var endEditingUpdatePrice = () => {
+        if (rowIndexUpdatePrice == undefined) { return true }
+        if (_dgUpdatePrice.datagrid('validateRow', rowIndexUpdatePrice)) {
+            _dgUpdatePrice.datagrid('endEdit', rowIndexUpdatePrice);
+
+            rowIndexUpdatePrice = undefined;
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     var loadData = () => {
         _dg.datagrid({
             method: 'get',
@@ -1054,16 +1312,49 @@ $(document).ready(function () {
         _dgRouter.datagrid('fixRowHeight');
     }
 
+    var loadDataUpdatePrice = (area_id) => {
+        _dgUpdatePrice.datagrid({
+            method: 'get',
+            url: _rest + '/update-price/' + area_id,
+            loader: function (param, success, error) {
+                let {method, url} = $(this).datagrid('options')
+
+                if (method==null || url==null) return false
+
+                $.ajax({
+                    method: method,
+                    url: url,
+                    dataType: 'json',
+                    success: function (res) {
+                        success(res)
+                    },
+                    error: function (xhr, status) {
+                        error(xhr)
+                    }
+                })
+            },
+            onLoadError: function (objs) {
+                let {statusText, responseJSON} = objs
+
+                Alert('error', responseJSON, statusText)
+            },
+        });
+
+        _dgUpdatePrice.datagrid('fixColumnSize');
+        _dgUpdatePrice.datagrid('fixRowHeight');
+    }
+
     var formReset = () => {
         _ff.form('clear')
-
-        _btnSave.linkbutton({disabled:true})
-        _btnEdit.linkbutton({disabled:false})
-        _btnCopy.linkbutton({disabled:false})
 
         _dgProduct.datagrid('loadData', [])
         _dgCustomer.datagrid('loadData', [])
         _dgRouter.datagrid('loadData', [])
+        _dgUpdatePrice.datagrid('loadData', [])
+
+        _btnSave.linkbutton({disabled:true})
+        _btnEdit.linkbutton({disabled:false})
+        _btnCopy.linkbutton({disabled:false})
 
         _btnAddProduct.linkbutton({disabled:true})
         _btnEditProduct.linkbutton({disabled:true})
@@ -1076,6 +1367,12 @@ $(document).ready(function () {
         _btnAddRouter.linkbutton({disabled:true})
         _btnEditRouter.linkbutton({disabled:true})
         _btnRemoveRouter.linkbutton({disabled:true})
+
+        _btnAddUpdatePrice.linkbutton({disabled:true})
+        _btnOkUpdatePrice.linkbutton({disabled:true})
+        _btnEditUpdatePrice.linkbutton({disabled:true})
+        _btnCancelUpdatePrice.linkbutton({disabled:true})
+        _btnRemoveUpdatePrice.linkbutton({disabled:true})
 
         _name.textbox({disabled:true})
         _desc.textbox({disabled:true})
@@ -1100,6 +1397,12 @@ $(document).ready(function () {
         _btnEditRouter.linkbutton({disabled:false})
         _btnRemoveRouter.linkbutton({disabled:false})
 
+        _btnAddUpdatePrice.linkbutton({disabled:false})
+        _btnOkUpdatePrice.linkbutton({disabled:false})
+        _btnEditUpdatePrice.linkbutton({disabled:false})
+        _btnCancelUpdatePrice.linkbutton({disabled:false})
+        _btnRemoveUpdatePrice.linkbutton({disabled:false})
+
         _name.textbox({disabled:false})
         _desc.textbox({disabled:false})
         _ppn_tax_id.combobox({disabled:false})
@@ -1118,9 +1421,10 @@ $(document).ready(function () {
 
             loadDataProduct(row.id);
             loadDataCustomer(row.id);
-            loadDataRouter(row.id)
+            loadDataRouter(row.id);
+            loadDataUpdatePrice(row.id);
 
-            _code.textbox({readonly:true})
+            _code.textbox({readonly:true});
         } else {
             Alert('warning', 'ID not found')
         }

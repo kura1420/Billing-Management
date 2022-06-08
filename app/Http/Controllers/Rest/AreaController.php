@@ -8,7 +8,9 @@ use App\Models\Area;
 use App\Models\AreaProduct;
 use App\Models\AreaProductCustomer;
 use App\Models\AreaRoute;
+use App\Models\ScheduleUpdatePrice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class AreaController extends Controller
 {
@@ -275,5 +277,73 @@ class AreaController extends Controller
         AreaRoute::find($id)->delete();
 
         return response()->json('OK', 200);
+    }
+
+    public function updatePriceList($id)
+    {
+        $rows = ScheduleUpdatePrice::where('area_id', $id)->get();
+
+        return response()->json($rows);
+    }
+
+    public function updatePriceStore(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'start_from' => 'required|string',
+            'area' => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'data' => $validator->errors(),
+                'status' => 'NOT'
+            ], 422);
+        } else {
+            $id = $request->id ?? NULL;
+            $start_from = $request->start_from;
+            $area_id = $request->area;
+            $date = date('Y-m');
+
+            $row = ScheduleUpdatePrice::where('area_id', $area_id)
+                ->where('date', date('Y-m'))
+                ->first();
+
+            if ($row) {
+                $row->update([
+                    'start_from' => $start_from,
+                ]);
+
+                $statusCode = 200;
+            } else {
+                ScheduleUpdatePrice::create([
+                    'start_from' => $start_from,
+                    'area_id' => $area_id,
+                    'date' => $date,
+                ]);
+
+                $statusCode = 201;
+            }
+            
+            return response()->json('OK', $statusCode);
+        }        
+    }
+
+    public function updatePriceDestroy($id)
+    {
+        $row = ScheduleUpdatePrice::find($id);
+
+        $dateMonthYear = date('Y-m', strtotime($row->date));
+        if ($dateMonthYear == date('Y-m')) {
+            $row->delete();
+
+            return response()->json('OK', 200);
+        } else {
+            return response()->json([
+                'data' => [
+                    'date' => 'Data tidak dapat di hapus karena bulannya tidak sama',
+                ],
+                'status' => 'NOT'
+            ], 422);
+        }        
     }
 }

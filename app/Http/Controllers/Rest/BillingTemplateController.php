@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Rest;
 
+use App\Helpers\Formatter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\BillingTemplateRequest;
 use App\Models\BillingTemplate;
@@ -86,11 +87,11 @@ class BillingTemplateController extends Controller
 
             $productType = \App\Models\ProductType::inRandomOrder()->first();
 
-            $price_sub = rand(111111, 999999);
-            $price_ppn = (11 * 100) / $price_sub;
-            $price_total = $price_sub + $price_ppn;
+            $price_sub = 10000000;
+            $price_ppn = (11 / 100) * $price_sub;
+            $price_total = round($price_sub + $price_ppn, 2);
 
-            $today = date('d-m-Y');
+            $today = date('Y-m-d');
 
             $search = [
                 '_invoice_code_',
@@ -108,12 +109,12 @@ class BillingTemplateController extends Controller
 
             $replace = [
                 'INV/' . date('Ymd') . '/' . str_pad(rand(1111, 9999), 4, '0', STR_PAD_LEFT),
-                $today,
-                date('d-m-Y', strtotime(str_replace('-', '/', $today) . "+7 days")),
+                date('d F Y', strtotime($today)),
+                date('d F Y', strtotime(str_replace('-', '/', $today) . "+7 days")),
 
-                $price_sub,
-                $price_ppn,
-                $price_total,
+                Formatter::rupiah($price_sub),
+                Formatter::rupiah($price_ppn),
+                Formatter::rupiah($price_total),
                 
                 \App\Models\ProductService::where('product_type_id', $productType->id)->inRandomOrder()->first()->name,
                 uniqid(),

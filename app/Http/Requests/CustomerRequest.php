@@ -27,6 +27,7 @@ class CustomerRequest extends FormRequest
     {
         $id = request('id') ?? NULL;
 
+
         if ($id) {
             $codeRules = 'nullable|';
         } else {
@@ -37,11 +38,28 @@ class CustomerRequest extends FormRequest
             //
             // 'code' => $codeRules . '|string|max:20|unique:customer_data,code,' . $id,
             'active' => 'required|string',
-            // 'member_at' => 'nullable|date',
+            'member_at' => 'required|date',
             // 'suspend_at' => 'nullable|date',
             // 'terminate_at' => 'nullable|date',
             // 'dismantle_at' => 'nullable|date',
             'service_trigger' => 'required|string|unique:customer_data,service_trigger,' . $id,
+            // 'service_trigger' => [
+            //     'required',
+            //     'string',
+            //     function ($attr, $val, $fail) use ($id) {
+            //         $row = \App\Models\CustomerData::where('service_trigger', $val)
+            //             ->where('active', 1)
+            //             ->first();
+
+            //             dd($row, $id);
+
+            //         if ($row) {
+            //             if ($row->id !== $id) {
+            //                 $fail("Data sudah tersedia");
+            //             }
+            //         }
+            //     }
+            // ],
             'customer_type_id' => 'required|string',
             'customer_segment_id' => 'required|string',
             'area_id' => 'required|string',

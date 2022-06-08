@@ -31,5 +31,6 @@
     <p>
         <input name="secret" id="secret" class="easyui-textbox" data-options="label:'API Secret',width:400,required:false,labelAlign:'right',max:100,readonly:true,">
         <a id="btnResetSecret" href="javascript:void(0)" class="easyui-linkbutton">Reset Secret</a>
+        <a href="https://documenter.getpostman.com/view/2531842/UyxqDPs6" target="_blank" class="easyui-linkbutton">Documentation</a>
     </p>
 </form>

@@ -28,9 +28,9 @@ class CustomerController extends Controller
         $search = $request->search ?? NULL;
 
         $table = CustomerData::join('customer_profiles', 'customer_data.id', '=', 'customer_profiles.customer_data_id')
-            ->join('areas', '.area_id', '=', 'areas.id')
-            ->join('product_types', '.product_type_id', '=', 'product_types.id')
-            ->join('product_services', '.product_service_id', '=', 'product_services.id')
+            ->join('areas', 'customer_data.area_id', '=', 'areas.id')
+            ->join('product_types', 'customer_data.product_type_id', '=', 'product_types.id')
+            ->join('product_services', 'customer_data.product_service_id', '=', 'product_services.id')
             ->select([
                 'customer_data.id',
                 'customer_data.code',

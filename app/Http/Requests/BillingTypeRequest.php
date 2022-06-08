@@ -35,7 +35,7 @@ class BillingTypeRequest extends FormRequest
 
         return [
             //
-            'code' => $codeRules . '|string|max:20|alpha_num|unique:billing_types,code,' . $id,
+            // 'code' => $codeRules . '|string|max:20|alpha_num|unique:billing_types,code,' . $id,
             'name' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'notif' => 'required|numeric',

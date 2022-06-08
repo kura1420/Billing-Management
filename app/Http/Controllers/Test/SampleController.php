@@ -76,9 +76,9 @@ class SampleController extends Controller
                 ->set('pass', '123123');
 
             # setup
+            // $client = new Client($config);
             # membuat user password hotpost
             // for ($i=1; $i <= 99; $i++) { 
-            //     $client = new Client($config);
             //     $query = (new Query('/ip/hotspot/user/add'))
             //         ->equal('server', 'hotspot1')
             //         ->equal('name', 'guest_' . $i)

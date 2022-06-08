@@ -38,5 +38,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('customer:invoice')->daily();        
         $schedule->command('customer:suspend')->daily();
         $schedule->command('customer:terminated')->daily();
+        $schedule->command('promo:disabled')->daily();
     }
 }

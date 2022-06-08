@@ -28,4 +28,9 @@ class CoreController extends Controller
     {
         return view(self::FOLDER . 'menu.main');
     }
+
+    public function log()
+    {
+        return view(self::FOLDER . 'log.main');
+    }
 }
