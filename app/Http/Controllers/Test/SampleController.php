@@ -12,6 +12,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use RouterOS\{Client, Query, Config};
 use RouterOS\Exceptions\ConnectException;
+use Dapphp\Radius\Radius;
 
 class SampleController extends Controller
 {
@@ -212,5 +213,44 @@ class SampleController extends Controller
         $res = $client->query($query)->read();
 
         return $res;
+    }
+
+    public function radius()
+    {
+        $client = new Radius();
+
+        $client->setServer('192.168.1.2') // RADIUS server address
+            ->setSecret('kura');
+    //    ->setNasIpAddress('10.0.1.2') // NAS server address
+    //    ->setAttribute(32, 'login');
+
+        $username = "bob";
+        $password = "hello";
+
+        // PAP authentication; returns true if successful, false otherwise
+        // $authenticated = $client->accessRequest($username, $password);
+
+        // CHAP-MD5 authentication
+        $client->setChapPassword($password); // set chap password
+        $authenticated = $client->accessRequest($username); // authenticate, don't specify pw here
+
+        // MSCHAP v1 authentication
+        // $client->setMSChapPassword($password); // set ms chap password (uses openssl or mcrypt)
+        // $authenticated = $client->accessRequest($username);
+
+        // EAP-MSCHAP v2 authentication
+        // $authenticated = $client->accessRequestEapMsChapV2($username, $password); // failed
+
+        if ($authenticated === false) {
+            // false returned on failure
+            echo sprintf(
+                "Access-Request failed with error %d (%s).\n",
+                $client->getErrorCode(),
+                $client->getErrorMessage()
+            );
+        } else {
+            // access request was accepted - client authenticated successfully
+            echo "Success!  Received Access-Accept response from RADIUS server.\n";
+        }
     }
 }

@@ -121,6 +121,10 @@ Route::middleware('authApp')->group(function() {
     
             Route::post('/lists', 'lists');
             Route::post('/', 'store');
+            Route::post('/test-connection', 'testConnection');
+            Route::post('/test-command-list', 'testCommandList');
+            Route::post('/test-command-comment', 'testCommandComment');
+            Route::post('/test-command-disable', 'testCommandDisable');
             
             Route::delete('/{id}', 'destroy');  
         });

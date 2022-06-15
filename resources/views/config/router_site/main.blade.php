@@ -25,6 +25,10 @@
             <a id="btnEdit" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit'"></a>
         </span>
         
+        <span class="easyui-tooltip" title="Test Connection">
+            <a id="btnTestConnection" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok',disabled:true"></a>
+        </span>
+        
         <span class="easyui-tooltip" title="Duplicate">
             <a id="btnCopy" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-copy'"></a>
         </span>

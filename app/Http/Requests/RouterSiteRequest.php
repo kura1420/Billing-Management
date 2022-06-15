@@ -31,9 +31,12 @@ class RouterSiteRequest extends FormRequest
             'active' => 'required',
             'host' => 'required|string|max:100|unique:router_sites,host,' . $id,
             'port' => 'required|numeric',
-            'user' => 'required|string|max:100',
+            'user' => 'required|string|max:100|alpha_num',
             'password' => 'required|string|max:100',
             'desc' => 'nullable|string',
+            'command_trigger_list' => 'required|string',
+            'command_trigger_comment' => 'required|string',
+            'command_trigger_terminated' => 'required|string',
         ];
     }
 }

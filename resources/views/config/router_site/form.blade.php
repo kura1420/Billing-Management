@@ -22,6 +22,21 @@
         <input name="active" id="active" class="easyui-switchbutton" data-options="label:'Active',labelAlign:'right',disabled:true" value="1">
     </p>
     <p>
+        <input name="command_trigger_list" id="command_trigger_list" class="easyui-textbox" data-options="label:'Command Trigger List',width:800,required:true,labelAlign:'right',max:255,disabled:true,labelWidth:200,">
+
+        <a id="btnTriggerList" href="javascript:void(0)" class="easyui-linkbutton">Test List</a>
+    </p>
+    <p>
+        <input name="command_trigger_comment" id="command_trigger_comment" class="easyui-textbox" data-options="label:'Command Trigger Comment',width:800,required:true,labelAlign:'right',max:255,disabled:true,labelWidth:200,">
+        
+        <a id="btnTriggerComment" href="javascript:void(0)" class="easyui-linkbutton">Test Comment</a>
+    </p>
+    <p>
+        <input name="command_trigger_terminated" id="command_trigger_terminated" class="easyui-textbox" data-options="label:'Command Trigger Terminated',width:800,required:true,labelAlign:'right',max:255,disabled:true,labelWidth:200,">
+        
+        <a id="btnTriggerTerminated" href="javascript:void(0)" class="easyui-linkbutton">Test Terminated</a>
+    </p>
+    <p>
         <input name="desc" id="desc" class="easyui-textbox" data-options="label:'Desc',width:800,required:false,labelAlign:'right',disabled:true,multiline:true," style="height: 180px;">
     </p>
 </form>

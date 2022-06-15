@@ -108,21 +108,24 @@ class CustomerTerminated extends Command
                     'router_sites.host',
                     'router_sites.port',
                     'router_sites.user',
-                    'router_sites.password'
+                    'router_sites.password',
+                    'router_sites.command_trigger_list',
+                    'router_sites.command_trigger_comment',
+                    'router_sites.command_trigger_terminated',
                 ])
                 ->get();
 
-            foreach ($areaRouters as $key => $value) {
+            foreach ($areaRouters as $key => $areaRouter) {
                 $config = (new Config())
-                    ->set('host', $value->host)
-                    ->set('port', (int) $value->port)
-                    ->set('user', $value->user)
-                    ->set('pass', $value->password);
+                    ->set('host', $areaRouter->host)
+                    ->set('port', (int) $areaRouter->port)
+                    ->set('user', $areaRouter->user)
+                    ->set('pass', $areaRouter->password);
                     
                 $client = new Client($config);
 
-                $command = '/ip/firewall/address-list/print';
-                $query = (new Query($command))
+                // $command = '/ip/firewall/address-list/print';
+                $query = (new Query($areaRouter->command_trigger_list))
                     ->where('address', $customerData->service_trigger);
                 
                 $result = $client->query($query)->read();
@@ -130,16 +133,18 @@ class CustomerTerminated extends Command
                 if (!empty($result)) {
                     $paramID = $result[0]['.id'];
 
-                    $command = '/ip/firewall/address-list/set';
-                    $query = (new Query($command))
+                    // $command = '/ip/firewall/address-list/set';
+                    $query = (new Query($areaRouter->command_trigger_comment))
                         ->equal('.id', $paramID)
                         ->equal('comment', 'Resuspend at ' . Carbon::now());
+                    $client->query($query);
 
                     sleep(.1);
 
-                    $command = '/ip/firewall/address-list/disable';
-                    $query = (new Query($command))
-                        ->equal('.id', $paramID);
+                    // $command = '/ip/firewall/address-list/disable';
+                    $query = (new Query($areaRouter->command_trigger_terminated))
+                        ->equal('.id', $paramID);                        
+                    $client->query($query);
 
                     break;
                 }
