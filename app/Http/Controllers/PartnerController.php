@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ConfigController extends Controller
+class PartnerController extends Controller
 {
     //
-    const FOLDER = 'config.';
 }

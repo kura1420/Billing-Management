@@ -17,27 +17,17 @@ use App\Http\Controllers\Rest\CustomerSegmentController;
 use App\Http\Controllers\Rest\CustomerTypeController;
 use App\Http\Controllers\Rest\DepartementController;
 use App\Http\Controllers\Rest\LogController;
-use App\Http\Controllers\Rest\MikrotikController;
 use App\Http\Controllers\Rest\ProductPromoController;
 use App\Http\Controllers\Rest\ProductServiceController;
 use App\Http\Controllers\Rest\ProductTypeController;
 use App\Http\Controllers\Rest\ProvinsiController;
+use App\Http\Controllers\Rest\RadiusApiController;
 use App\Http\Controllers\Rest\ReportController;
 use App\Http\Controllers\Rest\RouterSiteController;
 use App\Http\Controllers\Rest\TaxController;
+use App\Http\Controllers\Rest\UnitController;
 use App\Http\Controllers\Rest\UserProfileController;
 use Illuminate\Support\Facades\Route;
-
-Route::prefix('mikrotik')->group(function() {
-    Route::controller(MikrotikController::class)->group(function() {
-        Route::get('/', 'index');
-
-        Route::middleware('authMikrotik')->group(function() {
-            Route::post('/users', 'users');
-            Route::post('/ip-address', 'ipAddress');
-        });
-    });
-});
 
 Route::prefix('auth')->group(function() {
     Route::controller(AuthController::class)->group(function() {
@@ -343,6 +333,29 @@ Route::middleware('authApp')->group(function() {
             Route::post('/product-service', 'productServiceChart');
             Route::post('/customer-segment', 'customerSegmentChart');
             Route::post('/list-invoice-pay', 'listInvoicePay');
+        });
+    });
+
+    Route::prefix('radius-api')->group(function() {
+        Route::controller(RadiusApiController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/', 'store');
+            Route::post('/test-connection', 'testConnection');
+            
+            Route::delete('/{id}', 'destroy'); 
+        });
+    });
+
+    Route::prefix('unit')->group(function() {
+        Route::controller(UnitController::class)->group(function() {
+            Route::get('/', 'index');
+            Route::get('/{id}', 'show');
+    
+            Route::post('/', 'store');
+            
+            Route::delete('/{id}', 'destroy');             
         });
     });
 

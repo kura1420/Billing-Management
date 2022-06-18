@@ -17,7 +17,7 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const HOME = '/home';
+    public const HOME = '/';
 
     /**
      * The controller namespace for the application.
@@ -60,11 +60,6 @@ class RouteServiceProvider extends ServiceProvider
                 ->namespace($this->namespace)
                 ->prefix('pg')
                 ->group(base_path('routes/web_webhook.php'));
-
-            Route::middleware(['web', 'authMikrotik'])
-                ->namespace($this->namespace)
-                ->prefix('mikrotik')
-                ->group(base_path('routes/web_mikrotik.php'));
 
             # sample 
             if (config('app.debug')) {

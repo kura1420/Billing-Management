@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 use Illuminate\Support\Facades\Http;
 
-class RestApi {
+class OyApi {
     
     protected $API_HOST;
     protected $API_CONFIG;
@@ -33,7 +33,7 @@ class RestApi {
 
     public static function run($endpoint, $method, $params)
     {
-        $class = new RestApi();
+        $class = new OyApi();
 
         switch ($method) {
             case 'get':

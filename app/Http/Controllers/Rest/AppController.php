@@ -106,21 +106,34 @@ class AppController extends Controller
             ],
             [
                 'id' => rand(1, 999),
-                'text' => 'Hotspot',
+                'text' => 'Accounting',
                 'children' => [
-                    [ 'id' => rand(1, 999), 'text' => 'User Profile', 'url' => 'mikrotik/user-profile' ],
-                    [ 'id' => rand(1, 999), 'text' => 'Voucher', 'url' => 'mikrotik/voucher' ],
-                    [ 'id' => rand(1, 999), 'text' => 'User Active', 'url' => 'mikrotik/user-active' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Tax', 'url' => 'accounting/tax' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Bank', 'url' => 'accounting/bank' ],
                 ],
             ],
             [
                 'id' => rand(1, 999),
-                'text' => 'Setting',
+                'text' => 'Service',
                 'children' => [
-                    [ 'id' => rand(1, 999), 'text' => 'Departement', 'url' => 'organization/departement' ],
-                    [ 'id' => rand(1, 999), 'text' => 'Tax', 'url' => 'config/tax' ],
-                    [ 'id' => rand(1, 999), 'text' => 'Bank', 'url' => 'config/bank' ],
-                    [ 'id' => rand(1, 999), 'text' => 'Router Site', 'url' => 'config/router-site' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Router Site', 'url' => 'service/router-site' ],
+                    [ 'id' => rand(1, 999), 'text' => 'Radius API', 'url' => 'service/radius-api' ],
+                    [
+                        'id' => rand(1, 999),
+                        'text' => 'Hotspot',
+                        'children' => [
+                            [ 'id' => rand(1, 999), 'text' => 'User Profile', 'url' => 'service/hostpost/user-profile' ],
+                            [ 'id' => rand(1, 999), 'text' => 'Voucher', 'url' => 'service/hostpost/voucher' ],
+                            [ 'id' => rand(1, 999), 'text' => 'User Active', 'url' => 'service/hostpost/user-active' ],
+                        ],
+                    ],
+                ],
+            ],
+            [
+                'id' => rand(1, 999),
+                'text' => 'Item',
+                'children' => [
+                    [ 'id' => rand(1, 999), 'text' => 'Unit', 'url' => 'item/unit' ],
                 ],
             ],
             [

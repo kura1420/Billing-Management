@@ -5,11 +5,11 @@
     <div id="tbs" class="easyui-tabs" style="width:100%;height:100%;"
         data-options="border:false,tools:'#tab-tools'">
         <div title="List">
-            @include('config.router_site.list')
+            @include('accounting.tax.list')
         </div>
 
         <div title="Form">
-            @include('config.router_site.form')
+            @include('accounting.tax.form')
         </div>
     </div>
     <div id="tab-tools">
@@ -25,10 +25,6 @@
             <a id="btnEdit" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit'"></a>
         </span>
         
-        <span class="easyui-tooltip" title="Test Connection">
-            <a id="btnTestConnection" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok',disabled:true"></a>
-        </span>
-        
         <span class="easyui-tooltip" title="Duplicate">
             <a id="btnCopy" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-copy'"></a>
         </span>
@@ -39,5 +35,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/config/router_site.js') }}"></script>
+<script src="{{ asset('assets/skp/accounting/tax.js') }}"></script>
 @endsection

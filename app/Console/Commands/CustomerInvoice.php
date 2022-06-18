@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Helpers\FileAction;
 use App\Helpers\Formatter;
-use App\Helpers\RestApi;
+use App\Helpers\OyApi;
 use App\Models\AppProfile;
 use App\Models\Area;
 use App\Models\Bank;
@@ -229,7 +229,7 @@ class CustomerInvoice extends Command
         
                                         $payment_endpoint = "/generate-static-va";        
                                         $payment_method = 'POST';        
-                                        $payment_result = RestApi::run($payment_endpoint, $payment_method, $payment_params);
+                                        $payment_result = OyApi::run($payment_endpoint, $payment_method, $payment_params);
 
                                         if ($payment_result) {
                                             $payment_id = $payment_result->id;

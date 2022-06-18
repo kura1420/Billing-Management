@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Webhook;
 
 use App\Helpers\Formatter;
-use App\Helpers\RestApi;
+use App\Helpers\OyApi;
 use App\Http\Controllers\Controller;
 use App\Models\AppProfile;
 use Illuminate\Http\Request;
@@ -50,7 +50,7 @@ class OYIndonesiaController extends Controller
                         $method = 'GET';
                         $params = NULL;
             
-                        $res = RestApi::run($endpoint, $method, $params);
+                        $res = OyApi::run($endpoint, $method, $params);
             
                         if ($res->status) {
                             $paymentLinkCreate = FALSE;
@@ -115,7 +115,7 @@ class OYIndonesiaController extends Controller
                         'va_display_name' => $customerProfile->name,
                     ];
         
-                    $res = RestApi::run($endpoint, $method, $params);
+                    $res = OyApi::run($endpoint, $method, $params);
         
                     if ($res->status) {                
                         InvoiceTransactionMode::create([
@@ -148,7 +148,7 @@ class OYIndonesiaController extends Controller
                         $method = 'GET';
                         $params = NULL;
             
-                        $res = RestApi::run($endpoint, $method, $params);
+                        $res = OyApi::run($endpoint, $method, $params);
 
                         if ($res->status) {
                             $data = $res->data;
@@ -177,7 +177,7 @@ class OYIndonesiaController extends Controller
                                     'va_display_name' => $customerProfile->name,
                                 ];
                     
-                                $res = RestApi::run($endpoint, $method, $params);
+                                $res = OyApi::run($endpoint, $method, $params);
                     
                                 if ($res->status) {                  
                                     InvoiceTransactionMode::create([

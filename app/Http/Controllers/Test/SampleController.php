@@ -221,8 +221,8 @@ class SampleController extends Controller
 
         $client->setServer('192.168.1.2') // RADIUS server address
             ->setSecret('kura');
-    //    ->setNasIpAddress('10.0.1.2') // NAS server address
-    //    ->setAttribute(32, 'login');
+            // ->setNasIpAddress('10.0.1.2') // NAS server address
+            // ->setAttribute(32, 'login');
 
         $username = "bob";
         $password = "hello";

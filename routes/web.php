@@ -1,15 +1,18 @@
 <?php
 
+use App\Http\Controllers\AccountingController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\ConfigController;
 use App\Http\Controllers\CoreController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\ItemController;
 use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\ServiceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -50,11 +53,29 @@ Route::middleware('authApp')->group(function() {
         });
     });
 
-    Route::prefix('config')->group(function() {
-        Route::controller(ConfigController::class)->group(function() {
+    Route::prefix('accounting')->group(function() {
+        Route::controller(AccountingController::class)->group(function() {
             Route::get('/tax', 'tax');
             Route::get('/bank', 'bank');
+        });
+    });
+
+    Route::prefix('service')->group(function() {
+        Route::controller(ServiceController::class)->group(function() {
             Route::get('/router-site', 'router_site');
+            Route::get('/radius-api', 'radius_api');
+        });
+    });
+
+    Route::prefix('item')->group(function() {
+        Route::controller(ItemController::class)->group(function() {
+            Route::get('/unit', 'unit');
+        });
+    });
+
+    Route::prefix('config')->group(function() {
+        Route::controller(ConfigController::class)->group(function() {
+            
         });
     });
 
