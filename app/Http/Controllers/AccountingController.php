@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class AccountingController extends Controller
 {
     //
-    const FOLDER = 'accounting.';
+    const FOLDER = 'pages.accounting.';
 
     public function tax()
     {

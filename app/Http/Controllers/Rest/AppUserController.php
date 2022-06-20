@@ -103,4 +103,19 @@ class AppUserController extends Controller
 
         return response()->json('OK', 200);
     }
+
+    public function lists()
+    {
+        $rows = User::where('active', 1)
+            ->orderBy('name', 'asc')
+            ->get()
+            ->map(function($row) {
+                return [
+                    'id' => $row->id,
+                    'text' => $row->name,
+                ];
+            });
+
+        return response()->json($rows);
+    }
 }

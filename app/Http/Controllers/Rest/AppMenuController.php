@@ -18,7 +18,7 @@ class AppMenuController extends Controller
         $table = AppMenu::with('children');
         
         if ($search) {
-            $result = $table->where('name', 'like', "%{$search}%")
+            $result = $table->where('text', 'like', "%{$search}%")
                 ->orWhere('title', 'like', "%{$search}%")
                 ->orWhere('url', 'like', "%{$search}%")
                 ->get();
@@ -36,7 +36,7 @@ class AppMenuController extends Controller
                 'id' => $request->id,
             ],
             [
-                'name' => $request->name,
+                'text' => $request->text,
                 'title' => $request->title,
                 'url' => $request->url,
                 'parent' => $request->parent ?? NULL,
@@ -71,8 +71,16 @@ class AppMenuController extends Controller
 
     public function lists()
     {
-        $rows = AppMenu::whereNull('parent')
-            ->select('id', 'name', 'title', 'url')
+        // $rows = AppMenu::whereNull('parent')
+        //     ->select('id', 'text', 'title', 'url')
+        //     ->get()
+        //     ->map(function($row) {
+        //         $row->children = $row->childrenActive()->get();
+
+        //         return $row;
+        //     });
+
+        $rows = AppMenu::select('id', 'text', 'title', 'url')
             ->get()
             ->map(function($row) {
                 $row->children = $row->childrenActive()->get();

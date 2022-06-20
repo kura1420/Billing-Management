@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class CustomerController extends Controller
 {
     //
-    const FOLDER = 'customer.';
+    const FOLDER = 'pages.customer.';
 
     public function index()
     {

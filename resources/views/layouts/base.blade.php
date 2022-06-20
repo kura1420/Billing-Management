@@ -18,6 +18,6 @@
 
     <script src="{{ asset('/assets/skp/app.js') }}"></script>
     @else
-        @include('auth.main')
+        @include('pages.auth.main')
     @endif
 @endsection

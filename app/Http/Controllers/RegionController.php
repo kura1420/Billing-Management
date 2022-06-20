@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class RegionController extends Controller
 {
     //
-    const FOLDER = 'region.';
+    const FOLDER = 'pages.region.';
 
     public function provinsi()
     {

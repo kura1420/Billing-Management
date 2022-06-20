@@ -8,8 +8,8 @@ $(document).ready(function () {
 
     const _rest = URL_REST + '/customer'
 
-    var _picture_url = null;
     var rowIndexContact = undefined;
+    var _picture_url = null;
     var _file_url = null;
     var _area_product_customer_value = undefined;
     var _area_product_promo_value = undefined;
@@ -929,6 +929,7 @@ $(document).ready(function () {
         _ff.form('clear')
         
         _dgContact.datagrid('loadData', [])
+        _dgDocument.datagrid('loadData', [])
 
         _area_product_customer.combogrid({
             method: 'get',

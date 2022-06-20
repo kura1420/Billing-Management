@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class CoreController extends Controller
 {
     //
-    const FOLDER = 'core.';
+    const FOLDER = 'pages.core.';
 
     public function profile()
     {

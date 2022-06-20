@@ -33,7 +33,6 @@ class CustomerDocumentRequest extends FormRequest
             $fileRules = 'required|mimes:jpeg,jpg,png,pdf';
         }
         
-
         return [
             //
             'd_type' => 'required|string',

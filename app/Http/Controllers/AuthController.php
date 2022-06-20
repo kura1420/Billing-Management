@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AuthController extends Controller
 {
     //
-    const FOLDER = 'auth.';
+    const FOLDER = 'pages.auth.';
 
     public function reset($token)
     {

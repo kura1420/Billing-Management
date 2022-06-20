@@ -1,19 +1,6 @@
 <?php
 
-use App\Http\Controllers\AccountingController;
-use App\Http\Controllers\AreaController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\BillingController;
-use App\Http\Controllers\ConfigController;
-use App\Http\Controllers\CoreController;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\ItemController;
-use App\Http\Controllers\OrganizationController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\RegionController;
-use App\Http\Controllers\ReportController;
-use App\Http\Controllers\ServiceController;
-use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,96 +25,20 @@ Route::prefix('auth')->group(function() {
 });
 
 Route::middleware('authApp')->group(function() {
-   
-    Route::prefix('area')->group(function() {
-        Route::controller(AreaController::class)->group(function() {
-            Route::get('/', 'index');
-        });
-    });
 
-    Route::prefix('billing')->group(function() {
-        Route::controller(BillingController::class)->group(function() {
-            Route::get('/type', 'type');
-            Route::get('/template', 'template');
-            Route::get('/invoice', 'invoice');
-        });
-    });
-
-    Route::prefix('accounting')->group(function() {
-        Route::controller(AccountingController::class)->group(function() {
-            Route::get('/tax', 'tax');
-            Route::get('/bank', 'bank');
-        });
-    });
-
-    Route::prefix('service')->group(function() {
-        Route::controller(ServiceController::class)->group(function() {
-            Route::get('/router-site', 'router_site');
-            Route::get('/radius-api', 'radius_api');
-        });
-    });
-
-    Route::prefix('item')->group(function() {
-        Route::controller(ItemController::class)->group(function() {
-            Route::get('/unit', 'unit');
-        });
-    });
-
-    Route::prefix('config')->group(function() {
-        Route::controller(ConfigController::class)->group(function() {
-            
-        });
-    });
-
-    Route::prefix('core')->group(function() {
-        Route::controller(CoreController::class)->group(function() {
-            Route::get('/profile', 'profile');
-            Route::get('/user', 'user');
-            Route::get('/role', 'role');
-            Route::get('/menu', 'menu');
-            Route::get('/log', 'log');
-        });
-    });
-
-    Route::prefix('customer')->group(function() {
-        Route::controller(CustomerController::class)->group(function() {
-            Route::get('/', 'index');
-            Route::get('/type', 'type');
-            Route::get('/segment', 'segment');
-        });
-    });
-
-    Route::prefix('organization')->group(function() {
-        Route::controller(OrganizationController::class)->group(function() {
-            Route::get('/departement', 'departement');
-        });
-    });
-
-    Route::prefix('product')->group(function() {
-        Route::controller(ProductController::class)->group(function() {
-            Route::get('/service', 'service');
-            Route::get('/type', 'type');
-            Route::get('/promo', 'promo');
-        });
-    });
-
-    Route::prefix('region')->group(function() {
-        Route::controller(RegionController::class)->group(function() {
-            Route::get('/provinsi', 'provinsi');
-            Route::get('/city', 'city');
-        });
-    });
-
-    Route::prefix('user')->group(function() {
-        Route::controller(UserController::class)->group(function() {
-            Route::get('/profile', 'profile');
-        });
-    });
-
-    Route::prefix('report')->group(function() {
-        Route::controller(ReportController::class)->group(function() {
-            Route::get('/summary', 'summary');
-        });
-    });
-  
+    require_once 'erp/pages/_accounting.php';
+    require_once 'erp/pages/_area.php';
+    require_once 'erp/pages/_core.php';
+    require_once 'erp/pages/_customer.php';
+    require_once 'erp/pages/_employee.php';
+    require_once 'erp/pages/_finance.php';
+    require_once 'erp/pages/_information_technology.php';
+    require_once 'erp/pages/_inventory.php';
+    require_once 'erp/pages/_marketing.php';
+    require_once 'erp/pages/_operation.php';
+    require_once 'erp/pages/_organization.php';
+    require_once 'erp/pages/_partner.php';
+    require_once 'erp/pages/_region.php';
+    require_once 'erp/pages/_report.php';
+    
 });

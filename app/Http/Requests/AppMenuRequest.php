@@ -29,7 +29,7 @@ class AppMenuRequest extends FormRequest
 
         return [
             //
-            'name' => 'required|string|max:255',
+            'text' => 'required|string|max:255',
             'title' => 'nullable|string|max:255',
             'url' => 'nullable|string|max:255',
             'parent' => 'nullable|string',

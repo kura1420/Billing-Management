@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 class ReportController extends Controller
 {
     //
-    const FOLDER = 'report.';
+    const FOLDER = 'pages.report.';
 
-    public function summary()
+    public function sample_summary()
     {
-        return view(self::FOLDER . 'summary');
+        return view(self::FOLDER . 'sample.sampleSummary');
     }
 }

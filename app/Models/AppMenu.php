@@ -28,6 +28,6 @@ class AppMenu extends Model
     {
         return $this->hasMany(AppMenu::class, 'parent', 'id')
             ->where('active', 1)
-            ->select('id', 'name', 'title', 'url', 'parent');
+            ->select('id', 'text', 'title', 'url', 'parent');
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class AreaController extends Controller
 {
     //
-    const FOLDER = 'area.';
+    const FOLDER = 'pages.area.';
 
     public function index()
     {

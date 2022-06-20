@@ -19,7 +19,7 @@ $(document).ready(function () {
     let _btnCopy = $('#btnCopy');
     let _btnRemove = $('#btnRemove');
     
-    let _name = $('#name');
+    let _text = $('#text');
     let _title = $('#title');
     let _url = $('#url');
     let _parent = $('#parent');
@@ -27,7 +27,7 @@ $(document).ready(function () {
 
     _parent.combobox({
         valueField:'id',
-        textField:'name',
+        textField:'text',
         url: _rest + '/lists'
     });
 
@@ -38,7 +38,7 @@ $(document).ready(function () {
         fitColumns:true,
         rownumbers:true,
         idField:'id',
-        treeField:'name',
+        treeField:'text',
         lines:true,
         toolbar:'#tb',
     });
@@ -245,7 +245,7 @@ $(document).ready(function () {
         _btnEdit.linkbutton({disabled:false})
         _btnCopy.linkbutton({disabled:false})
 
-        _name.textbox({disabled:true})
+        _text.textbox({disabled:true})
         _title.textbox({disabled:true})
         _url.textbox({disabled:true})
         _parent.combobox({disabled:true})
@@ -257,7 +257,7 @@ $(document).ready(function () {
         _btnEdit.linkbutton({disabled:true})
         _btnCopy.linkbutton({disabled:true})
     
-        _name.textbox({disabled:false})
+        _text.textbox({disabled:false})
         _title.textbox({disabled:false})
         _url.textbox({disabled:false})
         _parent.combobox({disabled:false})

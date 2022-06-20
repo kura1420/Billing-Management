@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 class OrganizationController extends Controller
 {
     //
-    const FOLDER = 'organization.';
+    const FOLDER = 'pages.organization.';
 
     public function departement()
     {
