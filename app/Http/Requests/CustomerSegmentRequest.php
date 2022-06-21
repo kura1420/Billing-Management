@@ -40,6 +40,8 @@ class CustomerSegmentRequest extends FormRequest
             'name' => 'required|string|max:255',
             'desc' => 'nullable|string',
             'active' => 'required',
+            'custom_price' => 'required',
+            'customer_type_id' => 'required|string',
         ];
     }
 
@@ -49,5 +51,12 @@ class CustomerSegmentRequest extends FormRequest
             'data' => $validator->errors(),
             'status' => 'NOT'
         ], 422));
+    }
+
+    public function attributes()
+    {
+        return [
+            'customer_type_id' => 'customer type'
+        ];
     }
 }

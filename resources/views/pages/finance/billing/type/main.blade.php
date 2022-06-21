@@ -5,11 +5,11 @@
     <div id="tbs" class="easyui-tabs" style="width:100%;height:100%;"
         data-options="border:false,tools:'#tab-tools'">
         <div title="List">
-            @include('pages.billing.type.list')
+            @include('pages.finance.billing.type.list')
         </div>
 
         <div title="Form">
-            @include('pages.billing.type.form')
+            @include('pages.finance.billing.type.form')
         </div>
     </div>
     <div id="tab-tools">

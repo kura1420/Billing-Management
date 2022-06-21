@@ -13,7 +13,7 @@
         <input name="url" id="url" class="easyui-textbox" data-options="label:'URL',width:800,required:false,labelAlign:'right',max:255,disabled:true,">
     </p>
     <p>
-        <input name="parent" id="parent" class="easyui-combobox" data-options="label:'Parent',width:800,required:false,labelAlign:'right',disabled:true,">
+        <input name="parent" id="parent" class="easyui-combotree" data-options="label:'Parent',width:800,required:false,labelAlign:'right',disabled:true,">
     </p>
     <p>
         <input name="active" id="active" class="easyui-switchbutton" data-options="label:'Active',labelAlign:'right',disabled:true" value="1">

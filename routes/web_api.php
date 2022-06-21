@@ -25,6 +25,7 @@ Route::middleware('authApp')->group(function() {
     require_once 'erp/apis/_core.php';
     require_once 'erp/apis/_inventory.php';
     require_once 'erp/apis/_partner.php';
+    require_once 'erp/apis/_report.php';
 
     Route::prefix('app')->group(function() {
         Route::controller(AppController::class)->group(function() {

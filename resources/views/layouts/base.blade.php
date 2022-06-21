@@ -12,7 +12,7 @@
         </div>
 
         <div data-options="region:'center'">
-            <div id="p"></div>
+            <div id="p" class="easyui-tabs" data-options="fit:true,border:false,"></div>
         </div>
     </div>
 

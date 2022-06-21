@@ -1,9 +1,18 @@
 <table id="dg" class="easyui-datagrid" style="height: 100%;">
     <thead>
         <tr>
+            <th data-options="field:'customer_type_id'" sortable="true">Type</th>
             <th data-options="field:'code'" sortable="true">Code</th>
             <th data-options="field:'name'" sortable="true">Name</th>
             <th data-options="field:'desc'" sortable="true">Desc</th>
+            <th data-options="
+                field:'custom_price',
+                align:'center',
+                formatter: function(value, row, index) {
+                    return value == 1 ? 'Yes' : 'No'
+                },
+            "
+            sortable="true">Custom Price</th>
             <th data-options="
                 field:'active',
                 align:'center',

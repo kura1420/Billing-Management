@@ -125,17 +125,29 @@ $(function () {
         let URL_PAGE = URL_ROOT + '/' + page;
     
         let iframe = `<iframe src="${URL_PAGE}" frameborder="0" style="width:100%;height:99%;"></iframe>`;
+        
+        let checkIfExistsTabs = $('#p').tabs('exists', title)
+        let tabsAll = $('#p').tabs('tabs')
 
-        $('#p').panel({
-            title: title,
-            content: iframe,
-            border: false,
-            fit: true,
-            onLoadError: function (xhr) {
-                let {statusText, responseText} = xhr
-            
-                Alert('error', responseText, statusText)
+        if (!checkIfExistsTabs) {
+            if (tabsAll.length < 5) {
+                $('#p').tabs('add', {
+                    title: title,
+                    content: iframe,
+                    border: false,
+                    fit: true,
+                    closable:true,
+                    onLoadError: function (xhr) {
+                        let {statusText, responseText} = xhr
+                    
+                        Alert('error', responseText, statusText)
+                    }
+                });
+            } else {
+                Alert('info', 'Maksimal tab hanya 5, silahkan close tab yang anda ingin ganti.', 'Informasi')
             }
-        });
+        } else {
+            $('#p').tabs('select', title)
+        }
     }
 });

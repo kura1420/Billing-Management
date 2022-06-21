@@ -18,7 +18,16 @@ class CustomerSegmentController extends Controller
         $sortName = $request->sortName ?? NULL;
         $search = $request->search ?? NULL;
 
-        $table = CustomerSegment::select('*');
+        $table = CustomerSegment::join('customer_types', 'customer_segments.customer_type_id', '=', 'customer_types.id')
+            ->select([
+                'customer_segments.id',
+                'customer_segments.code',
+                'customer_segments.name',
+                'customer_segments.desc',
+                'customer_segments.active',
+                'customer_segments.custom_price',
+                    'customer_types.name as customer_type_id',
+            ]);
 
         if ($sortName) {
             $result = $table->orderBy($sortName, $sortOrder)->paginate($rows);
@@ -45,6 +54,8 @@ class CustomerSegmentController extends Controller
                 'name' => $request->name,
                 'desc' => $request->desc,
                 'active' => $request->active == 'true' ? 1 : 0,
+                'custom_price' => $request->custom_price == 'true' ? 1 : 0,
+                'customer_type_id' => $request->customer_type_id,
             ]
         );
 

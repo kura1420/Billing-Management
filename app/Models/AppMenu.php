@@ -19,7 +19,7 @@ class AppMenu extends Model
         return $this->hasMany(AppMenu::class, 'parent', 'id');
     }
 
-    public function parents()
+    public function parent()
     {
         return $this->hasOne(AppMenu::class, 'id', 'parent');
     }

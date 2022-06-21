@@ -23,6 +23,8 @@ $(document).ready(function () {
     let _code = $('#code');
     let _name = $('#name');
     let _desc = $('#desc');
+    let _customer_type_id = $('#customer_type_id');
+    let _custom_price = $('#custom_price');
     let _active = $('#active');
 
     _dg.datagrid({
@@ -80,6 +82,15 @@ $(document).ready(function () {
     
             _ff.form('clear')
 
+            _customer_type_id.combobox({
+                valueField:'id',
+                textField:'name',
+                url: URL_REST + '/customer-type/lists',
+                onLoadSuccess: function () {
+                    _customer_type_id.combo('clear')
+                }
+            });
+
             _code.textbox('readonly', false)
         }
     });
@@ -97,6 +108,7 @@ $(document).ready(function () {
                     }
     
                     param.id = _id.textbox('getValue')
+                    param.custom_price = _custom_price.switchbutton('options').checked
                     param.active = _active.switchbutton('options').checked
                     param._token = $('meta[name="csrf-token"]').attr('content')
     
@@ -258,6 +270,8 @@ $(document).ready(function () {
 
         _name.textbox({disabled:true})
         _desc.textbox({disabled:true})
+        _customer_type_id.combobox({disabled:true})
+        _custom_price.switchbutton({disabled:true})
         _active.switchbutton({disabled:true})
     }
 
@@ -268,11 +282,19 @@ $(document).ready(function () {
     
         _name.textbox({disabled:false})
         _desc.textbox({disabled:false})
+        _customer_type_id.combobox({disabled:false})
+        _custom_price.switchbutton({disabled:false})
         _active.switchbutton({disabled:false})
     }
 
     var getData = (row) => {
         if (row) {
+            _customer_type_id.combobox({
+                valueField:'id',
+                textField:'name',
+                url: URL_REST + '/customer-type/lists',
+            });
+
             _ff.form('load', _rest + '/' + row.id)
     
             _tbs.tabs({

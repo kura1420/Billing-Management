@@ -11,6 +11,6 @@ class ReportController extends Controller
 
     public function sample_summary()
     {
-        return view(self::FOLDER . 'sample.sampleSummary');
+        return view(self::FOLDER . 'sample.summary');
     }
 }

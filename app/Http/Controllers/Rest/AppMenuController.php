@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Rest;
 
+use App\Helpers\Generated;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AppMenuRequest;
 use App\Models\AppMenu;
@@ -13,17 +14,26 @@ class AppMenuController extends Controller
     //
     public function index(Request $request)
     {
+        $page = $request->page ?? 1;
+        $rows = $request->rows ?? 10;
+        $sortOrder = $request->sortOrder ?? 'asc';
+        $sortName = $request->sortName ?? NULL;
         $search = $request->search ?? NULL;
 
-        $table = AppMenu::with('children');
+        $table = AppMenu::select('*');
         
         if ($search) {
             $result = $table->where('text', 'like', "%{$search}%")
                 ->orWhere('title', 'like', "%{$search}%")
                 ->orWhere('url', 'like', "%{$search}%")
+                ->orderBy('text', 'asc')
                 ->get();
         } else {
-            $result = $table->whereNull('parent')->get();
+            $data = $table
+                ->orderBy('text', 'asc')
+                ->get();
+
+            $result = Generated::buildTree($data);
         }
         
         return response()->json($result, 200);
@@ -70,24 +80,10 @@ class AppMenuController extends Controller
     }
 
     public function lists()
-    {
-        // $rows = AppMenu::whereNull('parent')
-        //     ->select('id', 'text', 'title', 'url')
-        //     ->get()
-        //     ->map(function($row) {
-        //         $row->children = $row->childrenActive()->get();
+    {        
+        $rows = AppMenu::where('active', 1)->orderBy('text', 'asc')->get();
+        $result = Generated::buildTree($rows);
 
-        //         return $row;
-        //     });
-
-        $rows = AppMenu::select('id', 'text', 'title', 'url')
-            ->get()
-            ->map(function($row) {
-                $row->children = $row->childrenActive()->get();
-
-                return $row;
-            });
-
-        return response()->json($rows);
+        return response()->json($result);
     }
 }

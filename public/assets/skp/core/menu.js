@@ -25,7 +25,7 @@ $(document).ready(function () {
     let _parent = $('#parent');
     let _active = $('#active');
 
-    _parent.combobox({
+    _parent.combotree({
         valueField:'id',
         textField:'text',
         url: _rest + '/lists'
@@ -36,6 +36,7 @@ $(document).ready(function () {
         collapsible:true,
         border:false,
         fitColumns:true,
+        pagination:false,
         rownumbers:true,
         idField:'id',
         treeField:'text',
@@ -248,7 +249,7 @@ $(document).ready(function () {
         _text.textbox({disabled:true})
         _title.textbox({disabled:true})
         _url.textbox({disabled:true})
-        _parent.combobox({disabled:true})
+        _parent.combotree({disabled:true})
         _active.switchbutton({disabled:true})
     }
 
@@ -260,7 +261,7 @@ $(document).ready(function () {
         _text.textbox({disabled:false})
         _title.textbox({disabled:false})
         _url.textbox({disabled:false})
-        _parent.combobox({disabled:false})
+        _parent.combotree({disabled:false})
         _active.switchbutton({disabled:false})
     }
 

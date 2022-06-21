@@ -5,11 +5,11 @@
     <div id="tbs" class="easyui-tabs" style="width:100%;height:100%;"
         data-options="border:false,tools:'#tab-tools'">
         <div title="List">
-            @include('pages.customer.type.list')
+            @include('pages.customer.segment.list')
         </div>
 
         <div title="Form">
-            @include('pages.customer.type.form')
+            @include('pages.customer.segment.form')
         </div>
     </div>
     <div id="tab-tools">
