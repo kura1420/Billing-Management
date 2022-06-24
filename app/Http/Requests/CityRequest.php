@@ -29,6 +29,7 @@ class CityRequest extends FormRequest
 
         return [
             //
+            'id' => 'required|string|max:36|alpha_num|unique:provinsis,id,' . $id,
             'name' => 'required|string|max:255|unique:provinsis,name,' . $id,
             'provinsi_id' => 'required|string',
         ];

@@ -35,5 +35,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/region/city.js') }}"></script>
+<script src="{{ asset('assets/pages/region/city.js') }}"></script>
 @endsection

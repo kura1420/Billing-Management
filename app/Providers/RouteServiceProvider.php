@@ -61,6 +61,12 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('pg')
                 ->group(base_path('routes/web_webhook.php'));
 
+            # mobile
+            Route::middleware('web')
+                ->namespace($this->namespace)
+                ->prefix('m')
+                ->group(base_path('routes/web_mobile.php'));
+
             # sample 
             if (config('app.debug')) {
                 Route::middleware('web')

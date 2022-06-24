@@ -35,5 +35,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/core/role.js') }}"></script>
+<script src="{{ asset('assets/pages/core/role.js') }}"></script>
 @endsection

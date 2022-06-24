@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class City extends Model
 {
-    use HasFactory, Uuid;
+    use HasFactory;
 
     public $incrementing = false;
 

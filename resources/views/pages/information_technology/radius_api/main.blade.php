@@ -5,11 +5,11 @@
     <div id="tbs" class="easyui-tabs" style="width:100%;height:100%;"
         data-options="border:false,tools:'#tab-tools'">
         <div title="List">
-            @include('pages.service.radius_api.list')
+            @include('pages.information_technology.radius_api.list')
         </div>
 
         <div title="Form">
-            @include('pages.service.radius_api.form')
+            @include('pages.information_technology.radius_api.form')
         </div>
     </div>
     <div id="tab-tools">
@@ -39,5 +39,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/service/radius_api.js') }}"></script>
+<script src="{{ asset('assets/pages/service/radius_api.js') }}"></script>
 @endsection

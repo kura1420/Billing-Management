@@ -12,7 +12,6 @@ Route::prefix('auth')->group(function() {
 });
 
 Route::middleware('authApp')->group(function() {
-
     require_once 'erp/apis/_region.php';
     require_once 'erp/apis/_organization.php';
     require_once 'erp/apis/_accounting.php';
@@ -32,5 +31,4 @@ Route::middleware('authApp')->group(function() {
             Route::post('/menu', 'menu');
         });
     });
-
 });

@@ -42,5 +42,5 @@
 </div>
 
 <script src="{{ asset('assets/jquery-easyui/ext/texteditor/jquery.texteditor.js') }}"></script>
-<script src="{{ asset('assets/skp/billing/template.js') }}"></script>
+<script src="{{ asset('assets/pages/billing/template.js') }}"></script>
 @endsection

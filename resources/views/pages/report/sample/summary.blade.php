@@ -95,5 +95,5 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
-<script src="{{ asset('assets/skp/report/summary.js') }}"></script>
+<script src="{{ asset('assets/pages/report/summary.js') }}"></script>
 @endsection

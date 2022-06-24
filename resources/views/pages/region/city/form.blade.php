@@ -1,5 +1,5 @@
 <form id="ff" method="post">
-    <p style="display: none;">
+    <p>
         <input name="id" id="id" class="easyui-textbox" 
             data-options="label:'ID',width:500,required:false,labelAlign:'right',max:36,disabled:true,">
     </p>

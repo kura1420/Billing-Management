@@ -16,11 +16,15 @@
 
     <script src="{{ asset('assets/jquery-easyui/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/jquery-easyui/jquery.easyui.min.js') }}"></script>
-    <script src="{{ asset('assets/skp/helper.js') }}"></script>
+
+    @yield('addJs')
+
+    <script src="{{ asset('assets/pages/helper.js') }}"></script>
 
     <script>
         const URL_ROOT = '{{ url("/") }}'
         const URL_REST = '{{ url("/rest") }}'
+        const URL_MOBILE = '{{ url("/m") }}'
     </script>
 </head>
 <body>

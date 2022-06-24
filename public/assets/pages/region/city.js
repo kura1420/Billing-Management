@@ -86,6 +86,7 @@ $(document).ready(function () {
             formEdit()
     
             _ff.form('clear')
+            _id.textbox({disabled:false})
         }
     });
 
@@ -277,6 +278,7 @@ $(document).ready(function () {
             })
     
             formEdit()
+            _id.textbox({disabled:true})
         } else {
             Alert('warning', 'ID not found')
         }

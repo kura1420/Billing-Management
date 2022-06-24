@@ -15,5 +15,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/core/profile.js') }}"></script>
+<script src="{{ asset('assets/pages/core/profile.js') }}"></script>
 @endsection

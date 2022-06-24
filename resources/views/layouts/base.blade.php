@@ -16,7 +16,7 @@
         </div>
     </div>
 
-    <script src="{{ asset('/assets/skp/app.js') }}"></script>
+    <script src="{{ asset('/assets/pages/app.js') }}"></script>
     @else
         @include('pages.auth.main')
     @endif

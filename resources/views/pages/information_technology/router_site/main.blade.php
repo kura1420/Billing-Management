@@ -5,11 +5,11 @@
     <div id="tbs" class="easyui-tabs" style="width:100%;height:100%;"
         data-options="border:false,tools:'#tab-tools'">
         <div title="List">
-            @include('pages.service.router_site.list')
+            @include('pages.information_technology.router_site.list')
         </div>
 
         <div title="Form">
-            @include('pages.service.router_site.form')
+            @include('pages.information_technology.router_site.form')
         </div>
     </div>
     <div id="tab-tools">
@@ -39,5 +39,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/service/router_site.js') }}"></script>
+<script src="{{ asset('assets/pages/service/router_site.js') }}"></script>
 @endsection

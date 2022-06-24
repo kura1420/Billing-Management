@@ -8,4 +8,4 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/auth.js') }}"></script>
+<script src="{{ asset('assets/pages/auth.js') }}"></script>

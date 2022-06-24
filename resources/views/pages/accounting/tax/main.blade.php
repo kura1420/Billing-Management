@@ -35,5 +35,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/accounting/tax.js') }}"></script>
+<script src="{{ asset('assets/pages/accounting/tax.js') }}"></script>
 @endsection

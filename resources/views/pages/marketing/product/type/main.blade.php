@@ -5,11 +5,11 @@
     <div id="tbs" class="easyui-tabs" style="width:100%;height:100%;"
         data-options="border:false,tools:'#tab-tools'">
         <div title="List">
-            @include('pages.product.type.list')
+            @include('pages.marketing.product.type.list')
         </div>
 
         <div title="Form">
-            @include('pages.product.type.form')
+            @include('pages.marketing.product.type.form')
         </div>
     </div>
     <div id="tab-tools">
@@ -35,5 +35,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/product/type.js') }}"></script>
+<script src="{{ asset('assets/pages/product/type.js') }}"></script>
 @endsection

@@ -20,5 +20,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/core/log.js') }}"></script>
+<script src="{{ asset('assets/pages/core/log.js') }}"></script>
 @endsection

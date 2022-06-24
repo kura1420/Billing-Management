@@ -35,5 +35,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/region/provinsi.js') }}"></script>
+<script src="{{ asset('assets/pages/region/provinsi.js') }}"></script>
 @endsection

@@ -31,5 +31,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/skp/core/user.js') }}"></script>
+<script src="{{ asset('assets/pages/core/user.js') }}"></script>
 @endsection
