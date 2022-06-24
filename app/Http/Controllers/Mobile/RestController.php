@@ -16,7 +16,6 @@ use App\Models\Provinsi;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class RestController extends Controller
 {

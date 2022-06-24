@@ -37,7 +37,7 @@
         <input class="easyui-numberbox" id="handphone" name="handphone" label="No. HP:" prompt="Nomor Handphone" style="width: 100%;" data-options="required:true," />
     </div>
     <div style="margin-bottom: 10px;">
-        <input class="easyui-filebox" id="file" name="file" label="Identitas:" prompt="Identitas" style="width: 100%;" data-options="required:true," />
+        <b>Identitas:</b> <input type="file" id="file" name="file" (change)="getFile($event)" />
     </div>
     <div style="margin-bottom: 10px;">
         <input class="easyui-textbox" id="address" name="address" label="Alamat:" prompt="Alamat Lengkap" style="width: 100%;height: 100px;" data-options="required:true,max:255,multiline:true," />
