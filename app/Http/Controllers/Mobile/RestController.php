@@ -116,6 +116,7 @@ class RestController extends Controller
             'latitude' => $request->latitude,
             // 'status' => $request->status,
             'from' => $request->from,
+            'signature' => $request->signature,
             'user_id' => $request->user_id,
             'area_id' => $areaProductCustomer->area_id,
             'provinsi_id' => $request->provinsi_id,

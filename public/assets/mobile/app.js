@@ -6,7 +6,6 @@ $(document).ready(function () {
     });
     
     const _rest = URL_MOBILE + '/rest'
-    const _rest_profile = URL_REST + '/profile'
 
     let _ffCustomer = $('#ffCustomer');
 
@@ -16,6 +15,7 @@ $(document).ready(function () {
     let _product_service_id = $('#product_service_id');
     let _latitude = $('#latitude');
     let _longitude = $('#longitude');
+    let _canvasSignaturePad = document.getElementById('canvasSignaturePad');
 
     let _btnSubmitCustomer = $('#btnSubmitCustomer');
     let _btnResetCustomer = $('#btnResetCustomer');
@@ -30,6 +30,7 @@ $(document).ready(function () {
                 },
                 
                 function onError(error) {
+                    console.log(error);
                     switch (error.code) {
                         case error.PERMISSION_DENIED:
                             Alert('warning', "Anda tidak memberikan akses GPS.");                            
@@ -58,6 +59,8 @@ $(document).ready(function () {
     }
 
     getLocation();
+
+    const signaturePad = new SignaturePad(_canvasSignaturePad);
 
     _provinsi_id.combobox({
         valueField:'id',
@@ -130,6 +133,7 @@ $(document).ready(function () {
                         $.messager.progress('close');
                     }
     
+                    param.signature = signaturePad.toDataURL();
                     param._token = $('meta[name="csrf-token"]').attr('content')
     
                     return isValid;

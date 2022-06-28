@@ -2,6 +2,14 @@
 
 @section('addCss')
 <link rel="stylesheet" href="{{ asset('assets/jquery-easyui/themes/mobile.css') }}">
+<style>
+canvas {
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    width: 100%;
+    height: 100px;
+}
+</style>
 @endsection
 
 @section('addJs')
@@ -29,5 +37,6 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 <script src="{{ asset('assets/mobile/app.js') }}"></script>
 @endsection
