@@ -21,6 +21,42 @@ $(document).ready(function () {
     let _btnResetCustomer = $('#btnResetCustomer');
     let _btnLogout = $('#btnLogout');
 
+    var getLocation = () => {
+        if (navigator.geolocation) {
+            window.navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    _latitude.textbox('setValue', position.coords.latitude);
+                    _longitude.textbox('setValue', position.coords.longitude);
+                },
+                
+                function onError(error) {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            Alert('warning', "Anda tidak memberikan akses GPS.");                            
+                            break;
+
+                        case error.POSITION_UNAVAILABLE:
+                            Alert('warning', "Lokasi anda tidak ditemukan."); 
+                            break;
+
+                        case error.TIMEOUT:
+                            Alert('warning', "Waktu membaca posisi GPS habis."); 
+                            break;
+
+                        case error.UNKNOWN_ERROR:
+                            Alert('warning', "Fungsi membaca GPS tidak bekerja."); 
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                }
+            );
+        } else {
+            Alert('warning', "Geolocation is not supported by this browser.");
+        }
+    }
+
     getLocation();
 
     _provinsi_id.combobox({
@@ -254,41 +290,5 @@ $(document).ready(function () {
             });
         }
     });
-
-    var getLocation = () => {
-        if (navigator.geolocation) {
-            window.navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    _latitude.textbox('setValue', position.coords.latitude);
-                    _longitude.textbox('setValue', position.coords.longitude);
-                },
-                
-                function onError(error) {
-                    switch (error.code) {
-                        case error.PERMISSION_DENIED:
-                            Alert('warning', "Anda tidak memberikan akses GPS.");                            
-                            break;
-
-                        case error.POSITION_UNAVAILABLE:
-                            Alert('warning', "Lokasi anda tidak ditemukan."); 
-                            break;
-
-                        case error.TIMEOUT:
-                            Alert('warning', "Waktu membaca posisi GPS habis."); 
-                            break;
-
-                        case error.UNKNOWN_ERROR:
-                            Alert('warning', "Fungsi membaca GPS tidak bekerja."); 
-                            break;
-                    
-                        default:
-                            break;
-                    }
-                }
-            );
-        } else {
-            Alert('warning', "Geolocation is not supported by this browser.");
-        }
-    }
     
 });
