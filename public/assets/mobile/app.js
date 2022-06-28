@@ -161,6 +161,8 @@ $(document).ready(function () {
                         Alert('info', 'Data berhasil di input', 'Informasi');
 
                         _ffCustomer.form('clear');
+
+                        signaturePad.clear();
                     }
                 },
             });
