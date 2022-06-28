@@ -17,6 +17,7 @@ $(document).ready(function () {
     let _longitude = $('#longitude');
     let _canvasSignaturePad = document.getElementById('canvasSignaturePad');
 
+    let _btnSignatureClear = $('#btnSignatureClear');
     let _btnSubmitCustomer = $('#btnSubmitCustomer');
     let _btnResetCustomer = $('#btnResetCustomer');
     let _btnLogout = $('#btnLogout');
@@ -121,6 +122,12 @@ $(document).ready(function () {
         }
     });
 
+    _btnSignatureClear.linkbutton({
+        onClick: function () {
+            signaturePad.clear();
+        }
+    });
+
     _btnSubmitCustomer.linkbutton({
         onClick: function () {
             $.messager.progress();
@@ -165,6 +172,8 @@ $(document).ready(function () {
             $.messager.confirm('Konfirmasi', 'Apakah anda yakin menghapus data di form?', function(r){
                 if (r){
                     _ffCustomer.form('clear');
+
+                    $('#file').val('');
                 }
             });
         }

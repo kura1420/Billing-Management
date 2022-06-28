@@ -43,8 +43,10 @@
         <input class="easyui-textbox" id="address" name="address" label="Alamat:" prompt="Alamat Lengkap" style="width: 100%;height: 100px;" data-options="required:true,max:255,multiline:true," />
     </div>
     <div style="margin-bottom: 10px;">
-        <b>Tanda Tangan Pelanggan:</b> <br>
-        <canvas id="canvasSignaturePad" class="canvasSignaturePad" width="400" height="300"></canvas>
+        <b>Tanda Tangan Pelanggan:</b> 
+        <a id="btnSignatureClear" class="easyui-linkbutton" href="javascript:void(0)">Clear TTD</a>
+        <br> <br>
+        <canvas id="canvasSignaturePad" class="canvasSignaturePad" width="400" height="300" style="border: 1px solid #000;"></canvas>
     </div>
     <div style="text-align: center; margin-top: 30px;">
         <a id="btnSubmitCustomer" class="easyui-linkbutton" href="javascript:void(0)" style="width: 30%; height: 40px;">Daftarkan</a>
