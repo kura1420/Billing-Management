@@ -63,6 +63,17 @@ $(document).ready(function () {
 
     const signaturePad = new SignaturePad(_canvasSignaturePad);
 
+    function resizeCanvas() {
+        const ratio =  Math.max(window.devicePixelRatio || 1, 1);
+        _canvasSignaturePad.width = _canvasSignaturePad.offsetWidth * ratio;
+        _canvasSignaturePad.height = _canvasSignaturePad.offsetHeight * ratio;
+        _canvasSignaturePad.getContext("2d").scale(ratio, ratio);
+        signaturePad.clear(); // otherwise isEmpty() might return incorrect value
+    }
+
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
+
     _provinsi_id.combobox({
         valueField:'id',
         textField:'name',
