@@ -21,6 +21,8 @@ $(document).ready(function () {
     let _btnResetCustomer = $('#btnResetCustomer');
     let _btnLogout = $('#btnLogout');
 
+    getLocation();
+
     _provinsi_id.combobox({
         valueField:'id',
         textField:'name',
@@ -82,41 +84,44 @@ $(document).ready(function () {
 
     _btnSubmitCustomer.linkbutton({
         onClick: function () {
-            getLocation()
+            let lat = _latitude.textbox('getValue');
+            let lon = _longitude.textbox('getValue');
 
-            $.messager.progress();
+            alert(lat, lon);
 
-            _ffCustomer.form('submit', {
-                url: _rest + '/customer-candidate',
-                onSubmit: function(param) {
-                    var isValid = $(this).form('validate');
-                    if (!isValid){
-                        $.messager.progress('close');
-                    }
-    
-                    param._token = $('meta[name="csrf-token"]').attr('content')
-    
-                    return isValid;
-                },
-                success: function(res) {
-                    $.messager.progress('close');
-    
-                    let {status, data} = JSON.parse(res)
-    
-                    if (status == 'NOT') {
-                        let msg = []
-                        for (var d in data) {
-                            msg.push(data[d].toString())
-                        }
-    
-                        Alert('warning', msg.join('<br />'))
-                    } else {
-                        Alert('info', 'Data berhasil di input', 'Informasi');
+            // $.messager.progress();
 
-                        _ffCustomer.form('clear');
-                    }
-                },
-            });
+            // _ffCustomer.form('submit', {
+            //     url: _rest + '/customer-candidate',
+            //     onSubmit: function(param) {
+            //         var isValid = $(this).form('validate');
+            //         if (!isValid){
+            //             $.messager.progress('close');
+            //         }
+    
+            //         param._token = $('meta[name="csrf-token"]').attr('content')
+    
+            //         return isValid;
+            //     },
+            //     success: function(res) {
+            //         $.messager.progress('close');
+    
+            //         let {status, data} = JSON.parse(res)
+    
+            //         if (status == 'NOT') {
+            //             let msg = []
+            //             for (var d in data) {
+            //                 msg.push(data[d].toString())
+            //             }
+    
+            //             Alert('warning', msg.join('<br />'))
+            //         } else {
+            //             Alert('info', 'Data berhasil di input', 'Informasi');
+
+            //             _ffCustomer.form('clear');
+            //         }
+            //     },
+            // });
         }
     });
 
@@ -252,15 +257,38 @@ $(document).ready(function () {
 
     var getLocation = () => {
         if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(showPosition);
-        } else {
-            alert("Geolocation is not supported by this browser.");
-        }
-    }
+            window.navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    _latitude.textbox('setValue', position.coords.latitude);
+                    _longitude.textbox('setValue', position.coords.longitude);
+                },
+                
+                function onError(error) {
+                    switch (error.code) {
+                        case error.PERMISSION_DENIED:
+                            Alert('warning', "Anda tidak memberikan akses GPS.");                            
+                            break;
 
-    var showPosition = (position) => {
-        _latitude.textbox('setValue', position.coords.latitude);
-        _longitude.textbox('setValue', position.coords.longitude);
+                        case error.POSITION_UNAVAILABLE:
+                            Alert('warning', "Lokasi anda tidak ditemukan."); 
+                            break;
+
+                        case error.TIMEOUT:
+                            Alert('warning', "Waktu membaca posisi GPS habis."); 
+                            break;
+
+                        case error.UNKNOWN_ERROR:
+                            Alert('warning', "Fungsi membaca GPS tidak bekerja."); 
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                }
+            );
+        } else {
+            Alert('warning', "Geolocation is not supported by this browser.");
+        }
     }
     
 });
