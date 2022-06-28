@@ -120,44 +120,39 @@ $(document).ready(function () {
 
     _btnSubmitCustomer.linkbutton({
         onClick: function () {
-            let lat = _latitude.textbox('getValue');
-            let lon = _longitude.textbox('getValue');
+            $.messager.progress();
 
-            alert(lat, lon);
+            _ffCustomer.form('submit', {
+                url: _rest + '/customer-candidate',
+                onSubmit: function(param) {
+                    var isValid = $(this).form('validate');
+                    if (!isValid){
+                        $.messager.progress('close');
+                    }
+    
+                    param._token = $('meta[name="csrf-token"]').attr('content')
+    
+                    return isValid;
+                },
+                success: function(res) {
+                    $.messager.progress('close');
+    
+                    let {status, data} = JSON.parse(res)
+    
+                    if (status == 'NOT') {
+                        let msg = []
+                        for (var d in data) {
+                            msg.push(data[d].toString())
+                        }
+    
+                        Alert('warning', msg.join('<br />'))
+                    } else {
+                        Alert('info', 'Data berhasil di input', 'Informasi');
 
-            // $.messager.progress();
-
-            // _ffCustomer.form('submit', {
-            //     url: _rest + '/customer-candidate',
-            //     onSubmit: function(param) {
-            //         var isValid = $(this).form('validate');
-            //         if (!isValid){
-            //             $.messager.progress('close');
-            //         }
-    
-            //         param._token = $('meta[name="csrf-token"]').attr('content')
-    
-            //         return isValid;
-            //     },
-            //     success: function(res) {
-            //         $.messager.progress('close');
-    
-            //         let {status, data} = JSON.parse(res)
-    
-            //         if (status == 'NOT') {
-            //             let msg = []
-            //             for (var d in data) {
-            //                 msg.push(data[d].toString())
-            //             }
-    
-            //             Alert('warning', msg.join('<br />'))
-            //         } else {
-            //             Alert('info', 'Data berhasil di input', 'Informasi');
-
-            //             _ffCustomer.form('clear');
-            //         }
-            //     },
-            // });
+                        _ffCustomer.form('clear');
+                    }
+                },
+            });
         }
     });
 
