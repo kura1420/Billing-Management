@@ -121,6 +121,8 @@ class RestController extends Controller
             'area_id' => $areaProductCustomer->area_id,
             'provinsi_id' => $request->provinsi_id,
             'city_id' => $request->city_id,
+            'customer_type_id' => $areaProductCustomer->customer_type_id,
+            'customer_segment_id' => $areaProductCustomer->customer_segment_id,
             'product_type_id' => $areaProductCustomer->product_type_id,
             'product_service_id' => $areaProductCustomer->product_service_id,
             'area_product_id' => $areaProductCustomer->id,

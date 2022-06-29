@@ -25,8 +25,11 @@ canvas {
     </header>
 
     <div class="easyui-tabs" data-options="fit:true,border:false,tabHeight:35,border:false,">
-        <div title="Home" style="padding: 10px;">
+        <!-- <div title="Home" style="padding: 10px;">
             <img src="{{ asset('logo.jpg') }}" style="width: 100%; height: 25%; align-items: center;">
+        </div> -->
+        <div title="Area & Layanan" style="padding: 10px;">
+            @include('mobile.pages.area_layanan')
         </div>
         <div title="Input Customer" style="padding: 10px;">
             @include('mobile.pages.form_customer')

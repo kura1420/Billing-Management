@@ -20,6 +20,7 @@
     @yield('addJs')
 
     <script src="{{ asset('assets/pages/helper.js') }}"></script>
+    <script src="{{ asset('assets/pages/formatter.js') }}"></script>
 
     <script>
         const URL_ROOT = '{{ url("/") }}'

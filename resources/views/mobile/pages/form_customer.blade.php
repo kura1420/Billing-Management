@@ -1,16 +1,4 @@
 <form id="ffCustomer" method="post" enctype="multipart/form-data">
-    <div style="margin-bottom: 10px;">
-        <input name="provinsi_id" id="provinsi_id" class="easyui-combobox" prompt="Pilih Provinsi" style="width: 100%;" data-options="label:'Provinsi',required:true,">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <input name="city_id" id="city_id" class="easyui-combobox" prompt="Pilih Kota" style="width: 100%;" data-options="label:'Kota',required:true,valueField:'id',textField:'name',">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <input name="customer_segment_id" id="customer_segment_id" prompt="Pilih Segment Customer" class="easyui-combogrid" style="width: 100%;" data-options="label:'Segment',required:true,">
-    </div>
-    <div style="margin-bottom: 10px;">
-        <input name="product_service_id" id="product_service_id" prompt="Pilih Layanan" class="easyui-combogrid" style="width: 100%;" data-options="label:'Layanan',required:true,">
-    </div>
 
     <div style="display: none;">
         <div style="margin-bottom: 10px;">
@@ -18,12 +6,6 @@
         </div>
         <div style="margin-bottom: 10px;">
             <input class="easyui-textbox" id="from" name="from" label="From:" prompt="From" style="width: 100%;" data-options="readonly:true," value="user" />
-        </div>
-        <div style="margin-bottom: 10px;">
-            <input class="easyui-textbox" id="latitude" name="latitude" label="Lat:" prompt="Lat" style="width: 100%;" data-options="readonly:true," />
-        </div>
-        <div style="margin-bottom: 10px;">
-            <input class="easyui-textbox" id="longitude" name="longitude" label="Log:" prompt="Log" style="width: 100%;" data-options="readonly:true," />
         </div>
     </div>
 
@@ -40,13 +22,25 @@
         <b>Identitas:</b> <input type="file" id="file" name="file" style="padding-left: 10px;" (change)="getFile($event)" />
     </div>
     <div style="margin-bottom: 10px;">
-        <input class="easyui-textbox" id="address" name="address" label="Alamat:" prompt="Alamat Lengkap" style="width: 100%;height: 100px;" data-options="required:true,max:255,multiline:true," />
+        <input class="easyui-textbox" id="address" name="address" label="Alamat:" prompt="Alamat Lengkap" style="width: 100%;height: 70px;" data-options="required:true,max:255,multiline:true," />
     </div>
+    <div style="margin-bottom: 10px;">
+        <b>Update Location:</b>
+        <a id="btnPositionUpdate" class="easyui-linkbutton" href="javascript:void(0)">Update</a>
+        <a id="btnPositionManual" class="easyui-linkbutton" href="javascript:void(0)">Entry Manual</a>
+    </div>
+    <div style="margin-bottom: 10px;">
+        <input class="easyui-textbox" id="latitude" name="latitude" prompt="Latitude" style="width: 100%;" data-options="readonly:true," />
+    </div>
+    <div style="margin-bottom: 10px;">
+        <input class="easyui-textbox" id="longitude" name="longitude" prompt="Longitude" style="width: 100%;" data-options="readonly:true," />
+    </div>
+
     <div style="margin-bottom: 10px;">
         <b>Tanda Tangan Pelanggan:</b> 
         <a id="btnSignatureClear" class="easyui-linkbutton" href="javascript:void(0)">Clear TTD</a>
         <br> <br>
-        <canvas id="canvasSignaturePad" class="canvasSignaturePad" width="400" height="300" style="border: 1px solid #000;"></canvas>
+        <canvas id="canvasSignaturePad" class="canvasSignaturePad" width="400" height="400" style="border: 1px solid #000;"></canvas>
     </div>
     <div style="text-align: center; margin-top: 30px;">
         <a id="btnSubmitCustomer" class="easyui-linkbutton" href="javascript:void(0)" style="width: 30%; height: 40px;">Daftarkan</a>

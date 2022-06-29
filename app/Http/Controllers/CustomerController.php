@@ -23,4 +23,9 @@ class CustomerController extends Controller
     {
         return view(self::FOLDER . 'segment.main');
     }
+
+    public function candidate()
+    {
+        return view(self::FOLDER . 'candidate.main');
+    }
 }

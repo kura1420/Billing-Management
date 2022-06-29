@@ -18,18 +18,15 @@ $(document).ready(function () {
     let _canvasSignaturePad = document.getElementById('canvasSignaturePad');
 
     let _btnSignatureClear = $('#btnSignatureClear');
+    let _btnPositionUpdate = $('#btnPositionUpdate');
+    let _btnPositionManual = $('#btnPositionManual');
     let _btnSubmitCustomer = $('#btnSubmitCustomer');
     let _btnResetCustomer = $('#btnResetCustomer');
     let _btnLogout = $('#btnLogout');
 
     var getLocation = () => {
         if (navigator.geolocation) {
-            window.navigator.geolocation.getCurrentPosition(
-                function (position) {
-                    _latitude.textbox('setValue', position.coords.latitude);
-                    _longitude.textbox('setValue', position.coords.longitude);
-                },
-                
+            window.navigator.geolocation.getCurrentPosition(                
                 function onError(error) {
                     console.log(error);
                     switch (error.code) {
@@ -59,6 +56,21 @@ $(document).ready(function () {
         }
     }
 
+    var updateLocation = () => window.navigator.geolocation.getCurrentPosition(setPosition);
+
+    var setPosition = (position) => {
+        _latitude
+            .textbox('clear')
+            .textbox('readonly');
+
+        _longitude
+            .textbox('clear')
+            .textbox('readonly');
+
+        _latitude.textbox('setValue', position.coords.latitude);
+        _longitude.textbox('setValue', position.coords.longitude);
+    }
+
     getLocation();
 
     const signaturePad = new SignaturePad(_canvasSignaturePad);
@@ -68,7 +80,7 @@ $(document).ready(function () {
         _canvasSignaturePad.width = _canvasSignaturePad.offsetWidth * ratio;
         _canvasSignaturePad.height = _canvasSignaturePad.offsetHeight * ratio;
         _canvasSignaturePad.getContext("2d").scale(ratio, ratio);
-        signaturePad.clear(); // otherwise isEmpty() might return incorrect value
+        signaturePad.clear();
     }
 
     window.addEventListener("resize", resizeCanvas);
@@ -133,6 +145,28 @@ $(document).ready(function () {
         }
     });
 
+    _btnPositionUpdate.linkbutton({
+        onClick: function () {
+            Alert('info', 'Posisi sudah diupdate.', 'Informasi');
+
+            updateLocation();
+        }
+    });
+
+    _btnPositionManual.linkbutton({
+        onClick: function () {
+            Alert('info', 'Harap masukkan latitude & longitude pelanggan.', 'Informasi');
+
+            _latitude
+                .textbox('clear')
+                .textbox('readonly', false);
+    
+            _longitude
+                .textbox('clear')
+                .textbox('readonly', false);
+        }
+    });
+
     _btnSignatureClear.linkbutton({
         onClick: function () {
             signaturePad.clear();
@@ -151,6 +185,10 @@ $(document).ready(function () {
                         $.messager.progress('close');
                     }
     
+                    param.provinsi_id = _provinsi_id.combobox('getValue');
+                    param.city_id = _city_id.combobox('getValue');
+                    param.customer_segment_id = _customer_segment_id.combogrid('getValue');
+                    param.product_service_id = _product_service_id.combogrid('getValue');
                     param.signature = signaturePad.toDataURL();
                     param._token = $('meta[name="csrf-token"]').attr('content')
     
@@ -172,6 +210,12 @@ $(document).ready(function () {
                         Alert('info', 'Data berhasil di input', 'Informasi');
 
                         _ffCustomer.form('clear');
+                        _provinsi_id.combobox('clear');
+                        _city_id.combobox('clear');
+                        _customer_segment_id.combogrid('clear');
+                        _product_service_id.combogrid('clear');
+                        
+                        $('#file').val('');
 
                         signaturePad.clear();
                     }
@@ -185,6 +229,10 @@ $(document).ready(function () {
             $.messager.confirm('Konfirmasi', 'Apakah anda yakin menghapus data di form?', function(r){
                 if (r){
                     _ffCustomer.form('clear');
+                    _provinsi_id.combobox('clear');
+                    _city_id.combobox('clear');
+                    _customer_segment_id.combogrid('clear');
+                    _product_service_id.combogrid('clear');
 
                     $('#file').val('');
                 }
