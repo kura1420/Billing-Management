@@ -53,6 +53,7 @@ Route::prefix('customer-candidate')->group(function() {
     Route::controller(CustomerCandidateController::class)->group(function() {
         Route::get('/', 'index');
         Route::get('/{id}', 'show');
+        Route::get('/view-file/{id}/{field}', 'viewFile');
 
         Route::post('/lists', 'lists');
         Route::post('/', 'store');

@@ -43,7 +43,7 @@ class CityController extends Controller
     {
         City::updateOrCreate(
             [
-                'id' => $request->id,
+                'id' => $request->id ?? uniqid(),
             ],
             [
                 'name' => $request->name,

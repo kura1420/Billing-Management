@@ -5,10 +5,13 @@ namespace App\Http\Controllers\Rest;
 use App\Http\Controllers\Controller;
 use App\Models\CustomerCandidate;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CustomerCandidateController extends Controller
 {
     //
+    protected $folder_file = 'customer_candidate';
+
     public function index(Request $request)
     {
         $page = $request->page ?? 1;
@@ -72,6 +75,7 @@ class CustomerCandidateController extends Controller
     public function show($id)
     {
         $row = CustomerCandidate::with([
+            'users',
             'provinsis',
             'cities',
             'product_services',
@@ -82,6 +86,9 @@ class CustomerCandidateController extends Controller
         $row->city_id = $row->cities->name;
         $row->product_service_id = $row->product_services->name;
         $row->customer_segment_id = $row->customer_segments ? $row->customer_segments->name : NULL;
+        $row->user_id = $row->users ? $row->users->name : NULL;
+        $row->file_url = url('rest/customer-candidate/view-file/' . $row->id . '/file');
+        $row->signature_url = url('rest/customer-candidate/view-file/' . $row->id . '/signature');
 
         return $row;
     }
@@ -98,5 +105,36 @@ class CustomerCandidateController extends Controller
         $rows = CustomerCandidate::orderBy('fullname')->get();
 
         return response()->json($rows);
+    }
+
+    public function viewFile($id, $field)
+    {
+        $row = CustomerCandidate::find($id);
+
+        if ($row) {
+            if ($this->check_base64_image($row->{$field})) {
+                if (!empty($row->{$field})) {
+                    $image = imagecreatefromstring(base64_decode($row->{$field}));
+                    
+                    return response()->file($image);
+                } else {
+                    return abort(404);
+                }
+            } else {
+                $path = Storage::path($this->folder_file . '/' . $row->{$field});
+        
+                return response()->file($path);
+            }
+        } else {
+            return abort(404);
+        }
+    }
+
+    protected function check_base64_image($base64) {
+        if (preg_match('%^[a-zA-Z0-9/+]*={0,2}$%', $base64)) {
+           return TRUE;
+        } else {
+           return FALSE;
+        }
     }
 }

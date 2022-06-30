@@ -36,7 +36,7 @@ class ProvinsiController extends Controller
     {
         Provinsi::updateOrCreate(
             [
-                'id' => $request->id,
+                'id' => $request->id ?? uniqid(),
             ],
             [
                 'name' => $request->name,

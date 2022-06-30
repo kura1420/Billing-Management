@@ -16,6 +16,8 @@ $(document).ready(function () {
     let _ff = $('#ff');
     let _ss = $('#ss');
     
+    let _btnFile = $('#btnFile');
+    let _btnSignature = $('#btnSignature');
     let _btnSave = $('#btnSave');
     let _btnEdit = $('#btnEdit');
     
@@ -33,6 +35,54 @@ $(document).ready(function () {
     let _city_id = $('#city_id');
     let _product_service_id = $('#product_service_id');
     let _customer_segment_id = $('#customer_segment_id');
+
+    _file_type.combobox({
+        valueField:'id',
+        textField:'text',
+        data: [{
+            "id":'ktp',
+            "text":"KTP"
+        },{
+            "id":'sim',
+            "text":"SIM"
+        },{
+            "id":'passpor',
+            "text":"Passpor"
+        },{
+            "id":'siup',
+            "text":"SIUP"
+        },{
+            "id":'npwp',
+            "text":"NPWP"
+        },{
+            "id":'tdp',
+            "text":"TDP"
+        },]
+    });
+
+    _status.combobox({
+        valueField:'id',
+        textField:'text',
+        data: [{
+            "id":'0',
+            "text":"Registered"
+        },{
+            "id":'1',
+            "text":"Confirmation"
+        },{
+            "id":'2',
+            "text":"Schedule Install"
+        },{
+            "id":'3',
+            "text":"On Process"
+        },{
+            "id":'4',
+            "text":"Cancel"
+        },{
+            "id":'5',
+            "text":"Success"
+        },]
+    });
 
     _dg.datagrid({
         singleSelect:true,
@@ -75,6 +125,22 @@ $(document).ready(function () {
         onSelect: function (title, index) {
             if (index == 0) {
                 formReset()
+            }
+        }
+    });
+
+    _btnFile.linkbutton({
+        onClick: function () {
+            if (_file_url) {
+                window.open(_file_url);
+            }
+        }
+    });
+
+    _btnSignature.linkbutton({
+        onClick: function () {
+            if (_file_url) {
+                window.open(_signature_url);
             }
         }
     });
@@ -197,13 +263,68 @@ $(document).ready(function () {
 
     var getData = (row) => {
         if (row) {
-            _ff.form('load', _rest + '/' + row.id)
-    
-            _tbs.tabs({
-                selected: 1
-            })
-    
-            formEdit()
+            $.ajax({
+                type: "GET",
+                url: _rest + '/' + row.id,
+                dataType: "json",
+                success: function (response) {
+                    _tbs.tabs({
+                        selected: 1
+                    })
+            
+                    formEdit()
+                    
+                    let {
+                        id,
+                        fullname,
+                        email,
+                        handphone,
+                        file,
+                        file_url,
+                        file_type,
+                        file_number,
+                        address,
+                        longitude,
+                        latitude,
+                        status,
+                        from,
+                        signature,
+                        signature_url,
+                        user_id,
+                        area_id,
+                        provinsi_id,
+                        city_id,
+                        product_type_id,
+                        product_service_id,
+                        customer_type_id,
+                        customer_segment_id,
+                    } = response
+
+                    _ff.form('load', {
+                        id,
+                        fullname,
+                        email,
+                        handphone,
+                        file_type,
+                        file_number,
+                        address,
+                        status,
+                        from,
+                        signature_url,
+                        user_id,
+                        provinsi_id,
+                        city_id,
+                        product_service_id,
+                        customer_segment_id,
+                    });
+                    
+                    _file_url = file_url
+                    _signature_url = signature_url
+                },
+                error: function (xhr, status, error) {
+                    Alert('error', 'Internal server error');
+                }
+            });
         } else {
             Alert('warning', 'ID not found')
         }

@@ -33,9 +33,6 @@ $(document).ready(function () {
         toolbar:'#tb',
     });
 
-    _dg.datagrid('fixColumnSize');
-    _dg.datagrid('fixRowHeight');
-
     _ss.searchbox({
         prompt: 'Search',
         searcher: function (value, name) {
@@ -79,7 +76,7 @@ $(document).ready(function () {
             formEdit()
     
             _ff.form('clear')
-            _id.textbox({disabled:false})
+            // _id.textbox({disabled:false})
         }
     });
 
@@ -239,7 +236,10 @@ $(document).ready(function () {
 
                 Alert('error', responseJSON, statusText)
             },
-        })
+        });
+
+        _dg.datagrid('fixColumnSize');
+        _dg.datagrid('fixRowHeight');
     }
 
     var formReset = () => {
@@ -269,7 +269,7 @@ $(document).ready(function () {
             })
     
             formEdit()
-            _id.textbox({disabled:true})
+            // _id.textbox({disabled:true})
         } else {
             Alert('warning', 'ID not found')
         }

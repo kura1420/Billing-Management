@@ -11,6 +11,11 @@ class CustomerCandidate extends Model
 
     protected $guarded = [];
 
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function areas()
     {
         return $this->belongsTo(Area::class, 'area_id');

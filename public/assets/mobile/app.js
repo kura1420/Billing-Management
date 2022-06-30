@@ -71,20 +71,20 @@ $(document).ready(function () {
         _longitude.textbox('setValue', position.coords.longitude);
     }
 
-    getLocation();
+    // getLocation();
 
     const signaturePad = new SignaturePad(_canvasSignaturePad);
 
-    function resizeCanvas() {
-        const ratio =  Math.max(window.devicePixelRatio || 1, 1);
-        _canvasSignaturePad.width = _canvasSignaturePad.offsetWidth * ratio;
-        _canvasSignaturePad.height = _canvasSignaturePad.offsetHeight * ratio;
-        _canvasSignaturePad.getContext("2d").scale(ratio, ratio);
-        signaturePad.clear();
-    }
+    // function resizeCanvas() {
+    //     const ratio =  Math.max(window.devicePixelRatio || 1, 1);
+    //     _canvasSignaturePad.width = _canvasSignaturePad.offsetWidth * ratio;
+    //     _canvasSignaturePad.height = _canvasSignaturePad.offsetHeight * ratio;
+    //     _canvasSignaturePad.getContext("2d").scale(ratio, ratio);
+    //     signaturePad.clear();
+    // }
 
-    window.addEventListener("resize", resizeCanvas);
-    resizeCanvas();
+    // window.addEventListener("resize", resizeCanvas);
+    // resizeCanvas();
 
     _provinsi_id.combobox({
         valueField:'id',
@@ -235,6 +235,8 @@ $(document).ready(function () {
                     _product_service_id.combogrid('clear');
 
                     $('#file').val('');
+
+                    signaturePad.clear();
                 }
             });
         }

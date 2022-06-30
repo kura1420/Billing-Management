@@ -36,13 +36,7 @@
                     <input name="handphone" id="handphone" class="easyui-textbox" data-options="label:'Handphone',width:800,readonly:true,labelAlign:'right',">
                 </p>
                 <p>
-                    Signature: <a id="btnSignature" href="javascript:void(0)" style="margin-left: 10px;" class="easyui-linkbutton">Check</a>
-                </p>
-                <p>
-                    File Identity: <a id="btnFile" href="javascript:void(0)" class="easyui-linkbutton">Check</a>
-                </p>
-                <p>
-                    <input name="file_type" id="file_type" class="easyui-combobox" data-options="label:'File Identity Type',width:800,required:true,labelAlign:'right',labelWidth:120,">
+                    <input name="file_type" id="file_type" class="easyui-combobox" data-options="label:'File Identity Type',width:800,required:true,labelAlign:'right',labelWidth:140,">
                 </p>
                 <p>
                     <input name="file_number" id="file_number" class="easyui-textbox" data-options="label:'File Identity Number',width:800,required:true,labelAlign:'right',max:255,labelWidth:140,">
@@ -51,7 +45,11 @@
                     <input name="status" id="status" class="easyui-combobox" data-options="label:'Status',width:800,required:true,labelAlign:'right',">
                 </p>
                 <p>
-                    <input name="address" id="address" class="easyui-textbox" data-options="label:'Address',width:800,readonly:true,labelAlign:'right',multiline:true," style="height: 180px;">
+                    <input name="address" id="address" class="easyui-textbox" data-options="label:'Address',width:800,readonly:true,labelAlign:'right',multiline:true," style="height: 100px;">
+                </p>
+                <p>
+                    <a id="btnFile" href="javascript:void(0)" class="easyui-linkbutton">File Identity</a>
+                    <a id="btnSignature" href="javascript:void(0)" style="margin-left: 10px;" class="easyui-linkbutton">Signature</a>
                 </p>
             </td>
         </tr>

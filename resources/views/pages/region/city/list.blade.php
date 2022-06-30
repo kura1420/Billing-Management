@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th data-options="field:'provinsi_id'" sortable="true">Provinsi</th>
-            <th data-options="field:'id'" sortable="true">ID</th>
+            <!-- <th data-options="field:'id'" sortable="true">ID</th> -->
             <th data-options="field:'name'" sortable="true">Name</th>
         </tr>
     </thead>
