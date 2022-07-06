@@ -220,6 +220,7 @@ class AreaController extends Controller
             $params['active'] = 1;
 
             $rows = AreaProductCustomer::where($params)
+                ->select('id', 'product_type_id', 'product_service_id')
                 ->distinct()
                 ->get()
                 ->map(fn($row) => [
@@ -292,6 +293,7 @@ class AreaController extends Controller
             $params['active'] = 1;
 
             $rows = AreaProductCustomer::where($params)
+                ->select('customer_segment_id', 'customer_type_id')
                 ->distinct()
                 ->get()
                 ->map(fn($row) => [

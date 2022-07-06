@@ -84,6 +84,7 @@ class RestController extends Controller
             ->where('city_id', $city)
             ->where('customer_segment_id', $segment)
             ->where('active', 1)
+            ->select('id', 'product_type_id', 'product_service_id')
             ->distinct()
             ->get()
             ->map(fn($row) => [
