@@ -14,6 +14,9 @@
         <input name="email" id="email" class="easyui-textbox" data-options="label:'Email',width:800,required:true,labelAlign:'right',max:255,disabled:true,validType:'email',labelWidth:100">
     </p>
     <p>
+        <input name="username" id="username" class="easyui-textbox" data-options="label:'Username',width:800,required:true,labelAlign:'right',max:100,disabled:true,labelWidth:100">
+    </p>
+    <p>
         <input name="password" id="password" class="easyui-passwordbox" data-options="label:'Password',width:800,required:false,labelAlign:'right',min:6,disabled:true,showEye:true,labelWidth:100">
     </p>
     <!-- <p>

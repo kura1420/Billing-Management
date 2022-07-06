@@ -24,6 +24,7 @@ class AppUserController extends Controller
             ->select([
                 'users.id',
                 'users.name',
+                'users.username',
                 'users.email',
                 'users.active',
                     'user_profiles.telp',
@@ -48,6 +49,7 @@ class AppUserController extends Controller
     {
         $field = [
             'name' => $request->name,
+            'username' => strtolower($request->username),
             'email' => strtolower($request->email),
             'email_verified_at' => NULL,
             'active' => $request->active == 'true' ? 1 : 0,

@@ -1,7 +1,7 @@
 <div data-options="region:'center',border:false," style="padding: 10px;">
     <form id="ffLogin" method="post">
         <div style="margin-bottom: 20px;">
-            <input class="easyui-textbox" name="email" id="email" style="width: 100%;" data-options="label:'Email:',required:true,validType:'email'" />
+            <input class="easyui-textbox" name="username" id="username" style="width: 100%;" data-options="label:'Username:',required:true," />
         </div>
         <div style="margin-bottom: 20px;">
             <input class="easyui-passwordbox" name="password" id="password" style="width: 100%;" data-options="label:'Password:',required:true,showEye:true," />

@@ -26,7 +26,7 @@ class AuthController extends Controller
     public function loginCheck(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'email' => 'required|string|email',
+            'username' => 'required|string',
             'password' => 'required|string'
         ]);
 
@@ -36,7 +36,11 @@ class AuthController extends Controller
                 'status' => 'NOT'
             ], 422);
         } else {
-            $user = User::with('user_profiles')->where('email', $request->email)
+            $username = $request->username;
+
+            $user = User::with('user_profiles')->where('email', $username)
+                ->where('active', 1)
+                ->orWhere('username', $username)
                 ->where('active', 1)
                 ->first();
 

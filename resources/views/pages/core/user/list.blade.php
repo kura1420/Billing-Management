@@ -1,6 +1,7 @@
 <table id="dg" class="easyui-datagrid" style="height: 100%;">
     <thead>
         <tr>
+            <th data-options="field:'username'" sortable="true">Username</th>
             <th data-options="field:'name'" sortable="true">Name</th>
             <th data-options="field:'email'" sortable="true">Email</th>
             <!-- <th data-options="field:'telp'" sortable="true">Telp</th>

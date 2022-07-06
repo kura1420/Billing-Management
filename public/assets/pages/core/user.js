@@ -20,6 +20,7 @@ $(document).ready(function () {
     
     let _name = $('#name');
     let _email = $('#email');
+    let _username = $('#username');
     let _password = $('#password');
     let _active = $('#active');
     // let _telp = $('#telp');
@@ -221,6 +222,7 @@ $(document).ready(function () {
 
         _name.textbox({disabled:true});
         _email.textbox({disabled:true});
+        _username.textbox({disabled:true});
         _password.passwordbox({disabled:true});
         _active.switchbutton({disabled:true})
         // _telp.maskedbox({disabled:true});
@@ -235,6 +237,7 @@ $(document).ready(function () {
     
         _name.textbox({disabled:false});
         _email.textbox({disabled:false});
+        _username.textbox({disabled:false});
         _password.passwordbox({disabled:false});
         _active.switchbutton({disabled:false})
         // _telp.maskedbox({disabled:false});

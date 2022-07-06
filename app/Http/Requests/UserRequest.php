@@ -38,6 +38,7 @@ class UserRequest extends FormRequest
             //
             'name' => 'required|string|max:255',
             'email' => 'required|string|max:255|email|unique:users,email,' . $id,
+            'username' => 'required|string|max:100|alpha_num|unique:users,username,' . $id,
             'password' => $passwordRule . 'string|min:6',
             'active' => 'required',
 
