@@ -5,15 +5,11 @@
     <div id="tbs" class="easyui-tabs" style="width:100%;height:100%;"
         data-options="border:false,tools:'#tab-tools'">
         <div title="List">
-            @include('pages.customer.candidate.list')
+            @include('pages.inventory.item.list')
         </div>
 
-        <div title="Create">
-            @include('pages.customer.candidate.create')
-        </div>
-
-        <div title="Edit">
-            @include('pages.customer.candidate.edit')
+        <div title="Form">
+            @include('pages.inventory.item.form')
         </div>
     </div>
     <div id="tab-tools">
@@ -29,15 +25,15 @@
             <a id="btnEdit" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-edit'"></a>
         </span>
         
-        <span class="easyui-tooltip" title="Update">
-            <a id="btnUpdate" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-ok',disabled:true"></a>
+        <span class="easyui-tooltip" title="Duplicate">
+            <a id="btnCopy" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-copy'"></a>
         </span>
         
-        <!-- <span class="easyui-tooltip" title="Remove">
+        <span class="easyui-tooltip" title="Remove">
             <a id="btnRemove" href="javascript:void(0)" class="easyui-linkbutton" data-options="plain:true,iconCls:'icon-remove'"></a>
-        </span> -->
+        </span>
     </div>
 </div>
 
-<script src="{{ asset('assets/pages/customer/candidate.js') }}"></script>
+<script src="{{ asset('assets/pages/inventory/item.js') }}"></script>
 @endsection

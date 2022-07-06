@@ -9,6 +9,15 @@
             <th data-options="field:'email'" sortable="true">Email</th>
             <th data-options="field:'handphone'" sortable="true">Handphone</th>
             <th data-options="
+                field:'file_type',       
+                formatter: function(value, row, index) {
+                    if (value) {
+                        return value.toUpperCase()
+                    }
+                },                
+            " sortable="true">File Type</th>
+            <th data-options="field:'file_number'" sortable="true">File Number</th>
+            <th data-options="
                 field:'status',                
                 align:'center',
                 formatter: function(value, row, index) {

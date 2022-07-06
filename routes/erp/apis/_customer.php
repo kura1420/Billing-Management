@@ -56,7 +56,8 @@ Route::prefix('customer-candidate')->group(function() {
         Route::get('/view-file/{id}/{field}', 'viewFile');
 
         Route::post('/lists', 'lists');
-        Route::post('/', 'store');
+        Route::post('/create', 'store');
+        Route::post('/update', 'update');
         
         Route::delete('/{id}', 'destroy'); 
     });

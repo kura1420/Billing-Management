@@ -130,7 +130,7 @@ $(function () {
         let tabsAll = $('#p').tabs('tabs')
 
         if (!checkIfExistsTabs) {
-            if (tabsAll.length < 5) {
+            if (tabsAll.length < 10) {
                 $('#p').tabs('add', {
                     title: title,
                     content: iframe,
@@ -144,7 +144,7 @@ $(function () {
                     }
                 });
             } else {
-                Alert('info', 'Maksimal tab hanya 5, silahkan close tab yang anda ingin ganti.', 'Informasi')
+                Alert('info', 'Maksimal tab hanya 10, silahkan close tab yang anda ingin ganti.', 'Informasi')
             }
         } else {
             $('#p').tabs('select', title)

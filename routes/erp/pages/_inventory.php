@@ -6,5 +6,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('inventory')->group(function() {
     Route::controller(InventoryController::class)->group(function() {
         Route::get('/unit', 'unit');
+        Route::get('/item', 'item');
     });
 });

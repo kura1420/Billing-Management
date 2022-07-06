@@ -13,4 +13,9 @@ class InventoryController extends Controller
     {
         return view(self::FOLDER . 'unit.main');
     }
+
+    public function item()
+    {
+        return view(self::FOLDER . 'item.main');
+    }
 }

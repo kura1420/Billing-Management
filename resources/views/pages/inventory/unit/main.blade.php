@@ -35,5 +35,5 @@
     </div>
 </div>
 
-<script src="{{ asset('assets/pages/item/unit.js') }}"></script>
+<script src="{{ asset('assets/pages/inventory/unit.js') }}"></script>
 @endsection

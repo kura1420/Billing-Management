@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Rest;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CustomerCandidateStoreRequest;
+use App\Http\Requests\CustomerCandidateUpdateRequest;
 use App\Models\CustomerCandidate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -29,8 +31,8 @@ class CustomerCandidateController extends Controller
                 'customer_candidates.fullname',
                 'customer_candidates.email',
                 'customer_candidates.handphone',
-                'customer_candidates.longitude',
-                'customer_candidates.latitude',
+                'customer_candidates.file_type',
+                'customer_candidates.file_number',
                 'customer_candidates.status',
                 'customer_candidates.area_product_id',
                     'provinsis.name as provinsi_name',
@@ -53,23 +55,58 @@ class CustomerCandidateController extends Controller
         return response()->json($result, 200);
     }
     
-    public function store(Request $request)
+    public function store(CustomerCandidateStoreRequest $request)
     {
-        // CustomerCandidate::updateOrCreate(
-        //     [
-        //         'id' => $request->id,
-        //     ],
-        //     [
-        //         'code' => strtoupper($request->code),
-        //         'name' => $request->name,
-        //         'desc' => $request->desc,
-        //         'active' => $request->active == 'true' ? 1 : 0,
-        //     ]
-        // );
+        $file = uniqid() . '.' . $request->c_file->extension();
 
-        // $status = $request->id ? 200 : 201;
+        $request->file('c_file')->storeAs(
+            $this->folder_file,
+            $file,
+            'local'
+        );
 
-        // return response()->json('OK', $status);
+        $areaProductCustomer = \App\Models\AreaProductCustomer::where('id', $request->c_product_service_id)->first();
+
+        CustomerCandidate::create([
+            'fullname' => $request->c_fullname,
+            'email' => $request->c_email,
+            'handphone' => $request->c_handphone,
+            'file' => $file,
+            'file_type' => $request->c_file_type,
+            'file_number' => $request->c_file_number,
+            'address' => $request->c_address,
+            'longitude' => $request->c_longitude,
+            'latitude' => $request->c_latitude,
+            'status' => 0,
+            'from' => 'user',
+            'signature' => NULL,
+            'user_id' => session()->get('user_data')['id'],
+            'area_id' => $areaProductCustomer->area_id,
+            'provinsi_id' => $request->c_provinsi_id,
+            'city_id' => $request->c_city_id,
+            'customer_type_id' => $areaProductCustomer->customer_type_id,
+            'customer_segment_id' => $areaProductCustomer->customer_segment_id,
+            'product_type_id' => $areaProductCustomer->product_type_id,
+            'product_service_id' => $areaProductCustomer->product_service_id,
+            'area_product_id' => $areaProductCustomer->id,
+            // 'area_product_promo_id' => $request->c_area_product_promo_id,
+        ]);
+
+        return response()->json('OK', 201);
+    }
+
+    public function update(CustomerCandidateUpdateRequest $request)
+    {
+        $id = $request->id;
+
+        CustomerCandidate::find($id)
+            ->update([
+                'file_type' => $request->file_type,
+                'file_number' => $request->file_number,
+                'status' => $request->status,
+            ]);
+
+        return response()->json('OK', 200);
     }
 
     public function show($id)

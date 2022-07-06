@@ -204,6 +204,34 @@ class AreaController extends Controller
         return response()->json($rows);
     }
 
+    public function productSearch(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'params' => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'data' => $validator->errors(),
+                'status' => 'NOT'
+            ], 422);
+        } else {
+            $params = $request->params;
+            $params['active'] = 1;
+
+            $rows = AreaProductCustomer::where($params)
+                ->distinct()
+                ->get()
+                ->map(fn($row) => [
+                    'id' => $row->id,
+                    'product_type_name' => \App\Models\ProductType::where('id', $row->product_type_id)->first()->name,
+                    'product_service_name' => \App\Models\ProductService::where('id', $row->product_service_id)->first()->name,
+                ]);
+
+            return response()->json($rows);
+        }        
+    }
+
     public function productDestroy($id)
     {
         AreaProduct::find($id)->delete();
@@ -246,6 +274,34 @@ class AreaController extends Controller
             ->get();
 
         return response()->json($rows);
+    }
+
+    public function customerSearch(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'params' => 'required|array',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'data' => $validator->errors(),
+                'status' => 'NOT'
+            ], 422);
+        } else {
+            $params = $request->params;
+            $params['active'] = 1;
+
+            $rows = AreaProductCustomer::where($params)
+                ->distinct()
+                ->get()
+                ->map(fn($row) => [
+                    'id' => $row->customer_segment_id,
+                    'customer_type_name' => \App\Models\CustomerType::where('id', $row->customer_type_id)->first()->name,
+                    'customer_segment_name' => \App\Models\CustomerSegment::where('id', $row->customer_segment_id)->first()->name,
+                ]);
+
+            return response()->json($rows);
+        }        
     }
 
     public function customerDestroy($id)

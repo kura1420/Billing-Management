@@ -15,6 +15,8 @@ Route::prefix('area')->group(function() {
         Route::post('/lists', 'lists');
         Route::post('/', 'store');
         Route::post('/update-price', 'updatePriceStore');
+        Route::post('/product-search', 'productSearch');
+        Route::post('/customer-search', 'customerSearch');
         
         Route::delete('/{id}', 'destroy');
         Route::delete('/product/{id}', 'productDestroy');
