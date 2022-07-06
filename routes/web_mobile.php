@@ -27,7 +27,7 @@ Route::middleware('authMobile')->group(function() {
             Route::post('/provinsi', 'provinsi');
             Route::post('/city', 'city');
             Route::post('/profile', 'updateProfile');
-            Route::post('/segments', 'segments');
+            Route::get('/segments', 'segments');
             Route::post('/products', 'products');
             Route::post('/customer-candidate', 'customerCandidate');
             Route::post('/logout', 'logout');

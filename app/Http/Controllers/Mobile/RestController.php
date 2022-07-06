@@ -62,6 +62,7 @@ class RestController extends Controller
         $rows = AreaProductCustomer::where('provinsi_id', $provinsi)
             ->where('city_id', $city)
             ->where('active', 1)
+            ->select('customer_segment_id', 'customer_type_id')
             ->distinct()
             ->get()
             ->map(fn($row) => [
