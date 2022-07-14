@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class UnitRequest extends FormRequest
+class CustomerDeviceRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,12 +25,20 @@ class UnitRequest extends FormRequest
      */
     public function rules()
     {
-        $id = request('id') ?? NULL;
+        $id = request('e_id') ?? NULL;
+
+        if ($id) {
+            $fileRules = 'nullable|image';
+        } else {
+            $fileRules = 'required|image';
+        }
 
         return [
             //
-            'shortname' => 'required|string|max:50|unique:units,shortname,' . $id,
-            'name' => 'required|string|max:255',
+            'e_desc' => 'required|string',
+            'e_picture' => $fileRules,
+            'e_qty' => 'required|string',
+            'e_item_id' => 'required|string',
         ];
     }
 
@@ -40,5 +48,15 @@ class UnitRequest extends FormRequest
             'data' => $validator->errors(),
             'status' => 'NOT'
         ], 422));
+    }
+
+    public function attributes()
+    {
+        return [
+            'e_desc' => 'desc',
+            'e_picture' => 'picture',
+            'e_qty' => 'qty',
+            'e_item_id' => 'item',
+        ];
     }
 }

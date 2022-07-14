@@ -269,7 +269,7 @@ $(document).ready(function () {
 
     _btnSignature.linkbutton({
         onClick: function () {
-            if (_file_url) {
+            if (_signature_url) {
                 window.open(_signature_url);
             }
         }

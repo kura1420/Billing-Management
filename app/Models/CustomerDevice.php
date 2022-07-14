@@ -6,7 +6,7 @@ use App\Traits\Uuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model
+class CustomerDevice extends Model
 {
     use HasFactory, Uuid;
 
@@ -14,9 +14,9 @@ class Item extends Model
 
     protected $guarded = [];
 
-    public function partners()
+    public function items()
     {
-        return $this->belongsTo(Partner::class, 'partner_id');
+        return $this->belongsTo(Item::class, 'item_id');
     }
 
     public function units()

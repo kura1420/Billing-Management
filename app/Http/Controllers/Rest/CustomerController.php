@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Rest;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CustomerDeviceRequest;
 use App\Http\Requests\CustomerDocumentRequest;
 use App\Http\Requests\CustomerRequest;
 use App\Models\CustomerContact;
 use App\Models\CustomerData;
+use App\Models\CustomerDevice;
 use App\Models\CustomerDocument;
 use App\Models\CustomerProfile;
 use App\Models\CustomerPromo;
@@ -16,8 +18,9 @@ use Illuminate\Support\Facades\Storage;
 class CustomerController extends Controller
 {
     //
-    protected $folder_picture = 'customer_profile';
-    protected $folder_file = 'customer_file';
+    protected $folder_picture = 'customer/profile';
+    protected $folder_file = 'customer/file';
+    protected $folder_device = 'customer/device';
 
     public function index(Request $request)
     {
@@ -69,8 +72,8 @@ class CustomerController extends Controller
 
     public function store(CustomerRequest $request)
     {
-        $contacts = json_decode($request->contacts, TRUE);
         $area_product_promo_id = $request->area_product_promo_id ?? NULL;
+        $contacts = json_decode($request->contacts, TRUE);
 
         $customerData = CustomerData::updateOrCreate(
             [
@@ -130,9 +133,27 @@ class CustomerController extends Controller
             ]
         );
 
+        if ($area_product_promo_id) {
+            $areaProductPromo = \App\Models\AreaProductPromo::with('product_promos')->where('id', $area_product_promo_id)->first();
+            $productPromo = $areaProductPromo->product_promos;
+
+            CustomerPromo::updateOrCreate(
+                [
+                    'customer_data_id' => $customerData->id,
+                    'area_product_promo_id' => $area_product_promo_id,
+                ],
+                [
+                    'product_promo_id' => $areaProductPromo->product_promo_id,
+                    'until_payment' => $productPromo->until_payment,
+                    'invoice_counting' => 0,
+                    'active' => 1,
+                ]
+            );
+        }
+
         if (!empty($contacts)) {
             foreach ($contacts as $key => $value) {
-                $contactId = empty($value['id']) ? NULL: $value['id'];
+                $contactId = empty($value['id']) ? NULL : $value['id'];
 
                 CustomerContact::updateOrCreate(
                     [
@@ -150,24 +171,6 @@ class CustomerController extends Controller
                     ]
                 );
             }
-        }
-
-        if ($area_product_promo_id) {
-            $areaProductPromo = \App\Models\AreaProductPromo::with('product_promos')->where('id', $area_product_promo_id)->first();
-            $productPromo = $areaProductPromo->product_promos;
-
-            CustomerPromo::updateOrCreate(
-                [
-                    'customer_data_id' => $customerData->id,
-                    'area_product_promo_id' => $area_product_promo_id,
-                ],
-                [
-                    'product_promo_id' => $areaProductPromo->product_promo_id,
-                    'until_payment' => $productPromo->until_payment,
-                    'invoice_counting' => 0,
-                    'active' => 1,
-                ]
-            );
         }
 
         $status = $request->id ? 200 : 201;
@@ -253,7 +256,8 @@ class CustomerController extends Controller
 
     public function documentLists($id)
     {
-        $rows = CustomerDocument::where('customer_data_id', $id)->orderBy('updated_at', 'desc')
+        $rows = CustomerDocument::where('customer_data_id', $id)
+            ->orderBy('updated_at', 'desc')
             ->get()
             ->map(function ($row) {
                 $person = CustomerProfile::where('id', $row->customer_contact_id)->first();
@@ -265,7 +269,7 @@ class CustomerController extends Controller
                 return [
                     'id' => $row->id,
                     'type' => $row->type,
-                    'file' => $row->file,
+                    'file' => url('/rest/customer/document-file/' . $row->id),
                     'identity_number' => $row->identity_number,
                     'identity_expired' => $row->identity_expired ? date('d/M/Y', strtotime($row->identity_expired)) : '',
                     'customer_data_id' => $row->customer_data_id,
@@ -314,7 +318,7 @@ class CustomerController extends Controller
             ]
         );
 
-        $status = $request->customer_contact_id ? 200 : 201;
+        $status = $request->d_customer_contact_id ? 200 : 201;
 
         return response()->json('OK', $status);
     }
@@ -337,5 +341,92 @@ class CustomerController extends Controller
         } else {
             return abort(404);
         }
+    }
+
+    public function deviceLists($id)
+    {
+        $rows = CustomerDevice::where('customer_data_id', $id)
+            ->with(['items', 'units'])
+            ->orderBy('updated_at', 'desc')
+            ->get()
+            ->map(function($row) {
+                $row->item_code = $row->items->code;
+                $row->item_name = $row->items->name;
+                $row->item_serial_number = $row->items->items;
+                $row->item_brand = $row->items->brand;
+
+                $row->unit_shortname = $row->units->shortname;
+                $row->unit_name = $row->units->name;
+
+                $row->picture = url('/rest/customer/device-file/' . $row->id);
+
+                return $row;
+            });
+
+        return $rows;
+    }
+
+    public function deviceStore(CustomerDeviceRequest $request)
+    {
+        $row = CustomerDevice::where('id', $request->e_id)->first();
+
+        $picture = $row->picture ?? NULL;
+        if ($request->e_picture) {
+            $picture = uniqid() . '.' . $request->e_picture->extension();
+
+            $request->file('e_picture')->storeAs(
+                $this->folder_device,
+                $picture,
+                'local',
+            );
+        }
+
+        $item = \App\Models\Item::where('id', $request->e_item_id)->first();
+
+        CustomerDevice::updateOrCreate(
+            [
+                'id' => $request->e_id,
+            ],
+            [
+                'desc' => $request->e_desc,
+                'picture' => $picture,
+                'qty' => $request->e_qty,
+                'item_id' => $item->id,
+                'unit_id' => $item->unit_id,
+                'customer_data_id' => $request->customer_data_id,
+            ]
+        );
+
+        $status = $request->e_id ? 200 : 201;
+
+        return response()->json('OK', $status);
+    }
+    
+    public function deviceShow($id)
+    {
+        $row = CustomerDevice::find($id);
+        $row->picture_url = url('/rest/customer/device-file/' . $row->id);
+
+        return response()->json($row);
+    }
+
+    public function deviceFile($id)
+    {
+        $row = CustomerDevice::find($id);
+
+        if ($row) {
+            $path = Storage::path($this->folder_device . '/' . $row->picture);
+
+            return response()->file($path);
+        } else {
+            return abort(404);
+        }        
+    }
+
+    public function deviceDelete($id)
+    {
+        CustomerDevice::find($id)->delete();
+
+        return response()->json('OK');
     }
 }

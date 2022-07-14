@@ -51,3 +51,7 @@ function TimestampString2Date (value) {
 
     return date;
 }
+
+function generateLink(link, label) {
+    return `<a href="${link}" target="_blank">${label}</a>`;
+}

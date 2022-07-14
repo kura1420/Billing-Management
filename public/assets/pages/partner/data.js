@@ -841,7 +841,7 @@ $(document).ready(function () {
     var getData = (row) => {
         if (row) {
             $.ajax({
-                type: "get",
+                type: "GET",
                 url: _rest + '/' + row.id,
                 dataType: "json",
                 success: function (response) {

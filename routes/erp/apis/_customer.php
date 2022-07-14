@@ -38,14 +38,19 @@ Route::prefix('customer')->group(function() {
         Route::get('/document/{id}', 'documentLists');
         Route::get('/document-show/{id}', 'documentShow');
         Route::get('/document-file/{file}', 'documentFile');
+        Route::get('/device/{id}', 'deviceLists');
+        Route::get('/device-show/{id}', 'deviceShow');
+        Route::get('/device-file/{id}', 'deviceFile');
 
         Route::post('/lists', 'lists');
         Route::post('/contact-merge/{id}', 'contactMerge');
         Route::post('/', 'store');
         Route::post('/document', 'documentStore');
+        Route::post('/device', 'deviceStore');
         
         Route::delete('/contact/{id}', 'contactDestroy');
         Route::delete('/document/{id}', 'documentDestroy');
+        Route::delete('/device/{id}', 'deviceDelete');
     });
 });
 

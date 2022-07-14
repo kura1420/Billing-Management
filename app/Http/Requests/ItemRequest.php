@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class ItemRequest extends FormRequest
 {
@@ -13,7 +15,7 @@ class ItemRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +25,35 @@ class ItemRequest extends FormRequest
      */
     public function rules()
     {
+        $id = request('id') ?? NULL;
+
+        if ($id) {
+            $codeRule = 'nullable|';
+        } else {
+            $codeRule = 'required|';
+        }        
+
         return [
             //
+            'code' => $codeRule . 'string|alpha_num|max:36|unique:items,code,' . $id,
+            'name' => 'required|string|max:255',
+            'serial_numbers' => 'nullable|string|max:255|unique:items,code,' . $id,
+            'spec' => 'required|string',
+            'desc' => 'nullable|string',
+            'year' => 'required|numeric',
+            'picture' => $codeRule . '|image',
+            'price' => 'required|numeric',
+            'brand' => 'required|string|max:255',
+            'partner_id' => 'required|string',
+            'unit_id' => 'required|string',
+        ];
+    }
+
+    public function attributes()
+    {
+        return [
+            'partner_id' => 'partner',
+            'unit_id' => 'unit',
         ];
     }
 }

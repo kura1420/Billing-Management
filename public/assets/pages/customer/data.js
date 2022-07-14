@@ -9,8 +9,11 @@ $(document).ready(function () {
     const _rest = URL_REST + '/customer'
 
     var rowIndexContact = undefined;
+    
     var _picture_url = null;
     var _file_url = null;
+    var _device_picture_url = null;
+
     var _area_product_customer_value = undefined;
     var _area_product_promo_value = undefined;
 
@@ -24,6 +27,10 @@ $(document).ready(function () {
     let _dgDocument = $('#dgDocument')
     let _ffDocument = $('#ffDocument')
     let _wDocument = $('#wDocument')
+
+    let _dgDevice = $('#dgDevice')
+    let _ffDevice = $('#ffDevice')
+    let _wDevice = $('#wDevice')
 
     let _btnAdd = $('#btnAdd');
     let _btnSave = $('#btnSave');
@@ -44,6 +51,13 @@ $(document).ready(function () {
     let _btnPreviewDocument = $('#btnPreviewDocument');
     let _btnSaveDocument = $('#btnSaveDocument');
     let _btnCancelDocument = $('#btnCancelDocument');
+
+    let _btnAddDevice = $('#btnAddDevice');
+    let _btnEditDevice = $('#btnEditDevice');
+    let _btnRemoveDevice = $('#btnRemoveDevice');
+    let _btnPreviewDevice = $('#btnPreviewDevice');
+    let _btnSaveDevice = $('#btnSaveDevice');
+    let _btnCancelDevice = $('#btnCancelDevice');
 
     let _id = $('#id');
     let _service_trigger = $('#service_trigger');
@@ -72,6 +86,12 @@ $(document).ready(function () {
     let _d_file = $('#d_file')
     let _d_identity_number = $('#d_identity_number')
     let _d_identity_expired = $('#d_identity_expired')
+
+    let _e_id = $('#e_id')
+    let _e_item_id = $('#e_item_id')
+    let _e_qty = $('#e_qty')
+    let _e_desc = $('#e_desc')
+    let _e_picture = $('#e_picture')
 
     _area_id.combobox({
         valueField:'id',
@@ -296,6 +316,20 @@ $(document).ready(function () {
             editDocument();
         },
     });
+
+    _dgDevice.datagrid({
+        singleSelect:true,
+        collapsible:true,
+        border:false,
+        fitColumns:true,
+        pagination:true,
+        rownumbers:true,
+        border:false,
+        toolbar:'#tbDevice',
+        onDblClickRow: function (index, row) {
+            editDevice();
+        },
+    })
 
     _ss.searchbox({
         prompt: 'Search',
@@ -731,6 +765,139 @@ $(document).ready(function () {
         }
     });
 
+    _btnAddDevice.linkbutton({
+        onClick: function () {
+            _wDevice.window('open')
+
+            _device_picture_url = null
+
+            _e_item_id.combogrid({
+                fitColumns:true,
+                idField:'id',
+                textField:'serial_numbers',
+                method:'get',
+                url: URL_REST + '/item-data/lists/',        
+                columns:[[
+                    {field:'partner_name',title:'Partner'},
+                    {field:'unit_name',title:'Satuan'},
+                    {field:'code',title:'Code'},
+                    {field:'name',title:'Name'},
+                    {field:'serial_numbers',title:'Serial Number'},
+                    {field:'brand',title:'Brand'},
+                ]],
+            });
+        }
+    });
+    
+    _btnSaveDevice.linkbutton({
+        onClick: function () {
+            $.messager.progress();
+
+            _ffDevice.form('submit', {
+                url: _rest + '/device',
+                onSubmit: function (param) {
+                    var isValid = $(this).form('validate');
+                    if (!isValid){
+                        $.messager.progress('close');
+                    }
+    
+                    param.customer_data_id = _id.textbox('getValue')
+                    param._token = $('meta[name="csrf-token"]').attr('content')
+    
+                    return isValid;
+                },
+                success: function(res) {
+                    $.messager.progress('close');
+    
+                    let {status, data} = JSON.parse(res)
+    
+                    if (status == 'NOT') {
+                        let msg = []
+                        for (var d in data) {
+                            msg.push(data[d].toString())
+                        }
+    
+                        Alert('warning', msg.join('<br />'))
+                    } else {    
+                        loadDataDevice(_id.textbox('getValue'));
+                        
+                        _wDevice.window('close');
+
+                        _ffDevice.form('clear');
+
+                        _device_picture_url = null
+
+                        $.messager.show({
+                            title:'Info',
+                            msg:'Data saved.',
+                            timeout:5000,
+                            showType:'slide'
+                        })
+                    }
+                },
+            });
+        }
+    });
+
+    _btnEditDevice.linkbutton({
+        onClick: function () {
+            editDevice()
+        }
+    });
+
+    _btnCancelDevice.linkbutton({
+        onClick: function () {
+            _wDevice.window('close');
+
+            _ffDevice.form('clear');
+
+            _device_picture_url = null
+        }
+    });
+
+    _btnRemoveDevice.linkbutton({
+        onClick: function () {
+            let row = _dgDevice.datagrid('getSelected');
+
+            if (row) {
+                $.messager.confirm('Confirmation', 'Are you sure delete this data?', function(r){
+                    if (r){
+                        $.ajax({
+                            type: "delete",
+                            url: _rest + '/device/' + row.id,
+                            dataType: "json",
+                            success: function (response) {
+                                loadDataDevice(_id.textbox('getValue'))
+
+                                $.messager.show({
+                                    title:'Info',
+                                    msg:'Data deleted.',
+                                    timeout:5000,
+                                    showType:'slide'
+                                })
+                            },
+                            error: function (xhr, status, error) {
+                                let {statusText, responseJSON} = xhr
+
+                                Alert('error', responseJSON, statusText)
+                            }
+                        });
+                    }
+                });
+            } else {
+                Alert('warning', 'No selected data');                  
+            }
+        }
+    });
+
+    _btnPreviewDevice.linkbutton({
+        onClick: function () {
+            if (_device_picture_url) {
+                window.open(_device_picture_url)                
+            }
+        }
+    });
+
     var editRowContact = () => {
         if (rowIndexContact == undefined) {
             let row = _dgContact.datagrid('getSelected');
@@ -805,6 +972,61 @@ $(document).ready(function () {
                     });
 
                     _file_url = file_url
+                },
+                error: function (xhr, status, error) {
+                    Alert('error', 'Internal server error');
+                }
+            });
+        } else {
+            Alert('warning', 'No selected data');                 
+        }
+    }
+
+    var editDevice = () => {
+        let row = _dgDevice.datagrid('getSelected')
+
+        if (row) {
+            _wDevice.window('open')
+
+            _e_item_id.combogrid({
+                fitColumns:true,
+                idField:'id',
+                textField:'serial_numbers',
+                method:'get',
+                url: URL_REST + '/item-data/lists/',        
+                columns:[[
+                    {field:'partner_name',title:'Partner'},
+                    {field:'unit_name',title:'Satuan'},
+                    {field:'code',title:'Code'},
+                    {field:'name',title:'Name'},
+                    {field:'serial_numbers',title:'Serial Number'},
+                    {field:'brand',title:'Brand'},
+                ]],
+            });
+            
+            $.ajax({
+                type: "get",
+                url: _rest + "/device-show/" + row.id,
+                dataType: "json",
+                success: function (response) {
+                    let {
+                        id,
+                        desc,
+                        picture,
+                        picture_url,
+                        qty,
+                        item_id,
+                    } = response
+
+                    _ffDevice.form('load', {
+                        e_id: id,
+                        e_desc: desc,
+                        e_picture: picture,
+                        e_qty: qty,
+                        e_item_id: item_id,
+                    });
+
+                    _device_picture_url = picture_url
                 },
                 error: function (xhr, status, error) {
                     Alert('error', 'Internal server error');
@@ -925,11 +1147,44 @@ $(document).ready(function () {
         _dgDocument.datagrid('fixRowHeight');
     }
 
+    var loadDataDevice = (customer_data_id) => {
+        _dgDevice.datagrid({
+            method: 'get',
+            url: _rest + '/device/' + customer_data_id,
+            loader: function (param, success, error) {
+                let {method, url} = $(this).datagrid('options')
+
+                if (method==null || url==null) return false
+
+                $.ajax({
+                    method: method,
+                    url: url,
+                    dataType: 'json',
+                    success: function (res) {
+                        success(res)
+                    },
+                    error: function (xhr, status) {
+                        error(xhr)
+                    }
+                })
+            },
+            onLoadError: function (objs) {
+                let {statusText, responseJSON} = objs
+
+                Alert('error', responseJSON, statusText)
+            },
+        });
+
+        _dgDevice.datagrid('fixColumnSize');
+        _dgDevice.datagrid('fixRowHeight');
+    }
+
     var formReset = () => {
         _ff.form('clear')
         
         _dgContact.datagrid('loadData', [])
         _dgDocument.datagrid('loadData', [])
+        _dgDevice.datagrid('loadData', [])
 
         _area_product_customer.combogrid({
             method: 'get',
@@ -938,6 +1193,8 @@ $(document).ready(function () {
         _area_product_promo_id.combobox('loadData', []);
 
         _picture_url = null;
+        _device_picture_url = null;
+
         _area_product_customer_value = null;
         _area_product_promo_value = null;
 
@@ -957,6 +1214,13 @@ $(document).ready(function () {
         _btnPreviewDocument.linkbutton({disabled:true})
         _btnSaveDocument.linkbutton({disabled:true})
         _btnCancelDocument.linkbutton({disabled:true})
+
+        _btnAddDevice.linkbutton({disabled:true})
+        _btnEditDevice.linkbutton({disabled:true})
+        _btnRemoveDevice.linkbutton({disabled:true})
+        _btnPreviewDevice.linkbutton({disabled:true})
+        _btnSaveDevice.linkbutton({disabled:true})
+        _btnCancelDevice.linkbutton({disabled:true})
 
         _service_trigger.textbox({disabled:true})
         _area_id.combobox({disabled:true})
@@ -997,6 +1261,13 @@ $(document).ready(function () {
         _btnSaveDocument.linkbutton({disabled:false})
         _btnCancelDocument.linkbutton({disabled:false})
 
+        _btnAddDevice.linkbutton({disabled:false})
+        _btnEditDevice.linkbutton({disabled:false})
+        _btnRemoveDevice.linkbutton({disabled:false})
+        _btnPreviewDevice.linkbutton({disabled:false})
+        _btnSaveDevice.linkbutton({disabled:false})
+        _btnCancelDevice.linkbutton({disabled:false})
+
         _service_trigger.textbox({disabled:false})
         _area_id.combobox({disabled:false})
         _area_product_customer.combogrid({disabled:false})
@@ -1033,6 +1304,7 @@ $(document).ready(function () {
                     
                     loadDataContact(row.id);
                     loadDataDocument(row.id);
+                    loadDataDevice(row.id);
 
                     let {
                         id,
