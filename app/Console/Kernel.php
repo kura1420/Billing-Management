@@ -35,9 +35,10 @@ class Kernel extends ConsoleKernel
 
     protected function _daily(Schedule $schedule)
     {
-        $schedule->command('customer:invoice')->daily();        
-        $schedule->command('customer:suspend')->daily();
-        $schedule->command('customer:terminated')->daily();
-        $schedule->command('promo:disabled')->daily();
+        // $schedule->command('customer:invoice')->daily();        
+        // $schedule->command('customer:suspend')->daily();
+        // $schedule->command('customer:terminated')->daily();
+        // $schedule->command('promo:disabled')->daily();
+        $schedule->command('database:backup')->daily();
     }
 }
